@@ -25,7 +25,15 @@ namespace Admin_Tools
         private OutputForm _outputForm;
         private bool _isElevated;
         private OutputForm _logForm;
-       
+
+        // Proportional resize: original bounds/font sizes captured once at Load,
+        // then every control is rescaled by the same factor the window is resized by.
+        private readonly Dictionary<Control, Rectangle> _baseBounds = new Dictionary<Control, Rectangle>();
+        private readonly Dictionary<Control, float> _baseFontSize = new Dictionary<Control, float>();
+        private readonly Dictionary<ColumnHeader, int> _baseColWidths = new Dictionary<ColumnHeader, int>();
+        private Size _baseClientSize;
+        private bool _scalingInProgress;
+
 
         // Button state colors: green = ready, amber = tool running
         private static readonly System.Drawing.Color ReadyColor =
@@ -33,9 +41,11 @@ namespace Admin_Tools
         private static readonly System.Drawing.Color RunningColor =
             System.Drawing.Color.FromArgb(255, 235, 156);
 
+        private Restore_Point_List_Form _restorePointsForm;
+        private Registry_Backup_Form _registryBackupForm;
+        private Shadow_Copy_Form _shadowCopyForm;
 
-
-    private class LaunchedTool
+        private class LaunchedTool
         {
             public string Name;
             public Process Process;
@@ -57,6 +67,8 @@ namespace Admin_Tools
             Email_Settings_Button.Visible = false;
             Email_Log_Button.Enabled = false;
             Email_Log_Button.Visible = false;
+
+            this.Resize += MainForm_Resize;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -82,7 +94,93 @@ namespace Admin_Tools
                 statusLabel.Text = "WARNING: not elevated - admin features will fail.";
             }
 
-     
+            // Lock the smallest allowed size to the as-loaded layout (banner included,
+            // if shown) and remember every control's starting bounds/font for scaling.
+            this.MinimumSize = this.Size;
+            CaptureScaleBaseline();
+        }
+
+        // ====================================================================
+        //  PROPORTIONAL RESIZE / SCALING
+        // ====================================================================
+
+        private void CaptureScaleBaseline()
+        {
+            _baseClientSize = ClientSize;
+            CaptureControlBounds(this);
+        }
+
+        private void CaptureControlBounds(Control parent)
+        {
+            foreach (Control c in parent.Controls)
+            {
+                _baseBounds[c] = c.Bounds;
+                _baseFontSize[c] = c.Font.Size;
+
+                if (c is ListView lv)
+                {
+                    foreach (ColumnHeader col in lv.Columns)
+                        _baseColWidths[col] = col.Width;
+                }
+
+                if (c.Controls.Count > 0)
+                    CaptureControlBounds(c);
+            }
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (_scalingInProgress) return;
+            if (WindowState == FormWindowState.Minimized) return;
+            if (_baseClientSize.Width == 0 || _baseClientSize.Height == 0) return;
+
+            _scalingInProgress = true;
+            try
+            {
+                float scaleX = (float)ClientSize.Width / _baseClientSize.Width;
+                float scaleY = (float)ClientSize.Height / _baseClientSize.Height;
+                ScaleControlsRecursive(this, scaleX, scaleY);
+            }
+            finally
+            {
+                _scalingInProgress = false;
+            }
+        }
+
+        private void ScaleControlsRecursive(Control parent, float scaleX, float scaleY)
+        {
+            float fontScale = Math.Min(scaleX, scaleY);
+
+            foreach (Control c in parent.Controls)
+            {
+                // Docked controls (the status strip, the elevation banner) are left to
+                // the docking engine - only freely-positioned controls get new bounds.
+                if (c.Dock == DockStyle.None && _baseBounds.TryGetValue(c, out Rectangle b))
+                {
+                    c.Bounds = new Rectangle(
+                        (int)Math.Round(b.X * scaleX),
+                        (int)Math.Round(b.Y * scaleY),
+                        (int)Math.Round(b.Width * scaleX),
+                        (int)Math.Round(b.Height * scaleY));
+                }
+
+                if (_baseFontSize.TryGetValue(c, out float baseSize))
+                {
+                    float newSize = Math.Max(6f, baseSize * fontScale);
+                    if (Math.Abs(c.Font.Size - newSize) > 0.25f)
+                        c.Font = new Font(c.Font.FontFamily, newSize, c.Font.Style);
+                }
+
+                if (c is ListView lv)
+                {
+                    foreach (ColumnHeader col in lv.Columns)
+                        if (_baseColWidths.TryGetValue(col, out int w))
+                            col.Width = (int)Math.Round(w * scaleX);
+                }
+
+                if (c.Controls.Count > 0)
+                    ScaleControlsRecursive(c, scaleX, scaleY);
+            }
         }
 
         // ====================================================================
@@ -284,12 +382,12 @@ namespace Admin_Tools
                 {
                     try
                     {
-                        BeginInvoke((MethodInvoker)(() =>
+                        BeginInvoke(() =>
                         {
                             tool.Item.SubItems[3].Text = "Closed";
                             ReleaseButton(tool);
                             statusLabel.Text = tool.Name + " closed.";
-                        }));
+                        });
                     }
                     catch { /* form closing */ }
                 };
@@ -829,24 +927,57 @@ namespace Admin_Tools
             }
         }
 
+
+
         private void Restore_Points_Button_Click(object sender, EventArgs e)
         {
-            using (var f = new Restore_Point_List_Form())
-                f.ShowDialog(this);
+            if (_restorePointsForm == null || _restorePointsForm.IsDisposed)
+            {
+                _restorePointsForm = new Restore_Point_List_Form();
+                _restorePointsForm.FormClosed += (s, args) => Restore_Points_Button.Enabled = true;
+                _restorePointsForm.Show(this);
+                Restore_Points_Button.Enabled = false;
+            }
+            else
+            {
+                if (_restorePointsForm.WindowState == FormWindowState.Minimized)
+                    _restorePointsForm.WindowState = FormWindowState.Normal;
+                _restorePointsForm.BringToFront();
+            }
         }
 
         private void Enable_Registry_Backup_Button_Click(object sender, EventArgs e)
         {
-            using (var f = new Registry_Backup_Form())
-                f.ShowDialog(this);
+            if (_registryBackupForm == null || _registryBackupForm.IsDisposed)
+            {
+                _registryBackupForm = new Registry_Backup_Form();
+                _registryBackupForm.FormClosed += (s, args) => Enable_Registry_Backup_Button.Enabled = true;
+                _registryBackupForm.Show(this);
+                Enable_Registry_Backup_Button.Enabled = false;
+            }
+            else
+            {
+                if (_registryBackupForm.WindowState == FormWindowState.Minimized)
+                    _registryBackupForm.WindowState = FormWindowState.Normal;
+                _registryBackupForm.BringToFront();
+            }
         }
 
         private void Snapshot_Operations_Button_Click(object sender, EventArgs e)
         {
-            using (var f = new Shadow_Copy_Form())
-                f.ShowDialog(this);
+            if (_shadowCopyForm == null || _shadowCopyForm.IsDisposed)
+            {
+                _shadowCopyForm = new Shadow_Copy_Form();
+                _shadowCopyForm.FormClosed += (s, args) => Snapshot_Operations_Button.Enabled = true;
+                _shadowCopyForm.Show(this);
+                Snapshot_Operations_Button.Enabled = false;
+            }
+            else
+            {
+                if (_shadowCopyForm.WindowState == FormWindowState.Minimized)
+                    _shadowCopyForm.WindowState = FormWindowState.Normal;
+                _shadowCopyForm.BringToFront();
+            }
         }
-
-     
     }
 }

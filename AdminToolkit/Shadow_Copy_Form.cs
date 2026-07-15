@@ -337,17 +337,30 @@ namespace Admin_Tools
         }
 
         // --------------------------------------------------------
-        //  Raw vssadmin output
+        //  Raw vssadmin output (selected snapshot, or all if none selected)
         // --------------------------------------------------------
         private void Btn_VssAdmin_Click(object sender, EventArgs e)
         {
+            // Get the selected snapshot's Shadow ID, if any.
+            // *** Adjust these two lines to this form's ListView name and Tag type ***
+            string shadowId = null;
+            if (lvSnapshots.SelectedItems.Count > 0 &&
+                lvSnapshots.SelectedItems[0].Tag is Snapshot_Row sr)
+            {
+                shadowId = sr.Id;   // "{GUID}" including braces
+            }
+
+            string arguments = shadowId == null
+                ? "list shadows"
+                : "list shadows /shadow=" + shadowId;
+
             Cursor = Cursors.WaitCursor;
             try
             {
                 var psi = new ProcessStartInfo
                 {
                     FileName = "vssadmin.exe",
-                    Arguments = "list shadows",
+                    Arguments = arguments,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
@@ -360,7 +373,11 @@ namespace Admin_Tools
                     string err = p.StandardError.ReadToEnd();
                     p.WaitForExit();
 
-                    Show_Text_Window("vssadmin list shadows",
+                    string title = shadowId == null
+                        ? "vssadmin list shadows (all)"
+                        : "vssadmin - " + shadowId;
+
+                    Show_Text_Window(title,
                         output + (err.Length > 0 ? "\r\n" + err : ""));
                 }
             }
@@ -606,7 +623,7 @@ namespace Admin_Tools
             form.AcceptButton = btnCloseViewer;
             form.Shown += delegate { txt.SelectionStart = 0; txt.SelectionLength = 0; };
 
-            form.ShowDialog(this);
+            form.Show(this);
         }
 
         private void Btn_Refresh_Click(object sender, EventArgs e)

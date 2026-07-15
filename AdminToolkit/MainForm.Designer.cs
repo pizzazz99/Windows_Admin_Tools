@@ -27,429 +27,421 @@ namespace Admin_Tools
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.btnViewLog = new System.Windows.Forms.Button();
-            this.grpTools = new System.Windows.Forms.GroupBox();
-            this.btnFirewall = new System.Windows.Forms.Button();
-            this.btnLocalUsers = new System.Windows.Forms.Button();
-            this.btnDeviceManager = new System.Windows.Forms.Button();
-            this.btnResourceMonitor = new System.Windows.Forms.Button();
-            this.btnPerfMonitor = new System.Windows.Forms.Button();
-            this.btnSystemInfo = new System.Windows.Forms.Button();
-            this.btnComputerMgmt = new System.Windows.Forms.Button();
-            this.btnDiskManagement = new System.Windows.Forms.Button();
-            this.btnServices = new System.Windows.Forms.Button();
-            this.btnEventViewer = new System.Windows.Forms.Button();
-            this.btnRegistryEditor = new System.Windows.Forms.Button();
-            this.btnRestoreWizard = new System.Windows.Forms.Button();
-            this.btnSystemProtection = new System.Windows.Forms.Button();
-            this.btnTaskScheduler = new System.Windows.Forms.Button();
-            this.grpProcesses = new System.Windows.Forms.GroupBox();
-            this.btnRemoveClosed = new System.Windows.Forms.Button();
-            this.btnKillTool = new System.Windows.Forms.Button();
-            this.btnCloseTool = new System.Windows.Forms.Button();
-            this.listViewProcesses = new System.Windows.Forms.ListView();
-            this.colTool = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colPid = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colStarted = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Email_Settings_Button = new System.Windows.Forms.Button();
-            this.Email_Log_Button = new System.Windows.Forms.Button();
-            this.Enable_Registry_Backup_Button = new System.Windows.Forms.Button();
-            this.Restore_Points_Button = new System.Windows.Forms.Button();
-            this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.timerStatus = new System.Windows.Forms.Timer(this.components);
-            this.Snapshot_Operations_Button = new System.Windows.Forms.Button();
-            this.Help_Button = new System.Windows.Forms.Button();
-            this.View_Log_Button = new System.Windows.Forms.Button();
-            this.Quit_Button = new System.Windows.Forms.Button();
-            this.grpTools.SuspendLayout();
-            this.grpProcesses.SuspendLayout();
-            this.statusStrip.SuspendLayout();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            btnViewLog = new Button();
+            grpTools = new GroupBox();
+            btnFirewall = new Button();
+            btnLocalUsers = new Button();
+            btnDeviceManager = new Button();
+            btnResourceMonitor = new Button();
+            btnPerfMonitor = new Button();
+            btnSystemInfo = new Button();
+            btnComputerMgmt = new Button();
+            btnDiskManagement = new Button();
+            btnServices = new Button();
+            btnEventViewer = new Button();
+            btnRegistryEditor = new Button();
+            btnRestoreWizard = new Button();
+            btnSystemProtection = new Button();
+            btnTaskScheduler = new Button();
+            grpProcesses = new GroupBox();
+            btnRemoveClosed = new Button();
+            btnKillTool = new Button();
+            btnCloseTool = new Button();
+            listViewProcesses = new ListView();
+            colTool = new ColumnHeader();
+            colPid = new ColumnHeader();
+            colStarted = new ColumnHeader();
+            colStatus = new ColumnHeader();
+            Email_Settings_Button = new Button();
+            Email_Log_Button = new Button();
+            Enable_Registry_Backup_Button = new Button();
+            Restore_Points_Button = new Button();
+            statusStrip = new StatusStrip();
+            statusLabel = new ToolStripStatusLabel();
+            timerStatus = new System.Windows.Forms.Timer(components);
+            Snapshot_Operations_Button = new Button();
+            Help_Button = new Button();
+            View_Log_Button = new Button();
+            Quit_Button = new Button();
+            grpTools.SuspendLayout();
+            grpProcesses.SuspendLayout();
+            statusStrip.SuspendLayout();
+            SuspendLayout();
             // 
             // btnViewLog
             // 
-            this.btnViewLog.Location = new System.Drawing.Point(0, 0);
-            this.btnViewLog.Name = "btnViewLog";
-            this.btnViewLog.Size = new System.Drawing.Size(75, 23);
-            this.btnViewLog.TabIndex = 0;
+            btnViewLog.Location = new Point(0, 0);
+            btnViewLog.Name = "btnViewLog";
+            btnViewLog.Size = new Size(75, 23);
+            btnViewLog.TabIndex = 0;
             // 
             // grpTools
             // 
-            this.grpTools.Controls.Add(this.btnFirewall);
-            this.grpTools.Controls.Add(this.btnLocalUsers);
-            this.grpTools.Controls.Add(this.btnDeviceManager);
-            this.grpTools.Controls.Add(this.btnResourceMonitor);
-            this.grpTools.Controls.Add(this.btnPerfMonitor);
-            this.grpTools.Controls.Add(this.btnSystemInfo);
-            this.grpTools.Controls.Add(this.btnComputerMgmt);
-            this.grpTools.Controls.Add(this.btnDiskManagement);
-            this.grpTools.Controls.Add(this.btnServices);
-            this.grpTools.Controls.Add(this.btnEventViewer);
-            this.grpTools.Controls.Add(this.btnRegistryEditor);
-            this.grpTools.Controls.Add(this.btnRestoreWizard);
-            this.grpTools.Controls.Add(this.btnSystemProtection);
-            this.grpTools.Controls.Add(this.btnTaskScheduler);
-            this.grpTools.Location = new System.Drawing.Point(12, 12);
-            this.grpTools.Name = "grpTools";
-            this.grpTools.Size = new System.Drawing.Size(325, 290);
-            this.grpTools.TabIndex = 1;
-            this.grpTools.TabStop = false;
-            this.grpTools.Text = "Admin Tools";
+            grpTools.Controls.Add(btnFirewall);
+            grpTools.Controls.Add(btnLocalUsers);
+            grpTools.Controls.Add(btnDeviceManager);
+            grpTools.Controls.Add(btnResourceMonitor);
+            grpTools.Controls.Add(btnPerfMonitor);
+            grpTools.Controls.Add(btnSystemInfo);
+            grpTools.Controls.Add(btnComputerMgmt);
+            grpTools.Controls.Add(btnDiskManagement);
+            grpTools.Controls.Add(btnServices);
+            grpTools.Controls.Add(btnEventViewer);
+            grpTools.Controls.Add(btnRegistryEditor);
+            grpTools.Controls.Add(btnRestoreWizard);
+            grpTools.Controls.Add(btnSystemProtection);
+            grpTools.Controls.Add(btnTaskScheduler);
+            grpTools.Location = new Point(12, 12);
+            grpTools.Name = "grpTools";
+            grpTools.Size = new Size(325, 290);
+            grpTools.TabIndex = 1;
+            grpTools.TabStop = false;
+            grpTools.Text = "Admin Tools";
             // 
             // btnFirewall
             // 
-            this.btnFirewall.Location = new System.Drawing.Point(166, 242);
-            this.btnFirewall.Name = "btnFirewall";
-            this.btnFirewall.Size = new System.Drawing.Size(140, 30);
-            this.btnFirewall.TabIndex = 13;
-            this.btnFirewall.Text = "Windows Firewall";
-            this.btnFirewall.UseVisualStyleBackColor = true;
-            this.btnFirewall.Click += new System.EventHandler(this.btnFirewall_Click);
+            btnFirewall.Location = new Point(166, 242);
+            btnFirewall.Name = "btnFirewall";
+            btnFirewall.Size = new Size(140, 30);
+            btnFirewall.TabIndex = 13;
+            btnFirewall.Text = "Windows Firewall";
+            btnFirewall.UseVisualStyleBackColor = true;
+            btnFirewall.Click += btnFirewall_Click;
             // 
             // btnLocalUsers
             // 
-            this.btnLocalUsers.Location = new System.Drawing.Point(14, 242);
-            this.btnLocalUsers.Name = "btnLocalUsers";
-            this.btnLocalUsers.Size = new System.Drawing.Size(140, 30);
-            this.btnLocalUsers.TabIndex = 12;
-            this.btnLocalUsers.Text = "Local Users && Groups";
-            this.btnLocalUsers.UseVisualStyleBackColor = true;
-            this.btnLocalUsers.Click += new System.EventHandler(this.btnLocalUsers_Click);
+            btnLocalUsers.Location = new Point(14, 242);
+            btnLocalUsers.Name = "btnLocalUsers";
+            btnLocalUsers.Size = new Size(140, 30);
+            btnLocalUsers.TabIndex = 12;
+            btnLocalUsers.Text = "Local Users && Groups";
+            btnLocalUsers.UseVisualStyleBackColor = true;
+            btnLocalUsers.Click += btnLocalUsers_Click;
             // 
             // btnDeviceManager
             // 
-            this.btnDeviceManager.Location = new System.Drawing.Point(166, 206);
-            this.btnDeviceManager.Name = "btnDeviceManager";
-            this.btnDeviceManager.Size = new System.Drawing.Size(140, 30);
-            this.btnDeviceManager.TabIndex = 11;
-            this.btnDeviceManager.Text = "Device Manager";
-            this.btnDeviceManager.UseVisualStyleBackColor = true;
-            this.btnDeviceManager.Click += new System.EventHandler(this.btnDeviceManager_Click);
+            btnDeviceManager.Location = new Point(166, 206);
+            btnDeviceManager.Name = "btnDeviceManager";
+            btnDeviceManager.Size = new Size(140, 30);
+            btnDeviceManager.TabIndex = 11;
+            btnDeviceManager.Text = "Device Manager";
+            btnDeviceManager.UseVisualStyleBackColor = true;
+            btnDeviceManager.Click += btnDeviceManager_Click;
             // 
             // btnResourceMonitor
             // 
-            this.btnResourceMonitor.Location = new System.Drawing.Point(14, 206);
-            this.btnResourceMonitor.Name = "btnResourceMonitor";
-            this.btnResourceMonitor.Size = new System.Drawing.Size(140, 30);
-            this.btnResourceMonitor.TabIndex = 10;
-            this.btnResourceMonitor.Text = "Resource Monitor";
-            this.btnResourceMonitor.UseVisualStyleBackColor = true;
-            this.btnResourceMonitor.Click += new System.EventHandler(this.btnResourceMonitor_Click);
+            btnResourceMonitor.Location = new Point(14, 206);
+            btnResourceMonitor.Name = "btnResourceMonitor";
+            btnResourceMonitor.Size = new Size(140, 30);
+            btnResourceMonitor.TabIndex = 10;
+            btnResourceMonitor.Text = "Resource Monitor";
+            btnResourceMonitor.UseVisualStyleBackColor = true;
+            btnResourceMonitor.Click += btnResourceMonitor_Click;
             // 
             // btnPerfMonitor
             // 
-            this.btnPerfMonitor.Location = new System.Drawing.Point(166, 170);
-            this.btnPerfMonitor.Name = "btnPerfMonitor";
-            this.btnPerfMonitor.Size = new System.Drawing.Size(140, 30);
-            this.btnPerfMonitor.TabIndex = 9;
-            this.btnPerfMonitor.Text = "Performance Monitor";
-            this.btnPerfMonitor.UseVisualStyleBackColor = true;
-            this.btnPerfMonitor.Click += new System.EventHandler(this.btnPerfMonitor_Click);
+            btnPerfMonitor.Location = new Point(166, 170);
+            btnPerfMonitor.Name = "btnPerfMonitor";
+            btnPerfMonitor.Size = new Size(140, 30);
+            btnPerfMonitor.TabIndex = 9;
+            btnPerfMonitor.Text = "Performance Monitor";
+            btnPerfMonitor.UseVisualStyleBackColor = true;
+            btnPerfMonitor.Click += btnPerfMonitor_Click;
             // 
             // btnSystemInfo
             // 
-            this.btnSystemInfo.Location = new System.Drawing.Point(14, 170);
-            this.btnSystemInfo.Name = "btnSystemInfo";
-            this.btnSystemInfo.Size = new System.Drawing.Size(140, 30);
-            this.btnSystemInfo.TabIndex = 8;
-            this.btnSystemInfo.Text = "System Info";
-            this.btnSystemInfo.UseVisualStyleBackColor = true;
-            this.btnSystemInfo.Click += new System.EventHandler(this.btnSystemInfo_Click);
+            btnSystemInfo.Location = new Point(14, 170);
+            btnSystemInfo.Name = "btnSystemInfo";
+            btnSystemInfo.Size = new Size(140, 30);
+            btnSystemInfo.TabIndex = 8;
+            btnSystemInfo.Text = "System Info";
+            btnSystemInfo.UseVisualStyleBackColor = true;
+            btnSystemInfo.Click += btnSystemInfo_Click;
             // 
             // btnComputerMgmt
             // 
-            this.btnComputerMgmt.Location = new System.Drawing.Point(166, 134);
-            this.btnComputerMgmt.Name = "btnComputerMgmt";
-            this.btnComputerMgmt.Size = new System.Drawing.Size(140, 30);
-            this.btnComputerMgmt.TabIndex = 7;
-            this.btnComputerMgmt.Text = "Computer Mgmt";
-            this.btnComputerMgmt.UseVisualStyleBackColor = true;
-            this.btnComputerMgmt.Click += new System.EventHandler(this.btnComputerMgmt_Click);
+            btnComputerMgmt.Location = new Point(166, 134);
+            btnComputerMgmt.Name = "btnComputerMgmt";
+            btnComputerMgmt.Size = new Size(140, 30);
+            btnComputerMgmt.TabIndex = 7;
+            btnComputerMgmt.Text = "Computer Mgmt";
+            btnComputerMgmt.UseVisualStyleBackColor = true;
+            btnComputerMgmt.Click += btnComputerMgmt_Click;
             // 
             // btnDiskManagement
             // 
-            this.btnDiskManagement.Location = new System.Drawing.Point(14, 134);
-            this.btnDiskManagement.Name = "btnDiskManagement";
-            this.btnDiskManagement.Size = new System.Drawing.Size(140, 30);
-            this.btnDiskManagement.TabIndex = 6;
-            this.btnDiskManagement.Text = "Disk Management";
-            this.btnDiskManagement.UseVisualStyleBackColor = true;
-            this.btnDiskManagement.Click += new System.EventHandler(this.btnDiskManagement_Click);
+            btnDiskManagement.Location = new Point(14, 134);
+            btnDiskManagement.Name = "btnDiskManagement";
+            btnDiskManagement.Size = new Size(140, 30);
+            btnDiskManagement.TabIndex = 6;
+            btnDiskManagement.Text = "Disk Management";
+            btnDiskManagement.UseVisualStyleBackColor = true;
+            btnDiskManagement.Click += btnDiskManagement_Click;
             // 
             // btnServices
             // 
-            this.btnServices.Location = new System.Drawing.Point(166, 98);
-            this.btnServices.Name = "btnServices";
-            this.btnServices.Size = new System.Drawing.Size(140, 30);
-            this.btnServices.TabIndex = 5;
-            this.btnServices.Text = "Services";
-            this.btnServices.UseVisualStyleBackColor = true;
-            this.btnServices.Click += new System.EventHandler(this.btnServices_Click);
+            btnServices.Location = new Point(166, 98);
+            btnServices.Name = "btnServices";
+            btnServices.Size = new Size(140, 30);
+            btnServices.TabIndex = 5;
+            btnServices.Text = "Services";
+            btnServices.UseVisualStyleBackColor = true;
+            btnServices.Click += btnServices_Click;
             // 
             // btnEventViewer
             // 
-            this.btnEventViewer.Location = new System.Drawing.Point(14, 98);
-            this.btnEventViewer.Name = "btnEventViewer";
-            this.btnEventViewer.Size = new System.Drawing.Size(140, 30);
-            this.btnEventViewer.TabIndex = 4;
-            this.btnEventViewer.Text = "Event Viewer";
-            this.btnEventViewer.UseVisualStyleBackColor = true;
-            this.btnEventViewer.Click += new System.EventHandler(this.btnEventViewer_Click);
+            btnEventViewer.Location = new Point(14, 98);
+            btnEventViewer.Name = "btnEventViewer";
+            btnEventViewer.Size = new Size(140, 30);
+            btnEventViewer.TabIndex = 4;
+            btnEventViewer.Text = "Event Viewer";
+            btnEventViewer.UseVisualStyleBackColor = true;
+            btnEventViewer.Click += btnEventViewer_Click;
             // 
             // btnRegistryEditor
             // 
-            this.btnRegistryEditor.Location = new System.Drawing.Point(168, 62);
-            this.btnRegistryEditor.Name = "btnRegistryEditor";
-            this.btnRegistryEditor.Size = new System.Drawing.Size(140, 30);
-            this.btnRegistryEditor.TabIndex = 3;
-            this.btnRegistryEditor.Text = "Registry Editor";
-            this.btnRegistryEditor.UseVisualStyleBackColor = true;
-            this.btnRegistryEditor.Click += new System.EventHandler(this.btnRegistryEditor_Click);
+            btnRegistryEditor.Location = new Point(168, 62);
+            btnRegistryEditor.Name = "btnRegistryEditor";
+            btnRegistryEditor.Size = new Size(140, 30);
+            btnRegistryEditor.TabIndex = 3;
+            btnRegistryEditor.Text = "Registry Editor";
+            btnRegistryEditor.UseVisualStyleBackColor = true;
+            btnRegistryEditor.Click += btnRegistryEditor_Click;
             // 
             // btnRestoreWizard
             // 
-            this.btnRestoreWizard.Location = new System.Drawing.Point(16, 62);
-            this.btnRestoreWizard.Name = "btnRestoreWizard";
-            this.btnRestoreWizard.Size = new System.Drawing.Size(140, 30);
-            this.btnRestoreWizard.TabIndex = 2;
-            this.btnRestoreWizard.Text = "System Restore";
-            this.btnRestoreWizard.UseVisualStyleBackColor = true;
-            this.btnRestoreWizard.Click += new System.EventHandler(this.btnRestoreWizard_Click);
+            btnRestoreWizard.Location = new Point(16, 62);
+            btnRestoreWizard.Name = "btnRestoreWizard";
+            btnRestoreWizard.Size = new Size(140, 30);
+            btnRestoreWizard.TabIndex = 2;
+            btnRestoreWizard.Text = "System Restore";
+            btnRestoreWizard.UseVisualStyleBackColor = true;
+            btnRestoreWizard.Click += btnRestoreWizard_Click;
             // 
             // btnSystemProtection
             // 
-            this.btnSystemProtection.Location = new System.Drawing.Point(166, 26);
-            this.btnSystemProtection.Name = "btnSystemProtection";
-            this.btnSystemProtection.Size = new System.Drawing.Size(140, 30);
-            this.btnSystemProtection.TabIndex = 1;
-            this.btnSystemProtection.Text = "System Protection";
-            this.btnSystemProtection.UseVisualStyleBackColor = true;
-            this.btnSystemProtection.Click += new System.EventHandler(this.btnSystemProtection_Click);
+            btnSystemProtection.Location = new Point(166, 26);
+            btnSystemProtection.Name = "btnSystemProtection";
+            btnSystemProtection.Size = new Size(140, 30);
+            btnSystemProtection.TabIndex = 1;
+            btnSystemProtection.Text = "System Protection";
+            btnSystemProtection.UseVisualStyleBackColor = true;
+            btnSystemProtection.Click += btnSystemProtection_Click;
             // 
             // btnTaskScheduler
             // 
-            this.btnTaskScheduler.Location = new System.Drawing.Point(14, 26);
-            this.btnTaskScheduler.Name = "btnTaskScheduler";
-            this.btnTaskScheduler.Size = new System.Drawing.Size(140, 30);
-            this.btnTaskScheduler.TabIndex = 0;
-            this.btnTaskScheduler.Text = "Task Scheduler";
-            this.btnTaskScheduler.UseVisualStyleBackColor = true;
-            this.btnTaskScheduler.Click += new System.EventHandler(this.btnTaskScheduler_Click);
+            btnTaskScheduler.Location = new Point(14, 26);
+            btnTaskScheduler.Name = "btnTaskScheduler";
+            btnTaskScheduler.Size = new Size(140, 30);
+            btnTaskScheduler.TabIndex = 0;
+            btnTaskScheduler.Text = "Task Scheduler";
+            btnTaskScheduler.UseVisualStyleBackColor = true;
+            btnTaskScheduler.Click += btnTaskScheduler_Click;
             // 
             // grpProcesses
             // 
-            this.grpProcesses.Controls.Add(this.btnRemoveClosed);
-            this.grpProcesses.Controls.Add(this.btnKillTool);
-            this.grpProcesses.Controls.Add(this.btnCloseTool);
-            this.grpProcesses.Controls.Add(this.listViewProcesses);
-            this.grpProcesses.Location = new System.Drawing.Point(12, 308);
-            this.grpProcesses.Name = "grpProcesses";
-            this.grpProcesses.Size = new System.Drawing.Size(615, 179);
-            this.grpProcesses.TabIndex = 2;
-            this.grpProcesses.TabStop = false;
-            this.grpProcesses.Text = "Launched Tools";
+            grpProcesses.Controls.Add(btnRemoveClosed);
+            grpProcesses.Controls.Add(btnKillTool);
+            grpProcesses.Controls.Add(btnCloseTool);
+            grpProcesses.Controls.Add(listViewProcesses);
+            grpProcesses.Location = new Point(12, 308);
+            grpProcesses.Name = "grpProcesses";
+            grpProcesses.Size = new Size(615, 179);
+            grpProcesses.TabIndex = 2;
+            grpProcesses.TabStop = false;
+            grpProcesses.Text = "Launched Tools";
             // 
             // btnRemoveClosed
             // 
-            this.btnRemoveClosed.Location = new System.Drawing.Point(241, 142);
-            this.btnRemoveClosed.Name = "btnRemoveClosed";
-            this.btnRemoveClosed.Size = new System.Drawing.Size(84, 30);
-            this.btnRemoveClosed.TabIndex = 3;
-            this.btnRemoveClosed.Text = "Clear Closed";
-            this.btnRemoveClosed.UseVisualStyleBackColor = true;
-            this.btnRemoveClosed.Click += new System.EventHandler(this.btnRemoveClosed_Click);
+            btnRemoveClosed.Location = new Point(241, 142);
+            btnRemoveClosed.Name = "btnRemoveClosed";
+            btnRemoveClosed.Size = new Size(84, 30);
+            btnRemoveClosed.TabIndex = 3;
+            btnRemoveClosed.Text = "Clear Closed";
+            btnRemoveClosed.UseVisualStyleBackColor = true;
+            btnRemoveClosed.Click += btnRemoveClosed_Click;
             // 
             // btnKillTool
             // 
-            this.btnKillTool.Location = new System.Drawing.Point(130, 142);
-            this.btnKillTool.Name = "btnKillTool";
-            this.btnKillTool.Size = new System.Drawing.Size(105, 30);
-            this.btnKillTool.TabIndex = 2;
-            this.btnKillTool.Text = "End Task (force)";
-            this.btnKillTool.UseVisualStyleBackColor = true;
-            this.btnKillTool.Click += new System.EventHandler(this.btnKillTool_Click);
+            btnKillTool.Location = new Point(130, 142);
+            btnKillTool.Name = "btnKillTool";
+            btnKillTool.Size = new Size(105, 30);
+            btnKillTool.TabIndex = 2;
+            btnKillTool.Text = "End Task (force)";
+            btnKillTool.UseVisualStyleBackColor = true;
+            btnKillTool.Click += btnKillTool_Click;
             // 
             // btnCloseTool
             // 
-            this.btnCloseTool.Location = new System.Drawing.Point(14, 142);
-            this.btnCloseTool.Name = "btnCloseTool";
-            this.btnCloseTool.Size = new System.Drawing.Size(110, 30);
-            this.btnCloseTool.TabIndex = 1;
-            this.btnCloseTool.Text = "Close Selected";
-            this.btnCloseTool.UseVisualStyleBackColor = true;
-            this.btnCloseTool.Click += new System.EventHandler(this.btnCloseTool_Click);
+            btnCloseTool.Location = new Point(14, 142);
+            btnCloseTool.Name = "btnCloseTool";
+            btnCloseTool.Size = new Size(110, 30);
+            btnCloseTool.TabIndex = 1;
+            btnCloseTool.Text = "Close Selected";
+            btnCloseTool.UseVisualStyleBackColor = true;
+            btnCloseTool.Click += btnCloseTool_Click;
             // 
             // listViewProcesses
             // 
-            this.listViewProcesses.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.colTool,
-            this.colPid,
-            this.colStarted,
-            this.colStatus});
-            this.listViewProcesses.FullRowSelect = true;
-            this.listViewProcesses.GridLines = true;
-            this.listViewProcesses.HideSelection = false;
-            this.listViewProcesses.Location = new System.Drawing.Point(14, 26);
-            this.listViewProcesses.MultiSelect = false;
-            this.listViewProcesses.Name = "listViewProcesses";
-            this.listViewProcesses.Size = new System.Drawing.Size(584, 110);
-            this.listViewProcesses.TabIndex = 0;
-            this.listViewProcesses.UseCompatibleStateImageBehavior = false;
-            this.listViewProcesses.View = System.Windows.Forms.View.Details;
+            listViewProcesses.Columns.AddRange(new ColumnHeader[] { colTool, colPid, colStarted, colStatus });
+            listViewProcesses.FullRowSelect = true;
+            listViewProcesses.GridLines = true;
+            listViewProcesses.Location = new Point(14, 26);
+            listViewProcesses.MultiSelect = false;
+            listViewProcesses.Name = "listViewProcesses";
+            listViewProcesses.Size = new Size(584, 110);
+            listViewProcesses.TabIndex = 0;
+            listViewProcesses.UseCompatibleStateImageBehavior = false;
+            listViewProcesses.View = View.Details;
             // 
             // colTool
             // 
-            this.colTool.Text = "Tool";
-            this.colTool.Width = 200;
+            colTool.Text = "Tool";
+            colTool.Width = 200;
             // 
             // colPid
             // 
-            this.colPid.Text = "PID";
-            this.colPid.Width = 80;
+            colPid.Text = "PID";
+            colPid.Width = 80;
             // 
             // colStarted
             // 
-            this.colStarted.Text = "Started";
-            this.colStarted.Width = 100;
+            colStarted.Text = "Started";
+            colStarted.Width = 100;
             // 
             // colStatus
             // 
-            this.colStatus.Text = "Status";
-            this.colStatus.Width = 557;
+            colStatus.Text = "Status";
+            colStatus.Width = 557;
             // 
             // Email_Settings_Button
             // 
-            this.Email_Settings_Button.Location = new System.Drawing.Point(642, 93);
-            this.Email_Settings_Button.Name = "Email_Settings_Button";
-            this.Email_Settings_Button.Size = new System.Drawing.Size(77, 47);
-            this.Email_Settings_Button.TabIndex = 7;
-            this.Email_Settings_Button.Text = "Email Settings";
-            this.Email_Settings_Button.UseVisualStyleBackColor = true;
-            this.Email_Settings_Button.Click += new System.EventHandler(this.Email_Settings_Button_Click);
+            Email_Settings_Button.Location = new Point(642, 93);
+            Email_Settings_Button.Name = "Email_Settings_Button";
+            Email_Settings_Button.Size = new Size(77, 47);
+            Email_Settings_Button.TabIndex = 7;
+            Email_Settings_Button.Text = "Email Settings";
+            Email_Settings_Button.UseVisualStyleBackColor = true;
+            Email_Settings_Button.Click += Email_Settings_Button_Click;
             // 
             // Email_Log_Button
             // 
-            this.Email_Log_Button.Location = new System.Drawing.Point(642, 146);
-            this.Email_Log_Button.Name = "Email_Log_Button";
-            this.Email_Log_Button.Size = new System.Drawing.Size(77, 49);
-            this.Email_Log_Button.TabIndex = 6;
-            this.Email_Log_Button.Text = "Email Log";
-            this.Email_Log_Button.UseVisualStyleBackColor = true;
-            this.Email_Log_Button.Click += new System.EventHandler(this.Email_Log_Button_Click);
+            Email_Log_Button.Location = new Point(642, 146);
+            Email_Log_Button.Name = "Email_Log_Button";
+            Email_Log_Button.Size = new Size(77, 49);
+            Email_Log_Button.TabIndex = 6;
+            Email_Log_Button.Text = "Email Log";
+            Email_Log_Button.UseVisualStyleBackColor = true;
+            Email_Log_Button.Click += Email_Log_Button_Click;
             // 
             // Enable_Registry_Backup_Button
             // 
-            this.Enable_Registry_Backup_Button.Location = new System.Drawing.Point(446, 23);
-            this.Enable_Registry_Backup_Button.Name = "Enable_Registry_Backup_Button";
-            this.Enable_Registry_Backup_Button.Size = new System.Drawing.Size(76, 45);
-            this.Enable_Registry_Backup_Button.TabIndex = 12;
-            this.Enable_Registry_Backup_Button.Text = "Registery Operations";
-            this.Enable_Registry_Backup_Button.UseVisualStyleBackColor = true;
-            this.Enable_Registry_Backup_Button.Click += new System.EventHandler(this.Enable_Registry_Backup_Button_Click);
+            Enable_Registry_Backup_Button.Location = new Point(446, 23);
+            Enable_Registry_Backup_Button.Name = "Enable_Registry_Backup_Button";
+            Enable_Registry_Backup_Button.Size = new Size(76, 59);
+            Enable_Registry_Backup_Button.TabIndex = 12;
+            Enable_Registry_Backup_Button.Text = "Registery Operations";
+            Enable_Registry_Backup_Button.UseVisualStyleBackColor = true;
+            Enable_Registry_Backup_Button.Click += Enable_Registry_Backup_Button_Click;
             // 
             // Restore_Points_Button
             // 
-            this.Restore_Points_Button.Location = new System.Drawing.Point(363, 23);
-            this.Restore_Points_Button.Name = "Restore_Points_Button";
-            this.Restore_Points_Button.Size = new System.Drawing.Size(77, 45);
-            this.Restore_Points_Button.TabIndex = 11;
-            this.Restore_Points_Button.Text = "Restore Points";
-            this.Restore_Points_Button.UseVisualStyleBackColor = true;
-            this.Restore_Points_Button.Click += new System.EventHandler(this.Restore_Points_Button_Click);
+            Restore_Points_Button.Location = new Point(363, 23);
+            Restore_Points_Button.Name = "Restore_Points_Button";
+            Restore_Points_Button.Size = new Size(77, 59);
+            Restore_Points_Button.TabIndex = 11;
+            Restore_Points_Button.Text = "Restore Point Operations";
+            Restore_Points_Button.UseVisualStyleBackColor = true;
+            Restore_Points_Button.Click += Restore_Points_Button_Click;
             // 
             // statusStrip
             // 
-            this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusLabel});
-            this.statusStrip.Location = new System.Drawing.Point(0, 507);
-            this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(732, 22);
-            this.statusStrip.TabIndex = 4;
+            statusStrip.Items.AddRange(new ToolStripItem[] { statusLabel });
+            statusStrip.Location = new Point(0, 507);
+            statusStrip.Name = "statusStrip";
+            statusStrip.Size = new Size(732, 22);
+            statusStrip.TabIndex = 4;
             // 
             // statusLabel
             // 
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(39, 17);
-            this.statusLabel.Text = "Ready";
+            statusLabel.Name = "statusLabel";
+            statusLabel.Size = new Size(39, 17);
+            statusLabel.Text = "Ready";
             // 
             // timerStatus
             // 
-            this.timerStatus.Enabled = true;
-            this.timerStatus.Interval = 3000;
-            this.timerStatus.Tick += new System.EventHandler(this.timerStatus_Tick);
+            timerStatus.Enabled = true;
+            timerStatus.Interval = 3000;
+            timerStatus.Tick += timerStatus_Tick;
             // 
             // Snapshot_Operations_Button
             // 
-            this.Snapshot_Operations_Button.Location = new System.Drawing.Point(532, 23);
-            this.Snapshot_Operations_Button.Name = "Snapshot_Operations_Button";
-            this.Snapshot_Operations_Button.Size = new System.Drawing.Size(76, 45);
-            this.Snapshot_Operations_Button.TabIndex = 13;
-            this.Snapshot_Operations_Button.Text = "Snapshot Operations";
-            this.Snapshot_Operations_Button.UseVisualStyleBackColor = true;
-            this.Snapshot_Operations_Button.Click += new System.EventHandler(this.Snapshot_Operations_Button_Click);
+            Snapshot_Operations_Button.Location = new Point(532, 23);
+            Snapshot_Operations_Button.Name = "Snapshot_Operations_Button";
+            Snapshot_Operations_Button.Size = new Size(76, 59);
+            Snapshot_Operations_Button.TabIndex = 13;
+            Snapshot_Operations_Button.Text = "Snapshot Operations";
+            Snapshot_Operations_Button.UseVisualStyleBackColor = true;
+            Snapshot_Operations_Button.Click += Snapshot_Operations_Button_Click;
             // 
             // Help_Button
             // 
-            this.Help_Button.Location = new System.Drawing.Point(642, 423);
-            this.Help_Button.Name = "Help_Button";
-            this.Help_Button.Size = new System.Drawing.Size(77, 30);
-            this.Help_Button.TabIndex = 16;
-            this.Help_Button.Text = "Help";
-            this.Help_Button.UseVisualStyleBackColor = true;
-            this.Help_Button.Click += new System.EventHandler(this.Help_Button_Click);
+            Help_Button.Location = new Point(642, 423);
+            Help_Button.Name = "Help_Button";
+            Help_Button.Size = new Size(77, 30);
+            Help_Button.TabIndex = 16;
+            Help_Button.Text = "Help";
+            Help_Button.UseVisualStyleBackColor = true;
+            Help_Button.Click += Help_Button_Click;
             // 
             // View_Log_Button
             // 
-            this.View_Log_Button.Location = new System.Drawing.Point(642, 387);
-            this.View_Log_Button.Name = "View_Log_Button";
-            this.View_Log_Button.Size = new System.Drawing.Size(77, 30);
-            this.View_Log_Button.TabIndex = 15;
-            this.View_Log_Button.Text = "View Log";
-            this.View_Log_Button.UseVisualStyleBackColor = true;
-            this.View_Log_Button.Click += new System.EventHandler(this.View_Log_Button_Click);
+            View_Log_Button.Location = new Point(642, 387);
+            View_Log_Button.Name = "View_Log_Button";
+            View_Log_Button.Size = new Size(77, 30);
+            View_Log_Button.TabIndex = 15;
+            View_Log_Button.Text = "View Log";
+            View_Log_Button.UseVisualStyleBackColor = true;
+            View_Log_Button.Click += View_Log_Button_Click;
             // 
             // Quit_Button
             // 
-            this.Quit_Button.Location = new System.Drawing.Point(642, 459);
-            this.Quit_Button.Name = "Quit_Button";
-            this.Quit_Button.Size = new System.Drawing.Size(77, 30);
-            this.Quit_Button.TabIndex = 14;
-            this.Quit_Button.Text = "Quit";
-            this.Quit_Button.UseVisualStyleBackColor = true;
-            this.Quit_Button.Click += new System.EventHandler(this.Quit_Button_Click);
+            Quit_Button.Location = new Point(642, 459);
+            Quit_Button.Name = "Quit_Button";
+            Quit_Button.Size = new Size(77, 30);
+            Quit_Button.TabIndex = 14;
+            Quit_Button.Text = "Quit";
+            Quit_Button.UseVisualStyleBackColor = true;
+            Quit_Button.Click += Quit_Button_Click;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(732, 529);
-            this.Controls.Add(this.Help_Button);
-            this.Controls.Add(this.View_Log_Button);
-            this.Controls.Add(this.Quit_Button);
-            this.Controls.Add(this.Snapshot_Operations_Button);
-            this.Controls.Add(this.Email_Log_Button);
-            this.Controls.Add(this.Email_Settings_Button);
-            this.Controls.Add(this.Enable_Registry_Backup_Button);
-            this.Controls.Add(this.Restore_Points_Button);
-            this.Controls.Add(this.statusStrip);
-            this.Controls.Add(this.grpProcesses);
-            this.Controls.Add(this.grpTools);
-            this.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.Name = "MainForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Admin Toolkit";
-            this.Load += new System.EventHandler(this.MainForm_Load);
-            this.grpTools.ResumeLayout(false);
-            this.grpProcesses.ResumeLayout(false);
-            this.statusStrip.ResumeLayout(false);
-            this.statusStrip.PerformLayout();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(732, 529);
+            Controls.Add(Help_Button);
+            Controls.Add(View_Log_Button);
+            Controls.Add(Quit_Button);
+            Controls.Add(Snapshot_Operations_Button);
+            Controls.Add(Email_Log_Button);
+            Controls.Add(Email_Settings_Button);
+            Controls.Add(Enable_Registry_Backup_Button);
+            Controls.Add(Restore_Points_Button);
+            Controls.Add(statusStrip);
+            Controls.Add(grpProcesses);
+            Controls.Add(grpTools);
+            Font = new Font("Segoe UI", 9F);
+            Name = "MainForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Admin Toolkit";
+            Load += MainForm_Load;
+            grpTools.ResumeLayout(false);
+            grpProcesses.ResumeLayout(false);
+            statusStrip.ResumeLayout(false);
+            statusStrip.PerformLayout();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

@@ -1,128 +1,18 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7F3B2C41-9A5D-4E8F-B1C6-3D2E4F5A6B7C}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
-    <RootNamespace>Admin_Tools</RootNamespace>
-    <AssemblyName>AdminToolkit</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>x64</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.CodeDom, Version=10.0.0.9, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.CodeDom.10.0.9\lib\net462\System.CodeDom.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Restore_Point_Delete.cs" />
-    <Compile Include="Snapshot_Delete_Manager.cs" />
-    <Compile Include="Registry_Backup_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Registry_Backup_Form.Designer.cs">
-      <DependentUpon>Registry_Backup_Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Restore_Point_List_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DriveSelectDialog.cs" />
-    <Compile Include="HelpDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Dpapi.cs" />
-    <Compile Include="Emailer.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MainForm.Shadow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OutputForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="OutputForm.Designer.cs">
-      <DependentUpon>OutputForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="PasswordBox.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Restore_Point_List_Form.Designer.cs">
-      <DependentUpon>Restore_Point_List_Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Restore_Point_Manager_CS73.cs" />
-    <Compile Include="Shadow_Copy_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Shadow_Copy_Form.Designer.cs">
-      <DependentUpon>Shadow_Copy_Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Storage_Reclaim_Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Storage_Reclaim_Form.Designer.cs">
-      <DependentUpon>Storage_Reclaim_Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Storage_Reclaim_Form.cs" />
-    <Compile Include="Storage_Reclaim_Form.Designer.cs">
-      <DependentUpon>Storage_Reclaim_Form.cs</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="OutputForm.resx">
-      <DependentUpon>OutputForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Restore_Point_List_Form.resx">
-      <DependentUpon>Restore_Point_List_Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Shadow_Copy_Form.resx">
-      <DependentUpon>Shadow_Copy_Form.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.manifest" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net10.0-windows</TargetFramework>
+        <UseWindowsForms>true</UseWindowsForms>
+        <RootNamespace>Admin_Tools</RootNamespace>
+        <AssemblyName>AdminToolkit</AssemblyName>
+        <PlatformTarget>x64</PlatformTarget>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Management" Version="10.0.*" />
+    </ItemGroup>
+
 </Project>

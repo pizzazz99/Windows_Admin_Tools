@@ -1,26 +1,38 @@
 ﻿// ============================================================
-//  Restore_Point_List_Form.cs   (C# 7.3 / .NET Framework)
+//  Restore_Point_List_Form.cs   (.NET 10 / WinForms)
 //  Designer-based version. Pairs with
 //  Restore_Point_List_Form.Designer.cs — all controls live
 //  there; this file is logic only.
 //
-//  Usage from MainForm:
-//      using (var f = new Restore_Point_List_Form())
-//          f.ShowDialog(this);
+//  Usage from MainForm (modeless):
+//      var f = new Restore_Point_List_Form();
+//      f.Show(this);
 // ============================================================
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Management;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 namespace Admin_Tools
 {
     public partial class Restore_Point_List_Form : Form
     {
         private List<Restore_Point_Info> _points = new List<Restore_Point_Info>();
+
+        // DisplayName -> InstallDate (day precision), read once per Load_Points
+        private List<KeyValuePair<string, DateTime>> _installedPrograms =
+            new List<KeyValuePair<string, DateTime>>();
+
+        // Symlinks created by "Browse Files" — removed when the form closes
+        private readonly List<string> _snapshotLinks = new List<string>();
 
         public Restore_Point_List_Form()
         {
@@ -41,6 +53,8 @@ namespace Admin_Tools
 
                 // Manager returns newest-first; flip to oldest-first
                 _points.Reverse();
+
+                _installedPrograms = Load_Installed_Programs();
 
                 lvPoints.BeginUpdate();
                 lvPoints.Items.Clear();
@@ -77,8 +91,10 @@ namespace Admin_Tools
                     : _points.Count + " restore point(s)   |   oldest: "
                         + _points[0].Creation_Time.ToString("yyyy-MM-dd HH:mm")
                         + "   |   newest: "
-                        + _points[_points.Count - 1].Creation_Time.ToString("yyyy-MM-dd HH:mm");
+                        + _points[_points.Count - 1].Creation_Time.ToString("yyyy-MM-dd HH:mm")
+                        + Deleted_Summary_Text();
 
+                Update_Status_Line();
                 Clear_Details();
 
                 // Auto-select newest (last row) so details aren't empty
@@ -146,7 +162,17 @@ namespace Admin_Tools
                                    "while the restore point metadata remains.";
             }
 
-            txtNotes.Text = Type_Hint(rp.Restore_Point_Type);
+            // Notes: type hint + gap info + what restoring would remove
+            var sb = new StringBuilder();
+            sb.AppendLine(Type_Hint(rp.Restore_Point_Type));
+
+            string gap = Gap_Text(rp);
+            if (gap.Length > 0) sb.AppendLine(gap);
+
+            string removed = Installed_After_Text(rp);
+            if (removed.Length > 0) sb.AppendLine(removed);
+
+            txtNotes.Text = sb.ToString().TrimEnd();
         }
 
         private static string Type_Hint(uint t)
@@ -169,6 +195,234 @@ namespace Admin_Tools
                 case 14: return "Created by a backup/recovery operation.";
                 default: return "No additional notes for this type.";
             }
+        }
+
+        // --------------------------------------------------------
+        //  Extra data: gaps, installed-after, status line
+        // --------------------------------------------------------
+
+        /// <summary>Note when sequence numbers immediately before the
+        /// selected point are missing (they were deleted or aged out —
+        /// Windows never reuses sequence numbers).</summary>
+        private string Gap_Text(Restore_Point_Info rp)
+        {
+            int idx = _points.IndexOf(rp);
+            if (idx <= 0) return "";
+
+            uint prev = _points[idx - 1].Sequence_Number;
+            uint cur = rp.Sequence_Number;
+            if (cur - prev <= 1) return "";
+
+            uint missing = cur - prev - 1;
+            return missing == 1
+                ? "Gap: point #" + (prev + 1) + " no longer exists (deleted or aged out)."
+                : "Gap: points #" + (prev + 1) + " through #" + (cur - 1) + " (" + missing +
+                  " total) no longer exist (deleted or aged out).";
+        }
+
+        private string Deleted_Summary_Text()
+        {
+            uint missing = 0;
+            for (int i = 1; i < _points.Count; i++)
+                missing += _points[i].Sequence_Number - _points[i - 1].Sequence_Number - 1;
+
+            return missing == 0 ? "" : "   |   " + missing + " deleted in this range";
+        }
+
+        /// <summary>Programs whose registry InstallDate is on/after the
+        /// point's date — i.e. what a rollback to this point would remove.
+        /// InstallDate is day-granular and some installers omit it, so
+        /// this is best-effort.</summary>
+        private string Installed_After_Text(Restore_Point_Info rp)
+        {
+            if (_installedPrograms.Count == 0) return "";
+
+            var after = _installedPrograms
+                .Where(p => p.Value.Date >= rp.Creation_Time.Date)
+                .OrderBy(p => p.Value)
+                .ToList();
+
+            if (after.Count == 0)
+                return "Restoring to this point would remove no currently installed programs " +
+                       "(per registry install dates).";
+
+            const int maxShown = 12;
+            var sb = new StringBuilder();
+            sb.Append("Restoring to this point would remove (installed on/after its date, day precision): ");
+            sb.Append(string.Join(", ", after.Take(maxShown).Select(p => p.Key)));
+            if (after.Count > maxShown)
+                sb.Append(", and " + (after.Count - maxShown) + " more");
+            sb.Append(".");
+            return sb.ToString();
+        }
+
+        private static List<KeyValuePair<string, DateTime>> Load_Installed_Programs()
+        {
+            var result = new List<KeyValuePair<string, DateTime>>();
+            try
+            {
+                Read_Uninstall_Key(Registry.LocalMachine,
+                    @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", result);
+                Read_Uninstall_Key(Registry.LocalMachine,
+                    @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall", result);
+                Read_Uninstall_Key(Registry.CurrentUser,
+                    @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", result);
+            }
+            catch
+            {
+                // best-effort; an unreadable hive just means a shorter list
+            }
+            return result;
+        }
+
+        private static void Read_Uninstall_Key(RegistryKey root, string path,
+            List<KeyValuePair<string, DateTime>> result)
+        {
+            using (var key = root.OpenSubKey(path))
+            {
+                if (key == null) return;
+
+                foreach (var subName in key.GetSubKeyNames())
+                {
+                    using (var app = key.OpenSubKey(subName))
+                    {
+                        var name = app?.GetValue("DisplayName") as string;
+                        var dateStr = app?.GetValue("InstallDate") as string;
+                        if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(dateStr))
+                            continue;
+
+                        if (DateTime.TryParseExact(dateStr, "yyyyMMdd",
+                                CultureInfo.InvariantCulture, DateTimeStyles.None,
+                                out DateTime installed))
+                        {
+                            result.Add(new KeyValuePair<string, DateTime>(name, installed));
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>Second header line: protection / throttle / shadow storage.</summary>
+        private void Update_Status_Line()
+        {
+            string protection = Restore_Point_Creator.Is_System_Restore_Enabled()
+                ? "On" : "OFF";
+
+            int freq = Restore_Point_Creator.Get_Creation_Frequency_Minutes();
+            string throttle = freq == 0
+                ? "disabled (every request honored)"
+                : (freq / 60.0).ToString("0.#") + " hour window";
+
+            lblStatus.Text = "Protection: " + protection
+                + "   |   Creation throttle: " + throttle
+                + "   |   " + Get_Shadow_Storage_Summary();
+        }
+
+        private static string Get_Shadow_Storage_Summary()
+        {
+            try
+            {
+                var scope = new ManagementScope(@"\\.\root\cimv2");
+                scope.Connect();
+
+                ulong used = 0, max = 0;
+                bool found = false, unbounded = false;
+
+                using (var searcher = new ManagementObjectSearcher(
+                    scope, new ObjectQuery("SELECT UsedSpace, MaxSpace FROM Win32_ShadowStorage")))
+                {
+                    foreach (ManagementObject mo in searcher.Get())
+                    {
+                        found = true;
+                        used += (ulong)mo["UsedSpace"];
+
+                        ulong m = (ulong)mo["MaxSpace"];
+                        if (m == ulong.MaxValue) unbounded = true;
+                        else max += m;
+                    }
+                }
+
+                if (!found) return "Shadow storage: none allocated";
+
+                string maxText = unbounded ? "unbounded" : Format_GB(max);
+                return "Shadow storage: " + Format_GB(used) + " used / " + maxText + " max";
+            }
+            catch
+            {
+                return "Shadow storage: unavailable";
+            }
+        }
+
+        private static string Format_GB(ulong bytes)
+        {
+            return (bytes / 1073741824.0).ToString("0.0") + " GB";
+        }
+
+        // --------------------------------------------------------
+        //  Browse the snapshot's file system (read-only)
+        // --------------------------------------------------------
+        private void Btn_Browse_Click(object sender, EventArgs e)
+        {
+            if (lvPoints.SelectedItems.Count == 0)
+            {
+                MessageBox.Show(this, "Select a restore point first.",
+                    "Browse Snapshot", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var rp = lvPoints.SelectedItems[0].Tag as Restore_Point_Info;
+            if (rp == null) return;
+
+            if (rp.Linked_Device == null)
+            {
+                MessageBox.Show(this,
+                    "This restore point has no linked shadow copy, so there is " +
+                    "no snapshot file system to browse.",
+                    "Browse Snapshot", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string linkPath = Path.Combine(Path.GetTempPath(),
+                "RestorePoint_" + rp.Sequence_Number);
+
+            try
+            {
+                if (!Directory.Exists(linkPath))
+                {
+                    // Target must end with a backslash or the link won't browse.
+                    Directory.CreateSymbolicLink(linkPath, rp.Linked_Device + @"\");
+                    _snapshotLinks.Add(linkPath);
+                }
+
+                Process.Start("explorer.exe", linkPath);
+                lblSummary.Text = "Snapshot #" + rp.Sequence_Number +
+                    " mounted read-only at " + linkPath +
+                    " — the link is removed when this window closes.";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, "Could not mount the snapshot:\n" + ex.Message,
+                    "Browse Snapshot", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            // Remove any snapshot symlinks we created. Deleting a directory
+            // symlink removes only the link, never the snapshot behind it.
+            foreach (var link in _snapshotLinks)
+            {
+                try
+                {
+                    if (Directory.Exists(link))
+                        Directory.Delete(link, false);
+                }
+                catch
+                {
+                    // stale link in %TEMP% is harmless; ignore
+                }
+            }
+            base.OnFormClosed(e);
         }
 
         // --------------------------------------------------------
@@ -195,6 +449,7 @@ namespace Admin_Tools
             sb.AppendLine("Shadow ID     : " + txtShadowId.Text);
             sb.AppendLine("Device        : " + txtDevice.Text);
             sb.AppendLine("Notes         : " + txtNotes.Text);
+            sb.AppendLine("Status        : " + lblStatus.Text);
 
             Clipboard.SetText(sb.ToString());
             lblSummary.Text = "Details copied to clipboard.";
@@ -205,50 +460,14 @@ namespace Admin_Tools
             Close();
         }
 
-        private void Delete_Button_Click(object sender, EventArgs e)
+        private void Create_Restore_Point_Button_Click(object sender, EventArgs e)
         {
-            if (lvPoints.SelectedItems.Count == 0)
-            {
-                MessageBox.Show("Select one or more restore points first "
-                    + "(Ctrl+click / Shift+click for multiple).",
-                    "Delete Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
+            Create_Button_Click(sender, e);
+        }
 
-            var seqs = new List<uint>();
-            var names = new StringBuilder();
-
-            foreach (ListViewItem item in lvPoints.SelectedItems)
-            {
-                var rp = item.Tag as Restore_Point_Info;
-                if (rp == null) continue;
-                seqs.Add(rp.Sequence_Number);
-                names.AppendLine("  #" + rp.Sequence_Number + "  " + rp.Description);
-            }
-
-            var answer = MessageBox.Show(
-                "Permanently delete " + seqs.Count + " restore point(s)?\n\n" + names +
-                "\nThis also deletes each point's underlying shadow copy.\n" +
-                "There is NO undo — you cannot restore the system to these\n" +
-                "points afterward.",
-                "Delete Restore Points", MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-
-            if (answer != DialogResult.Yes) return;
-
-            Cursor = Cursors.WaitCursor;
-            int deleted, failed;
-            List<string> errors;
-            Restore_Point_Delete.Delete_Many(seqs, out deleted, out failed, out errors);
-            Cursor = Cursors.Default;
-
-            string msg = deleted + " deleted, " + failed + " failed.";
-            if (errors.Count > 0) msg += "\n\n" + string.Join("\n", errors.ToArray());
-
-            MessageBox.Show(msg, "Delete Restore Points", MessageBoxButtons.OK,
-                failed == 0 ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
-
-            Load_Points();
+        private void Delete_Selected_Restore_Point_Button_Click(object sender, EventArgs e)
+        {
+            Delete_Selected_Button_Click(sender, e);
         }
     }
 }
