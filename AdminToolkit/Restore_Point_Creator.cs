@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using System.Linq;
 
 namespace Admin_Tools
 {
@@ -42,13 +43,22 @@ namespace Admin_Tools
 
                     var outParams = sysRestore.InvokeMethod("CreateRestorePoint", inParams, null);
                     uint result = (uint)outParams["ReturnValue"];
-
                     if (result != 0)
                     {
                         error = "CreateRestorePoint returned " + result +
                                 (result == 1058 ? " (System Restore service is disabled)" : "");
                         return false;
                     }
+
+                    // Close the change window (END_SYSTEM_CHANGE). Without this, Windows
+                    // silently suppresses all further restore point creation from this
+                    // process until it exits.
+                    var endParams = sysRestore.GetMethodParameters("CreateRestorePoint");
+                    endParams["Description"] = description;
+                    endParams["RestorePointType"] = 12;
+                    endParams["EventType"] = 101;   // END_SYSTEM_CHANGE
+                    sysRestore.InvokeMethod("CreateRestorePoint", endParams, null);
+
                     return true;
                 }
             }
@@ -171,6 +181,43 @@ namespace Admin_Tools
                 return key?.GetValue("RPSessionInterval") is int interval && interval > 0;
             }
         }
+
+
+        /// <summary>Raw registry value: null when the value is absent
+        /// (meaning Windows' 24-hour default applies).</summary>
+        public static int? Get_Creation_Frequency_Raw()
+        {
+            using (var key = Registry.LocalMachine.OpenSubKey(Sr_Registry_Key))
+            {
+                return key?.GetValue("SystemRestorePointCreationFrequency") as int?;
+            }
+        }
+
+        /// <summary>Sets the throttle value. Pass null to delete the value,
+        /// restoring Windows' 24-hour default.</summary>
+        public static bool Set_Creation_Frequency(int? minutes, out string error)
+        {
+            error = null;
+            try
+            {
+                using (var key = Registry.LocalMachine.CreateSubKey(Sr_Registry_Key, writable: true))
+                {
+                    if (minutes.HasValue)
+                        key.SetValue("SystemRestorePointCreationFrequency",
+                            minutes.Value, RegistryValueKind.DWord);
+                    else
+                        key.DeleteValue("SystemRestorePointCreationFrequency",
+                            throwOnMissingValue: false);
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                error = ex.Message;
+                return false;
+            }
+        }
+
     }
 
     /// <summary>
@@ -203,57 +250,84 @@ namespace Admin_Tools
                 }
             }
 
-            // 2. Predict the 24-hour throttle and offer to disable it.
-            int frequencyMinutes = Restore_Point_Creator.Get_Creation_Frequency_Minutes();
-            DateTime? newest = Restore_Point_Creator.Get_Newest_Creation_Time();
-
-            if (frequencyMinutes > 0 && newest.HasValue &&
-                DateTime.Now - newest.Value < TimeSpan.FromMinutes(frequencyMinutes))
-            {
-                TimeSpan age = DateTime.Now - newest.Value;
-                var answer = MessageBox.Show(this,
-                    "The newest restore point is only " + age.TotalHours.ToString("0.0") +
-                    " hours old. Windows will silently skip creating a new one inside its " +
-                    (frequencyMinutes / 60.0).ToString("0.#") + "-hour throttle window.\n\n" +
-                    "Disable the throttle so restore points are always created?\n" +
-                    "(Sets SystemRestorePointCreationFrequency = 0 in the registry.)\n\n" +
-                    "Yes = disable throttle and create\n" +
-                    "No = try anyway (likely skipped)\n" +
-                    "Cancel = do nothing",
-                    "Creation Throttle Active",
-                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-
-                if (answer == DialogResult.Cancel)
-                    return;
-
-                if (answer == DialogResult.Yes &&
-                    !Restore_Point_Creator.Disable_Throttle(out string regError))
-                {
-                    MessageBox.Show(this, "Could not update the registry:\n" + regError,
-                        "Restore Points", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
-
-            // 3. Ask for a description.
+            // 2. Ask for a description.
             string description = Prompt_For_Description("AdminToolkit manual restore point");
             if (description == null)
                 return; // cancelled
 
-            // 4. Create off the UI thread. await resumes back on the UI thread,
-            //    so no BeginInvoke is needed for the updates afterward.
+            // 3. Temporarily lift the 24-hour throttle if it's active, so the
+            //    point is guaranteed to be created (Windows otherwise silently
+            //    skips creation and still reports success).
+            int? originalThrottle = null;
+            bool overridden = false;
+
+            if (Restore_Point_Creator.Get_Creation_Frequency_Minutes() != 0)
+            {
+                originalThrottle = Restore_Point_Creator.Get_Creation_Frequency_Raw();
+
+                if (!Restore_Point_Creator.Set_Creation_Frequency(0, out string regError))
+                {
+                    MessageBox.Show(this,
+                        "Could not temporarily lift the creation throttle:\n" + regError +
+                        "\n\nWindows may silently skip this restore point.",
+                        "Restore Points", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    overridden = true;
+                }
+            }
+
+            // Remember the highest sequence number BEFORE creating, so we can
+            // detect when the new point becomes visible to WMI.
+            uint maxSeqBefore = _points.Count > 0
+                ? _points.Max(p => p.Sequence_Number)
+                : 0;
+
+            // 4. Create off the UI thread, always restoring the throttle after.
             createButton.Enabled = false;
             Cursor = Cursors.WaitCursor;
 
             string error = null;
-            bool ok = await Task.Run(() =>
-                Restore_Point_Creator.Create_Restore_Point(description, out error));
+            bool ok;
+            try
+            {
+                ok = await Task.Run(() =>
+                    Restore_Point_Creator.Create_Restore_Point(description, out error));
+            }
+            finally
+            {
+                if (overridden)
+                    Restore_Point_Creator.Set_Creation_Frequency(originalThrottle, out _);
 
-            Cursor = Cursors.Default;
-            createButton.Enabled = true;
+                Cursor = Cursors.Default;
+                createButton.Enabled = true;
+            }
 
             if (ok)
             {
+                // The new point can take a few seconds to become visible to the
+                // WMI enumeration. Poll until it shows (max ~15 s), then refresh.
+                Cursor = Cursors.WaitCursor;
+                try
+                {
+                    for (int i = 0; i < 15; i++)
+                    {
+                        var check = await Task.Run(() =>
+                            Restore_Point_Manager.Get_Restore_Points());
+
+                        if (check.Count > 0 &&
+                            check.Max(p => p.Sequence_Number) > maxSeqBefore)
+                            break;
+
+                        await Task.Delay(1000);
+                    }
+                }
+                finally
+                {
+                    Cursor = Cursors.Default;
+                }
+
                 Load_Points();   // new point appears in the list
             }
             else
@@ -262,7 +336,6 @@ namespace Admin_Tools
                     "Restore Points", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void Delete_Selected_Button_Click(object sender, EventArgs e)
         {
             if (lvPoints.SelectedItems.Count == 0)

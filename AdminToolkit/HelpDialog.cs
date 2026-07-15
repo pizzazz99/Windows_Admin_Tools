@@ -53,14 +53,20 @@ namespace Admin_Tools
 
         private static void ApplyStyles(RichTextBox box)
         {
-            Color accent    = Color.FromArgb(0, 90, 158);     // section headers
+            Color accent = Color.FromArgb(0, 90, 158);     // section headers
             Color separator = Color.FromArgb(180, 180, 180);  // ==== / ---- rules
-            Color warn      = Color.FromArgb(176, 0, 32);      // caveat block
-            Color subhead   = Color.FromArgb(70, 70, 70);      // inline sub-labels
+            Color warn = Color.FromArgb(176, 0, 32);      // caveat block
+            Color subhead = Color.FromArgb(70, 70, 70);      // inline sub-labels
 
-            Font baseFont  = box.Font;
-            Font boldFont  = new Font(baseFont, FontStyle.Bold);
+            Font baseFont = box.Font;
+            Font boldFont = new Font(baseFont, FontStyle.Bold);
             Font titleFont = new Font(baseFont.FontFamily, baseFont.Size + 4f, FontStyle.Bold);
+
+            string[] subheadLabels =
+            {
+                "WHEN TO USE", "MULTI-DRIVE NOTE", "SYSTEM-DRIVE RULE",
+                "RECOVERY NOTE", "INSTALL WORKFLOW", "THE CATCH"
+            };
 
             string[] lines = box.Lines;
             bool inCaveats = false;
@@ -101,8 +107,7 @@ namespace Admin_Tools
                 {
                     box.SelectionColor = warn;
                 }
-                else if (trimmed.StartsWith("WHEN TO USE") ||
-                         trimmed.StartsWith("MULTI-DRIVE NOTE"))
+                else if (subheadLabels.Any(s => trimmed.StartsWith(s)))
                 {
                     box.SelectionFont = boldFont;
                     box.SelectionColor = subhead;
@@ -123,14 +128,22 @@ Admin Toolkit is a single-window utility for two jobs:
 
   1. Managing Volume Shadow Copies — the technology behind the
      Windows ""Previous Versions"" feature, which lets you restore
-     earlier versions of files without a full backup program.
+     earlier versions of files without a full backup program —
+     plus the System Restore points built on top of it.
 
   2. Launching the built-in Windows administrative tools from one
      place, and tracking the ones you launch.
 
 The app runs elevated (it requests administrator rights at
-startup). It needs this because querying VSS, creating snapshots,
-and enabling System Protection all require admin.
+startup). It needs this because querying VSS, creating snapshots
+and restore points, and enabling System Protection all require
+admin.
+
+Tool windows (Restore Points, Snapshot Operations, Registry
+Backups) open alongside the main window, so several can be used
+at once. Each launcher button disables while its window is open
+— a built-in ""already open"" indicator — and re-enables when the
+window closes.
 
 
 SHADOWING vs SNAPSHOTS — WHAT THE TERMS MEAN
@@ -142,6 +155,12 @@ SHADOWING vs SNAPSHOTS — WHAT THE TERMS MEAN
   A SNAPSHOT (a shadow copy) is one frozen point in time that the
   capability produces. You enable shadowing once; it then creates
   many snapshots over time.
+
+  A RESTORE POINT is a named, system-level snapshot: a shadow
+  copy plus metadata (description, type, sequence number) that
+  the System Restore wizard can roll the whole machine back to.
+  Every restore point contains a complete copy of the registry
+  and system files as of its timestamp.
 
 
 SHADOW COPIES PANEL
@@ -160,7 +179,74 @@ allowed space is in use).
     registry work) so you have a fresh restore point.
 
   VSS Details
-    Dumps raw ""vssadmin list shadows"" output for troubleshooting.
+    Shows raw ""vssadmin list shadows"" output — filtered to the
+    SELECTED snapshot (via /shadow={ID}) so it can be compared
+    side by side with the details window, or all snapshots when
+    nothing is selected.
+
+
+RESTORE POINTS (button)
+----------------------------------------------------------------
+A full manager for System Restore points, going beyond what the
+built-in System Protection dialog shows. Every point is listed
+with its sequence number, creation time, age, type, event,
+description, and whether its underlying shadow copy still exists.
+
+A status line shows System Protection state, the creation
+throttle setting, and shadow storage usage at a glance.
+
+Selecting a point fills the details pane: attribution codes with
+plain-English explanations, the linked shadow copy's ID and
+device path (matched by timestamp), and two computed extras:
+
+  * Gap detection — Windows never reuses sequence numbers, so
+    missing numbers between listed points are flagged as deleted
+    or aged-out points.
+
+  * ""What would restoring remove?"" — programs whose registry
+    install date falls on/after the point's date are listed, i.e.
+    what a rollback to that point would uninstall. Best-effort
+    (install dates are day-granular and some installers omit
+    them), but it answers the question that matters.
+
+  Create Restore Point
+    Prompts for a description, then guarantees creation. Windows
+    normally SKIPS creating a point — while still reporting
+    success — if one younger than 24 hours exists. The app lifts
+    that throttle for the duration of the single creation call
+    and restores the previous setting afterward, byte-for-byte,
+    even on failure. If System Protection is off, it offers to
+    enable it first. The list refreshes itself when the new
+    point becomes visible (creation can take a few seconds).
+
+  Delete Selected
+    Supports multi-select (Ctrl+click / Shift+click / Ctrl+A).
+    The confirmation lists exactly which points will go. Deleting
+    a point also deletes its underlying shadow copy. No undo.
+
+  Browse Files at This Point
+    Mounts the selected point's snapshot as a read-only folder
+    (a temporary symlink in %TEMP%) and opens it in Explorer —
+    the entire drive exactly as it was at that moment. Grab a
+    config file as it existed before an install, or compare old
+    vs. current. Links are removed automatically when the window
+    closes; the snapshot itself is never modified.
+
+  Refresh / Copy Details / Close
+    Refresh re-queries everything; Copy Details puts the full
+    detail text (including status and notes) on the clipboard.
+
+  INSTALL WORKFLOW: installing several apps in one session?
+  Create a point BEFORE each install (""Before VendorApp"" etc.).
+  If one app turns out bad, restore to the point just before it —
+  you land on a machine with only the good ones. Points mark the
+  state BEFORE a change, so the baseline before the first install
+  is the most important one.
+
+  RECOVERY NOTE: rolling back to a point is done with the System
+  Restore wizard (launchable from the Admin Tools panel). It
+  reverts system files, the registry, drivers, and installed
+  programs to that moment; personal documents are untouched.
 
 
 SETUP SHADOWING (button)
@@ -224,7 +310,10 @@ real Microsoft tool — nothing is reimplemented here.
                          back to an earlier restore point.
   Registry Editor ...... Direct registry editing. Use with care.
   Event Viewer ......... System/Application logs — first stop when
-                         diagnosing crashes, restarts, or VSS errors.
+                         diagnosing crashes, restarts, or VSS
+                         errors. Restore point activity is logged
+                         under Application, source ""System
+                         Restore"".
   Services ............. Start/stop/configure Windows services
                          (e.g. Volume Shadow Copy service).
   Disk Management ...... Partitions, drive letters, volume status.
@@ -317,6 +406,17 @@ IMPORTANT CAVEATS
   * Turning shadowing OFF for a drive permanently deletes all of
     that drive's existing snapshots. There is no undo.
 
+  * Deleting a restore point also deletes its underlying shadow
+    copy — and the file history that snapshot held. No undo.
+
+  * Restoring to a restore point removes programs installed after
+    it (see the ""would remove"" list in the details pane before
+    you roll back). Personal documents are untouched.
+
+  * A restore point is an UNDO for system changes, not a security
+    boundary. Persistent malware can survive a rollback. For
+    genuinely untrusted software, use a VM or sandbox instead.
+
   * When storage fills, Windows silently deletes the oldest
     snapshots to make room. A shorter history is normal, not an
     error.
@@ -325,7 +425,7 @@ IMPORTANT CAVEATS
     on the system drive as well — a rule of the Windows cmdlet,
     not this app.
 
-* RegBack backups live on the same drive as Windows itself, so
+  * RegBack backups live on the same drive as Windows itself, so
     like snapshots they protect against corruption and bad edits,
     NOT against drive failure.
 ";
