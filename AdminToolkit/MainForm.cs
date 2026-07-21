@@ -44,13 +44,40 @@ namespace Admin_Tools
         private Restore_Point_List_Form _restorePointsForm;
         private Registry_Backup_Form _registryBackupForm;
         private Shadow_Copy_Form _shadowCopyForm;
+        private static readonly Color OpenColor = Color.FromArgb(76, 175, 80);   // green = tool open
+
+        public bool Handoff_Pending;
+
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr FindWindow(string className, string windowTitle);
+
+        [DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint pid);
+
+        // --- P/Invoke, anywhere in the form class ---
+        [DllImport("user32.dll")]
+        private static extern bool EnumWindows(EnumWindowsProc callback, IntPtr lParam);
+        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+
+
+        [DllImport("user32.dll")]
+        private static extern bool IsWindowVisible(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+        private const uint WM_CLOSE = 0x0010;
+
 
         private class LaunchedTool
         {
             public string Name;
             public Process Process;
             public ListViewItem Item;
-            public Button Button;   // launcher button to re-enable on exit
+            public Button Button;
+            public bool Handoff_Pending;   // true while Track_Handoff rebinds a stub launcher
         }
 
         public MainForm()
@@ -187,18 +214,85 @@ namespace Admin_Tools
         //  SNAPSHOTS / RESTORE POINTS
         // ====================================================================
 
-       
+
 
         // drive is like "C:\\"
-      
 
-   
-       
-      
 
-    
+        /// <summary>Stub launchers (resmon -> perfmon) exit immediately while
+        /// the real UI runs in another process. Wait for the named window to
+        /// appear, then rebind this tool's tracking to the process that owns it.</summary>
+        private async void Track_Handoff(LaunchedTool tool, string windowTitle)
+        {
+            for (int i = 0; i < 25; i++)                     // up to ~5 seconds
+            {
+                IntPtr hWnd = FindWindow(null, windowTitle);
+                if (hWnd != IntPtr.Zero)
+                {
+                    GetWindowThreadProcessId(hWnd, out uint pid);
+                    try
+                    {
+                        var real = Process.GetProcessById((int)pid);
+                        real.EnableRaisingEvents = true;
 
-    
+                        tool.Process = real;
+                        tool.Item.SubItems[1].Text = real.Id.ToString();
+                        tool.Handoff_Pending = false;
+
+                        real.Exited += (s, args) =>
+                        {
+                            try
+                            {
+                                BeginInvoke(() =>
+                                {
+                                    tool.Item.SubItems[3].Text = "Closed";
+                                    ReleaseButton(tool);
+                                    statusLabel.Text = tool.Name + " closed.";
+                                });
+                            }
+                            catch { /* form closing */ }
+                        };
+                        return;
+                    }
+                    catch { /* window vanished between calls; keep polling */ }
+                }
+                await Task.Delay(200);
+            }
+
+            // Window never appeared — give up and release the button
+            tool.Handoff_Pending = false;
+            try
+            {
+                BeginInvoke(() =>
+                {
+                    tool.Item.SubItems[3].Text = "Closed";
+                    ReleaseButton(tool);
+                });
+            }
+            catch { }
+        }
+
+
+        /// <summary>Posts WM_CLOSE to every visible top-level window owned by
+        /// the process — the manual equivalent of clicking its X button.</summary>
+        private static bool Close_Tool_Windows(int pid)
+        {
+            bool posted = false;
+            EnumWindows((hWnd, lParam) =>
+            {
+                GetWindowThreadProcessId(hWnd, out uint winPid);
+                if (winPid == (uint)pid && IsWindowVisible(hWnd))
+                {
+                    PostMessage(hWnd, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+                    posted = true;
+                }
+                return true;   // keep enumerating
+            }, IntPtr.Zero);
+            return posted;
+        }
+
+
+
 
         private static string DecodeRestorePointType(object t)
         {
@@ -341,7 +435,7 @@ namespace Admin_Tools
         }
 
         private void LaunchTool(string displayName, string fileName,
-            string arguments, Button launcher)
+      string arguments, Button launcher, string windowTitle = null)
         {
             try
             {
@@ -356,11 +450,12 @@ namespace Admin_Tools
                     return;
                 }
 
-                // Lock the launcher button until the tool closes
+                // Mark the launcher as "open" — stays enabled so a second
+                // click can close the tool (see ToggleTool)
                 if (launcher != null)
                 {
-                    launcher.Enabled = false;
-                    launcher.BackColor = RunningColor;
+                    launcher.BackColor = OpenColor;
+                    launcher.UseVisualStyleBackColor = false;
                 }
 
                 p.EnableRaisingEvents = true;
@@ -373,24 +468,41 @@ namespace Admin_Tools
 
                 var tool = new LaunchedTool
                 {
-                    Name = displayName, Process = p, Item = item, Button = launcher
+                    Name = displayName,
+                    Process = p,
+                    Item = item,
+                    Button = launcher
                 };
                 _launched.Add(tool);
                 item.Tag = tool;
 
-                p.Exited += (s, args) =>
+                if (windowTitle == null)
                 {
-                    try
+                    // Normal tool: the launched process IS the tool — track
+                    // its exit directly.
+                    p.Exited += (s, args) =>
                     {
-                        BeginInvoke(() =>
+                        try
                         {
-                            tool.Item.SubItems[3].Text = "Closed";
-                            ReleaseButton(tool);
-                            statusLabel.Text = tool.Name + " closed.";
-                        });
-                    }
-                    catch { /* form closing */ }
-                };
+                            BeginInvoke(() =>
+                            {
+                                tool.Item.SubItems[3].Text = "Closed";
+                                ReleaseButton(tool);
+                                statusLabel.Text = tool.Name + " closed.";
+                            });
+                        }
+                        catch { /* form closing */ }
+                    };
+                }
+                else
+                {
+                    // Stub launcher (e.g. resmon -> perfmon): the launched
+                    // process exits immediately while the real UI runs in
+                    // another process. Ignore the stub's exit and rebind
+                    // tracking to whichever process owns the named window.
+                    tool.Handoff_Pending = true;
+                    Track_Handoff(tool, windowTitle);
+                }
 
                 statusLabel.Text = displayName + " launched (PID " + p.Id + ").";
                 Logger.Log("Launch", displayName + " (PID " + p.Id + ")");
@@ -418,6 +530,48 @@ namespace Admin_Tools
             }
         }
 
+
+
+
+        // ------------------------------------------------------------
+        //  First click launches (button goes green); second click
+        //  politely closes the tool's window.
+        // ------------------------------------------------------------
+        private void ToggleTool(string displayName, string fileName,
+      string arguments, Button launcher, string windowTitle = null)
+        {
+            var running = _launched.FirstOrDefault(t =>
+                t.Button == launcher &&
+                t.Process != null &&
+                !t.Process.HasExited);
+
+            if (running == null)
+            {
+                LaunchTool(displayName, fileName, arguments, launcher, windowTitle);
+            }
+            else
+            {
+                try
+                {
+                    running.Process.Refresh();
+
+                    bool asked = running.Process.CloseMainWindow();
+                    if (!asked)
+                        asked = Close_Tool_Windows(running.Process.Id);
+
+                    statusLabel.Text = asked
+                        ? "Closing " + running.Name + "..."
+                        : running.Name + " has no closable window — use End Task in the process list.";
+                }
+                catch (InvalidOperationException)
+                {
+                    // Process exited between the check and the close — the
+                    // Exited event will clean up momentarily.
+                }
+            }
+        }
+
+
         private static string Sys32(string file)
         {
             return Path.Combine(Environment.SystemDirectory, file);
@@ -425,72 +579,74 @@ namespace Admin_Tools
 
         private void btnTaskScheduler_Click(object sender, EventArgs e)
         {
-            LaunchTool("Task Scheduler", "mmc.exe", Sys32("taskschd.msc"), (Button)sender);
+            ToggleTool("Task Scheduler", "mmc.exe", Sys32("taskschd.msc"), (Button)sender);
         }
 
         private void btnSystemProtection_Click(object sender, EventArgs e)
         {
-            LaunchTool("System Protection", Sys32("SystemPropertiesProtection.exe"), "", (Button)sender);
+            ToggleTool("System Protection", Sys32("SystemPropertiesProtection.exe"), "", (Button)sender);
         }
+
 
         private void btnRestoreWizard_Click(object sender, EventArgs e)
         {
-            LaunchTool("System Restore Wizard", Sys32("rstrui.exe"), "", (Button)sender);
+            ToggleTool("System Restore Wizard", Sys32("rstrui.exe"), "", (Button)sender);
         }
 
         private void btnRegistryEditor_Click(object sender, EventArgs e)
         {
-            LaunchTool("Registry Editor", "regedit.exe", "", (Button)sender);
+            ToggleTool("Registry Editor", "regedit.exe", "", (Button)sender);
         }
 
         private void btnEventViewer_Click(object sender, EventArgs e)
         {
-            LaunchTool("Event Viewer", "mmc.exe", Sys32("eventvwr.msc"), (Button)sender);
+            ToggleTool("Event Viewer", "mmc.exe", Sys32("eventvwr.msc"), (Button)sender);
         }
 
         private void btnServices_Click(object sender, EventArgs e)
         {
-            LaunchTool("Services", "mmc.exe", Sys32("services.msc"), (Button)sender);
+            ToggleTool("Services", "mmc.exe", Sys32("services.msc"), (Button)sender);
         }
 
         private void btnDiskManagement_Click(object sender, EventArgs e)
         {
-            LaunchTool("Disk Management", "mmc.exe", Sys32("diskmgmt.msc"), (Button)sender);
+            ToggleTool("Disk Management", "mmc.exe", Sys32("diskmgmt.msc"), (Button)sender);
         }
 
         private void btnComputerMgmt_Click(object sender, EventArgs e)
         {
-            LaunchTool("Computer Management", "mmc.exe", Sys32("compmgmt.msc"), (Button)sender);
+            ToggleTool("Computer Management", "mmc.exe", Sys32("compmgmt.msc"), (Button)sender);
         }
 
         private void btnSystemInfo_Click(object sender, EventArgs e)
         {
-            LaunchTool("System Information", Sys32("msinfo32.exe"), "", (Button)sender);
+            ToggleTool("System Information", Sys32("msinfo32.exe"), "", (Button)sender);
         }
 
         private void btnPerfMonitor_Click(object sender, EventArgs e)
         {
-            LaunchTool("Performance Monitor", "mmc.exe", Sys32("perfmon.msc"), (Button)sender);
+            ToggleTool("Performance Monitor", "mmc.exe", Sys32("perfmon.msc"), (Button)sender);
         }
 
         private void btnResourceMonitor_Click(object sender, EventArgs e)
         {
-            LaunchTool("Resource Monitor", Sys32("resmon.exe"), "", (Button)sender);
+            ToggleTool("Resource Monitor", Sys32("resmon.exe"), "", (Button)sender,
+                "Resource Monitor");
         }
 
         private void btnDeviceManager_Click(object sender, EventArgs e)
         {
-            LaunchTool("Device Manager", "mmc.exe", Sys32("devmgmt.msc"), (Button)sender);
+            ToggleTool("Device Manager", "mmc.exe", Sys32("devmgmt.msc"), (Button)sender);
         }
 
         private void btnLocalUsers_Click(object sender, EventArgs e)
         {
-            LaunchTool("Local Users && Groups", "mmc.exe", Sys32("lusrmgr.msc"), (Button)sender);
+            ToggleTool("Local Users && Groups", "mmc.exe", Sys32("lusrmgr.msc"), (Button)sender);
         }
 
         private void btnFirewall_Click(object sender, EventArgs e)
         {
-            LaunchTool("Windows Firewall", "mmc.exe", Sys32("wf.msc"), (Button)sender);
+            ToggleTool("Windows Firewall", "mmc.exe", Sys32("wf.msc"), (Button)sender);
         }
 
         // ====================================================================
@@ -580,6 +736,8 @@ namespace Admin_Tools
         {
             foreach (LaunchedTool tool in _launched)
             {
+                if (tool.Handoff_Pending) continue;   // rebinding in progress — hands off
+
                 try
                 {
                     if (tool.Process.HasExited &&
@@ -639,7 +797,7 @@ namespace Admin_Tools
         {
             Show_Log();
 
-         
+
         }
 
         private void Email_Log_Button_Click(object sender, EventArgs e)
@@ -748,7 +906,7 @@ namespace Admin_Tools
             statusLabel.Text = "Editing email settings - save Notepad, then send again.";
         }
 
-     
+
 
 
 
@@ -787,7 +945,7 @@ namespace Admin_Tools
                 var covered = GetFixedNtfsDrives().Where(IsShadowingActive).ToList();
                 statusLabel.Text = "Shadowing active on " + string.Join(", ", covered) +
                     " — daily task covers all of them.";
-            
+
             }
             else
             {
@@ -801,14 +959,14 @@ namespace Admin_Tools
 
 
 
-     
 
-   
 
-     
+
+
+
 
         // (Re)register AutoShadowCopy to snapshot exactly these drives.
-     
+
 
         private static bool RunSchtasks(string args)
         {
@@ -827,14 +985,14 @@ namespace Admin_Tools
         }
 
 
-    
+
         private void Help_Button_Click(object sender, EventArgs e)
         {
             using (var dlg = new HelpDialog())
                 dlg.ShowDialog(this);
         }
 
-     
+
 
         private void Disable_Shadowing_Button_Click(object sender, EventArgs e)
         {
@@ -917,7 +1075,7 @@ namespace Admin_Tools
             {
                 statusLabel.Text = "Shadowing turned off on " + willDelete +
                     (survivors.Count > 0 ? " — task now covers " + string.Join(", ", survivors) + "." : " — task removed.");
-               
+
             }
             else
             {
@@ -978,6 +1136,19 @@ namespace Admin_Tools
                     _shadowCopyForm.WindowState = FormWindowState.Normal;
                 _shadowCopyForm.BringToFront();
             }
+        }
+
+        private void Admin_Commands_Button_Click(object sender, EventArgs e)
+        {
+            var f = new Commands_Form(); f.Show(this);
+        }
+
+     
+
+        private void Remote_Tools_Button_Click(object sender, EventArgs e)
+        {
+            var f = new Remote_Access_Form();
+            f.Show(this);
         }
     }
 }

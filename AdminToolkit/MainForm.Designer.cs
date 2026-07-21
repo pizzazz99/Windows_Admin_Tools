@@ -64,6 +64,8 @@ namespace Admin_Tools
             Help_Button = new Button();
             View_Log_Button = new Button();
             Quit_Button = new Button();
+            Admin_Commands_Button = new Button();
+            Remote_Tools_Button = new Button();
             grpTools.SuspendLayout();
             grpProcesses.SuspendLayout();
             statusStrip.SuspendLayout();
@@ -415,11 +417,33 @@ namespace Admin_Tools
             Quit_Button.UseVisualStyleBackColor = true;
             Quit_Button.Click += Quit_Button_Click;
             // 
+            // Admin_Commands_Button
+            // 
+            Admin_Commands_Button.Location = new Point(642, 218);
+            Admin_Commands_Button.Name = "Admin_Commands_Button";
+            Admin_Commands_Button.Size = new Size(78, 59);
+            Admin_Commands_Button.TabIndex = 17;
+            Admin_Commands_Button.Text = "Admin Commands";
+            Admin_Commands_Button.UseVisualStyleBackColor = true;
+            Admin_Commands_Button.Click += Admin_Commands_Button_Click;
+            // 
+            // Remote_Tools_Button
+            // 
+            Remote_Tools_Button.Location = new Point(549, 218);
+            Remote_Tools_Button.Name = "Remote_Tools_Button";
+            Remote_Tools_Button.Size = new Size(78, 59);
+            Remote_Tools_Button.TabIndex = 18;
+            Remote_Tools_Button.Text = "Remote Tools";
+            Remote_Tools_Button.UseVisualStyleBackColor = true;
+            Remote_Tools_Button.Click += Remote_Tools_Button_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(732, 529);
+            Controls.Add(Remote_Tools_Button);
+            Controls.Add(Admin_Commands_Button);
             Controls.Add(Help_Button);
             Controls.Add(View_Log_Button);
             Controls.Add(Quit_Button);
@@ -482,5 +506,7 @@ namespace Admin_Tools
         private System.Windows.Forms.Button Help_Button;
         private System.Windows.Forms.Button View_Log_Button;
         private System.Windows.Forms.Button Quit_Button;
+        private Button Admin_Commands_Button;
+        private Button Remote_Tools_Button;
     }
 }
