@@ -65,7 +65,8 @@ namespace Admin_Tools
             string[] subheadLabels =
             {
                 "WHEN TO USE", "MULTI-DRIVE NOTE", "SYSTEM-DRIVE RULE",
-                "RECOVERY NOTE", "INSTALL WORKFLOW", "THE CATCH"
+                "RECOVERY NOTE", "INSTALL WORKFLOW", "THE CATCH",
+                "DETECTION NOTE", "SECURITY NOTE"
             };
 
             string[] lines = box.Lines;
@@ -124,7 +125,7 @@ namespace Admin_Tools
 
 OVERVIEW
 ----------------------------------------------------------------
-Admin Toolkit is a single-window utility for two jobs:
+Admin Toolkit is a single-window utility for three jobs:
 
   1. Managing Volume Shadow Copies — the technology behind the
      Windows ""Previous Versions"" feature, which lets you restore
@@ -134,16 +135,20 @@ Admin Toolkit is a single-window utility for two jobs:
   2. Launching the built-in Windows administrative tools from one
      place, and tracking the ones you launch.
 
+  3. Diagnosing and connecting through the remote-access stack —
+     Tailscale, RustDesk, and built-in Remote Desktop — from one
+     window instead of three.
+
 The app runs elevated (it requests administrator rights at
 startup). It needs this because querying VSS, creating snapshots
 and restore points, and enabling System Protection all require
-admin.
+admin. The Remote Access panel does not require elevation.
 
 Tool windows (Restore Points, Snapshot Operations, Registry
-Backups) open alongside the main window, so several can be used
-at once. Each launcher button disables while its window is open
-— a built-in ""already open"" indicator — and re-enables when the
-window closes.
+Backups, Remote Access) open alongside the main window, so several
+can be used at once. Each launcher button disables while its
+window is open — a built-in ""already open"" indicator — and
+re-enables when the window closes.
 
 
 SHADOWING vs SNAPSHOTS — WHAT THE TERMS MEAN
@@ -397,6 +402,59 @@ every place a registry backup can exist, then giving a verdict.
   supported path — it restores the registry as part of the
   restore point.
 
+
+REMOTE ACCESS (button)
+----------------------------------------------------------------
+A diagnostics and connection window for the three ways this
+machine gets reached remotely: Tailscale, RustDesk, and Windows'
+own Remote Desktop (RDP). Laid out like the Admin Tools panel —
+one group per app, each grayed out and labeled ""(not installed)""
+if that app isn't found on this machine.
+
+  Tailscale group
+    Status, Status (JSON), IP (this node's 100.x.y.z address),
+    Netcheck (connectivity/relay diagnostics), DNS Status, Prefs
+    (the daemon's current preferences), and Version. All run the
+    real tailscale.exe and print its output to the results pane.
+
+    SECURITY NOTE: Prefs shows configuration, never the node's
+    private key — that lives in a protected state file this panel
+    deliberately never reads.
+
+  RustDesk group
+    Get ID (this machine's RustDesk ID, the number you'd read a
+    remote caller over the phone), Version, and Service Status
+    (is the background service running). Config reads the local
+    RustDesk.toml directly from disk and displays it with
+    passwords, keys, salts, and tokens automatically blanked out
+    — safe to screenshot or paste into a ticket.
+
+  Remote Desktop
+    Opens a separate picker window. Its target box is editable:
+    choose a PC found on the local network, or type any hostname,
+    IP address, or Tailscale name (e.g. a MagicDNS name). Scan
+    sweeps the local network for machines with the RDP port open
+    and remembers the results for the rest of the session; Test
+    checks the current target without connecting; Connect launches
+    the standard Windows Remote Desktop client against it.
+
+    DETECTION NOTE: Remote Desktop can only be HOSTED by Windows
+    Pro, Enterprise, or Education — Windows Home can connect out
+    but never accept an incoming session, regardless of settings.
+
+  Clear / Copy All / Save
+    Clear empties the results pane; Copy All puts everything in
+    it on the clipboard; Save writes it to a timestamped .txt file
+    — handy for attaching diagnostic output to a support request.
+
+  WHEN TO USE: before asking someone to remote in (confirm the
+  right app is actually running and reachable first), or while
+  troubleshooting a connection that used to work and now doesn't.
+  Every command run here, and every RDP connection attempt, is
+  written to the activity log alongside everything else the
+  Toolkit does.
+
+
 IMPORTANT CAVEATS
 ----------------------------------------------------------------
   * Snapshots are NOT a backup. They live on the same drive, so
@@ -428,6 +486,11 @@ IMPORTANT CAVEATS
   * RegBack backups live on the same drive as Windows itself, so
     like snapshots they protect against corruption and bad edits,
     NOT against drive failure.
+
+  * Never expose RDP's port 3389 directly to the internet. Reach
+    it over Tailscale (or another VPN) instead — the Remote
+    Desktop picker works the same way whether the target is on
+    your LAN or only reachable over the tailnet.
 ";
     }
 }
