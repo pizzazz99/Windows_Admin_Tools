@@ -28,13 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            lblOutput = new Label();
             txtOutput = new RichTextBox();
             btnClear = new Button();
             btnCopyAll = new Button();
             btnSave = new Button();
             btnClose = new Button();
             Commands_Panel = new Panel();
+            grpSystemConfig = new GroupBox();
+            btnDriverQuery = new Button();
+            btnHotfixes = new Button();
+            btnUpdates = new Button();
             grpIdentity = new GroupBox();
             btnWhoami = new Button();
             btnNetUser = new Button();
@@ -54,8 +57,6 @@
             btnTasklist = new Button();
             btnTasklistSvc = new Button();
             btnScQuery = new Button();
-            btnDriverQuery = new Button();
-            btnHotfixes = new Button();
             grpDisk = new GroupBox();
             btnFreeSpacebyDrive = new Button();
             btnChkdsk = new Button();
@@ -65,24 +66,18 @@
             btnBatteryReport = new Button();
             btnSystemEvents = new Button();
             btnUptime = new Button();
+            lvUpdates = new ListView();
             Commands_Label = new Label();
+            Message_Textbox = new TextBox();
+            lvHotfixes = new ListView();
             Commands_Panel.SuspendLayout();
+            grpSystemConfig.SuspendLayout();
             grpIdentity.SuspendLayout();
             grpNetwork.SuspendLayout();
             grpSystem.SuspendLayout();
             grpDisk.SuspendLayout();
             grpHealth.SuspendLayout();
             SuspendLayout();
-            // 
-            // lblOutput
-            // 
-            lblOutput.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            lblOutput.AutoSize = true;
-            lblOutput.Location = new Point(429, 9);
-            lblOutput.Name = "lblOutput";
-            lblOutput.Size = new Size(48, 15);
-            lblOutput.TabIndex = 5;
-            lblOutput.Text = "Output:";
             // 
             // txtOutput
             // 
@@ -92,10 +87,10 @@
             txtOutput.DetectUrls = false;
             txtOutput.Font = new Font("Consolas", 9.5F);
             txtOutput.ForeColor = Color.Gainsboro;
-            txtOutput.Location = new Point(429, 34);
+            txtOutput.Location = new Point(429, 27);
             txtOutput.Name = "txtOutput";
             txtOutput.ReadOnly = true;
-            txtOutput.Size = new Size(599, 553);
+            txtOutput.Size = new Size(599, 564);
             txtOutput.TabIndex = 6;
             txtOutput.Text = "";
             txtOutput.WordWrap = false;
@@ -103,7 +98,7 @@
             // btnClear
             // 
             btnClear.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnClear.Location = new Point(431, 593);
+            btnClear.Location = new Point(428, 606);
             btnClear.Name = "btnClear";
             btnClear.Size = new Size(90, 28);
             btnClear.TabIndex = 7;
@@ -114,7 +109,7 @@
             // btnCopyAll
             // 
             btnCopyAll.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnCopyAll.Location = new Point(527, 593);
+            btnCopyAll.Location = new Point(524, 606);
             btnCopyAll.Name = "btnCopyAll";
             btnCopyAll.Size = new Size(90, 28);
             btnCopyAll.TabIndex = 8;
@@ -125,7 +120,7 @@
             // btnSave
             // 
             btnSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnSave.Location = new Point(623, 593);
+            btnSave.Location = new Point(620, 606);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(90, 28);
             btnSave.TabIndex = 9;
@@ -136,7 +131,7 @@
             // btnClose
             // 
             btnClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnClose.Location = new Point(938, 593);
+            btnClose.Location = new Point(937, 606);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(90, 28);
             btnClose.TabIndex = 10;
@@ -146,6 +141,7 @@
             // 
             // Commands_Panel
             // 
+            Commands_Panel.Controls.Add(grpSystemConfig);
             Commands_Panel.Controls.Add(grpIdentity);
             Commands_Panel.Controls.Add(grpNetwork);
             Commands_Panel.Controls.Add(grpSystem);
@@ -155,6 +151,48 @@
             Commands_Panel.Name = "Commands_Panel";
             Commands_Panel.Size = new Size(402, 594);
             Commands_Panel.TabIndex = 11;
+            // 
+            // grpSystemConfig
+            // 
+            grpSystemConfig.Controls.Add(btnDriverQuery);
+            grpSystemConfig.Controls.Add(btnHotfixes);
+            grpSystemConfig.Controls.Add(btnUpdates);
+            grpSystemConfig.Location = new Point(223, 337);
+            grpSystemConfig.Name = "grpSystemConfig";
+            grpSystemConfig.Size = new Size(162, 129);
+            grpSystemConfig.TabIndex = 10;
+            grpSystemConfig.TabStop = false;
+            grpSystemConfig.Text = "System Config";
+            // 
+            // btnDriverQuery
+            // 
+            btnDriverQuery.Location = new Point(12, 26);
+            btnDriverQuery.Name = "btnDriverQuery";
+            btnDriverQuery.Size = new Size(137, 28);
+            btnDriverQuery.TabIndex = 8;
+            btnDriverQuery.Text = "Installed Drivers";
+            btnDriverQuery.UseVisualStyleBackColor = true;
+            btnDriverQuery.Click += btnDriverQuery_Click;
+            // 
+            // btnHotfixes
+            // 
+            btnHotfixes.Location = new Point(12, 58);
+            btnHotfixes.Name = "btnHotfixes";
+            btnHotfixes.Size = new Size(137, 28);
+            btnHotfixes.TabIndex = 9;
+            btnHotfixes.Text = "Installed Hotfixes";
+            btnHotfixes.UseVisualStyleBackColor = true;
+            btnHotfixes.Click += btnHotfixes_Click;
+            // 
+            // btnUpdates
+            // 
+            btnUpdates.Location = new Point(12, 90);
+            btnUpdates.Name = "btnUpdates";
+            btnUpdates.Size = new Size(137, 28);
+            btnUpdates.TabIndex = 10;
+            btnUpdates.Text = "Update History";
+            btnUpdates.UseVisualStyleBackColor = true;
+            btnUpdates.Click += btnUpdates_Click;
             // 
             // grpIdentity
             // 
@@ -302,11 +340,9 @@
             grpSystem.Controls.Add(btnTasklist);
             grpSystem.Controls.Add(btnTasklistSvc);
             grpSystem.Controls.Add(btnScQuery);
-            grpSystem.Controls.Add(btnDriverQuery);
-            grpSystem.Controls.Add(btnHotfixes);
             grpSystem.Location = new Point(223, 7);
             grpSystem.Name = "grpSystem";
-            grpSystem.Size = new Size(162, 252);
+            grpSystem.Size = new Size(162, 188);
             grpSystem.TabIndex = 7;
             grpSystem.TabStop = false;
             grpSystem.Text = "System State";
@@ -361,32 +397,12 @@
             btnScQuery.UseVisualStyleBackColor = true;
             btnScQuery.Click += btnScQuery_Click;
             // 
-            // btnDriverQuery
-            // 
-            btnDriverQuery.Location = new Point(12, 182);
-            btnDriverQuery.Name = "btnDriverQuery";
-            btnDriverQuery.Size = new Size(137, 28);
-            btnDriverQuery.TabIndex = 5;
-            btnDriverQuery.Text = "Installed Drivers";
-            btnDriverQuery.UseVisualStyleBackColor = true;
-            btnDriverQuery.Click += btnDriverQuery_Click;
-            // 
-            // btnHotfixes
-            // 
-            btnHotfixes.Location = new Point(12, 214);
-            btnHotfixes.Name = "btnHotfixes";
-            btnHotfixes.Size = new Size(137, 28);
-            btnHotfixes.TabIndex = 6;
-            btnHotfixes.Text = "Installed Hotfixes";
-            btnHotfixes.UseVisualStyleBackColor = true;
-            btnHotfixes.Click += btnHotfixes_Click;
-            // 
             // grpDisk
             // 
             grpDisk.Controls.Add(btnFreeSpacebyDrive);
             grpDisk.Controls.Add(btnChkdsk);
             grpDisk.Controls.Add(btnVol);
-            grpDisk.Location = new Point(223, 265);
+            grpDisk.Location = new Point(223, 205);
             grpDisk.Name = "grpDisk";
             grpDisk.Size = new Size(162, 124);
             grpDisk.TabIndex = 8;
@@ -476,30 +492,86 @@
             btnUptime.UseVisualStyleBackColor = true;
             btnUptime.Click += btnUptime_Click;
             // 
+            // lvUpdates
+            // 
+            lvUpdates.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lvUpdates.BackColor = Color.FromArgb(30, 30, 30);
+            lvUpdates.BorderStyle = BorderStyle.FixedSingle;
+            lvUpdates.ForeColor = Color.Gainsboro;
+            lvUpdates.FullRowSelect = true;
+            lvUpdates.HideSelection = false;
+            lvUpdates.Location = new Point(429, 34);
+            lvUpdates.MultiSelect = false;
+            lvUpdates.Name = "lvUpdates";
+            lvUpdates.Size = new Size(599, 553);
+            lvUpdates.TabIndex = 6;
+            lvUpdates.UseCompatibleStateImageBehavior = false;
+            lvUpdates.View = View.Details;
+            lvUpdates.Visible = false;
+            lvUpdates.Columns.Add("Date", 130);
+            lvUpdates.Columns.Add("Title", 300);
+            lvUpdates.Columns.Add("KB", 80);
+            lvUpdates.Columns.Add("Operation", 70);
+            lvUpdates.Columns.Add("Result", 100);
+            lvUpdates.DoubleClick += lvUpdates_DoubleClick;
+            // 
             // Commands_Label
             // 
             Commands_Label.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Commands_Label.AutoSize = true;
             Commands_Label.Location = new Point(12, 9);
             Commands_Label.Name = "Commands_Label";
-            Commands_Label.Size = new Size(69, 15);
+            Commands_Label.Size = new Size(72, 15);
             Commands_Label.TabIndex = 12;
             Commands_Label.Text = "Commands:";
+            // 
+            // Message_Textbox
+            // 
+            Message_Textbox.BackColor = SystemColors.Control;
+            Message_Textbox.BorderStyle = BorderStyle.None;
+            Message_Textbox.Location = new Point(430, 643);
+            Message_Textbox.Name = "Message_Textbox";
+            Message_Textbox.Size = new Size(598, 16);
+            Message_Textbox.TabIndex = 13;
+            // 
+            // lvHotfixes
+            // 
+            lvHotfixes.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lvHotfixes.BackColor = Color.FromArgb(30, 30, 30);
+            lvHotfixes.BorderStyle = BorderStyle.FixedSingle;
+            lvHotfixes.ForeColor = Color.Gainsboro;
+            lvHotfixes.FullRowSelect = true;
+            lvHotfixes.HideSelection = false;
+            lvHotfixes.Location = new Point(429, 34);
+            lvHotfixes.MultiSelect = false;
+            lvHotfixes.Name = "lvHotfixes";
+            lvHotfixes.Size = new Size(599, 553);
+            lvHotfixes.TabIndex = 6;
+            lvHotfixes.UseCompatibleStateImageBehavior = false;
+            lvHotfixes.View = View.Details;
+            lvHotfixes.Visible = false;
+            lvHotfixes.Columns.Add("HotFix ID", 110);
+            lvHotfixes.Columns.Add("Description", 160);
+            lvHotfixes.Columns.Add("Installed On", 110);
+            lvHotfixes.Columns.Add("Installed By", 200);
+            lvHotfixes.DoubleClick += lvHotfixes_DoubleClick;
             // 
             // Commands_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             CancelButton = btnClose;
-            ClientSize = new Size(1060, 640);
+            ClientSize = new Size(1060, 673);
+            Controls.Add(Message_Textbox);
             Controls.Add(Commands_Label);
             Controls.Add(Commands_Panel);
-            Controls.Add(lblOutput);
-            Controls.Add(txtOutput);
             Controls.Add(btnClear);
             Controls.Add(btnCopyAll);
             Controls.Add(btnSave);
             Controls.Add(btnClose);
+            Controls.Add(txtOutput);
+            Controls.Add(lvUpdates);
+            Controls.Add(lvHotfixes);
             Font = new Font("Segoe UI", 9F);
             MinimizeBox = false;
             MinimumSize = new Size(1016, 650);
@@ -508,6 +580,7 @@
             StartPosition = FormStartPosition.CenterParent;
             Text = "Admin Commands";
             Commands_Panel.ResumeLayout(false);
+            grpSystemConfig.ResumeLayout(false);
             grpIdentity.ResumeLayout(false);
             grpNetwork.ResumeLayout(false);
             grpSystem.ResumeLayout(false);
@@ -518,7 +591,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.Label lblOutput;
         private System.Windows.Forms.RichTextBox txtOutput;
         private System.Windows.Forms.Button btnClear;
         private System.Windows.Forms.Button btnCopyAll;
@@ -544,8 +616,6 @@
         private Button btnTasklist;
         private Button btnTasklistSvc;
         private Button btnScQuery;
-        private Button btnDriverQuery;
-        private Button btnHotfixes;
         private GroupBox grpDisk;
         private Button btnFreeSpacebyDrive;
         private Button btnChkdsk;
@@ -556,5 +626,12 @@
         private Button btnSystemEvents;
         private Button btnUptime;
         private Label Commands_Label;
+        private System.Windows.Forms.ListView lvUpdates;
+        private System.Windows.Forms.ListView lvHotfixes;
+        private GroupBox grpSystemConfig;
+        private Button btnDriverQuery;
+        private Button btnHotfixes;
+        private Button btnUpdates;
+        private TextBox Message_Textbox;
     }
 }
