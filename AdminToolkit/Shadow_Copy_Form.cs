@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 //  Shadow_Copy_Form.cs   (C# 7.3 / .NET Framework)
 //  Dedicated window for Volume Shadow Copy management:
 //    - list all snapshots (newest first) with drive letters
@@ -138,9 +138,9 @@ namespace Admin_Tools
 
                 Update_Summary(rows.Count);
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                lblSummary.Text = "Query failed: " + ex.Message +
+                lblSummary.Text = "Query failed: " + Ex.Message +
                                   "  (Is the app running as Administrator?)";
             }
             finally
@@ -227,7 +227,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Create snapshot
         // --------------------------------------------------------
-        private void Btn_Create_Click(object sender, EventArgs e)
+        private void Btn_Create_Click(object Sender, EventArgs e)
         {
             if (cmbDrive.SelectedItem == null) return;
             string drive = cmbDrive.SelectedItem.ToString();   // "C:"
@@ -261,9 +261,9 @@ namespace Admin_Tools
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show("Create failed: " + ex.Message,
+                MessageBox.Show("Create failed: " + Ex.Message,
                     "Create Snapshot", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
@@ -295,7 +295,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Details — same style as the classic Snapshot Details box
         // --------------------------------------------------------
-        private void Btn_Details_Click(object sender, EventArgs e)
+        private void Btn_Details_Click(object Sender, EventArgs e)
         {
             if (lvSnapshots.SelectedItems.Count == 0) return;
 
@@ -339,7 +339,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Raw vssadmin output (selected snapshot, or all if none selected)
         // --------------------------------------------------------
-        private void Btn_VssAdmin_Click(object sender, EventArgs e)
+        private void Btn_VssAdmin_Click(object Sender, EventArgs e)
         {
             // Get the selected snapshot's Shadow ID, if any.
             // *** Adjust these two lines to this form's ListView name and Tag type ***
@@ -381,9 +381,9 @@ namespace Admin_Tools
                         output + (err.Length > 0 ? "\r\n" + err : ""));
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show("Could not run vssadmin: " + ex.Message,
+                MessageBox.Show("Could not run vssadmin: " + Ex.Message,
                     "VSS Details", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
@@ -395,7 +395,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Delete Selected
         // --------------------------------------------------------
-        private void Btn_Delete_Selected_Click(object sender, EventArgs e)
+        private void Btn_Delete_Selected_Click(object Sender, EventArgs e)
         {
             if (lvSnapshots.SelectedItems.Count == 0)
             {
@@ -437,7 +437,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Delete Older Than...
         // --------------------------------------------------------
-        private void Btn_Delete_Older_Click(object sender, EventArgs e)
+        private void Btn_Delete_Older_Click(object Sender, EventArgs e)
         {
             int days;
             if (!Prompt_Number("Delete Older Than",
@@ -464,7 +464,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Keep Newest...
         // --------------------------------------------------------
-        private void Btn_Keep_Newest_Click(object sender, EventArgs e)
+        private void Btn_Keep_Newest_Click(object Sender, EventArgs e)
         {
             int keep;
             if (!Prompt_Number("Keep Newest",
@@ -606,8 +606,8 @@ namespace Admin_Tools
                 Text = text
             };
 
-            var btnCloseViewer = new Button { Text = "Close", Width = 90 };
-            btnCloseViewer.Click += delegate { form.Close(); };
+            var BtnCloseViewer = new Button { Text = "Close", Width = 90 };
+            BtnCloseViewer.Click += delegate { form.Close(); };
 
             var panel = new FlowLayoutPanel
             {
@@ -616,27 +616,27 @@ namespace Admin_Tools
                 Height = 45,
                 Padding = new Padding(8)
             };
-            panel.Controls.Add(btnCloseViewer);
+            panel.Controls.Add(BtnCloseViewer);
 
             form.Controls.Add(txt);
             form.Controls.Add(panel);
-            form.AcceptButton = btnCloseViewer;
+            form.AcceptButton = BtnCloseViewer;
             form.Shown += delegate { txt.SelectionStart = 0; txt.SelectionLength = 0; };
 
             form.Show(this);
         }
 
-        private void Btn_Refresh_Click(object sender, EventArgs e)
+        private void Btn_Refresh_Click(object Sender, EventArgs e)
         {
             Load_Snapshots();
         }
 
-        private void Btn_Close_Click(object sender, EventArgs e)
+        private void Btn_Close_Click(object Sender, EventArgs e)
         {
             Close();
         }
 
-        private void Reclaim_Space_Button_Click(object sender, EventArgs e)
+        private void Reclaim_Space_Button_Click(object Sender, EventArgs e)
         {
            
             using (var f = new Storage_Reclaim_Form())

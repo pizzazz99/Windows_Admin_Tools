@@ -58,11 +58,11 @@ namespace Admin_Tools
             this.txtScNewest = new System.Windows.Forms.TextBox();
             this.grpVerdict = new System.Windows.Forms.GroupBox();
             this.txtVerdict = new System.Windows.Forms.TextBox();
-            this.btnRefresh = new System.Windows.Forms.Button();
-            this.btnEnableRegBack = new System.Windows.Forms.Button();
-            this.btnBackupNow = new System.Windows.Forms.Button();
-            this.btnOpenFolder = new System.Windows.Forms.Button();
-            this.btnClose = new System.Windows.Forms.Button();
+            this.BtnRefresh = new System.Windows.Forms.Button();
+            this.BtnEnableRegBack = new System.Windows.Forms.Button();
+            this.BtnBackupNow = new System.Windows.Forms.Button();
+            this.BtnOpenFolder = new System.Windows.Forms.Button();
+            this.BtnClose = new System.Windows.Forms.Button();
             this.grpRegBack.SuspendLayout();
             this.grpTask.SuspendLayout();
             this.grpSnapshots.SuspendLayout();
@@ -355,64 +355,64 @@ namespace Admin_Tools
             this.txtVerdict.Size = new System.Drawing.Size(836, 68);
             this.txtVerdict.TabStop = false;
             // 
-            // btnRefresh
+            // BtnRefresh
             // 
-            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRefresh.Location = new System.Drawing.Point(12, 553);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(100, 28);
-            this.btnRefresh.TabIndex = 4;
-            this.btnRefresh.Text = "Refresh";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.Btn_Refresh_Click);
+            this.BtnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnRefresh.Location = new System.Drawing.Point(12, 553);
+            this.BtnRefresh.Name = "BtnRefresh";
+            this.BtnRefresh.Size = new System.Drawing.Size(100, 28);
+            this.BtnRefresh.TabIndex = 4;
+            this.BtnRefresh.Text = "Refresh";
+            this.BtnRefresh.UseVisualStyleBackColor = true;
+            this.BtnRefresh.Click += new System.EventHandler(this.Btn_Refresh_Click);
             // 
-            // btnEnableRegBack
+            // BtnEnableRegBack
             // 
-            this.btnEnableRegBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnEnableRegBack.Location = new System.Drawing.Point(118, 553);
-            this.btnEnableRegBack.Name = "btnEnableRegBack";
-            this.btnEnableRegBack.Size = new System.Drawing.Size(130, 28);
-            this.btnEnableRegBack.TabIndex = 5;
-            this.btnEnableRegBack.Text = "Enable RegBack";
-            this.btnEnableRegBack.UseVisualStyleBackColor = true;
-            this.btnEnableRegBack.Click += new System.EventHandler(this.Btn_Enable_RegBack_Click);
+            this.BtnEnableRegBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnEnableRegBack.Location = new System.Drawing.Point(118, 553);
+            this.BtnEnableRegBack.Name = "BtnEnableRegBack";
+            this.BtnEnableRegBack.Size = new System.Drawing.Size(130, 28);
+            this.BtnEnableRegBack.TabIndex = 5;
+            this.BtnEnableRegBack.Text = "Enable RegBack";
+            this.BtnEnableRegBack.UseVisualStyleBackColor = true;
+            this.BtnEnableRegBack.Click += new System.EventHandler(this.Btn_Enable_RegBack_Click);
             // 
-            // btnBackupNow
+            // BtnBackupNow
             // 
-            this.btnBackupNow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnBackupNow.Location = new System.Drawing.Point(254, 553);
-            this.btnBackupNow.Name = "btnBackupNow";
-            this.btnBackupNow.Size = new System.Drawing.Size(110, 28);
-            this.btnBackupNow.TabIndex = 6;
-            this.btnBackupNow.Text = "Backup Now";
-            this.btnBackupNow.UseVisualStyleBackColor = true;
-            this.btnBackupNow.Click += new System.EventHandler(this.Btn_Backup_Now_Click);
+            this.BtnBackupNow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnBackupNow.Location = new System.Drawing.Point(254, 553);
+            this.BtnBackupNow.Name = "BtnBackupNow";
+            this.BtnBackupNow.Size = new System.Drawing.Size(110, 28);
+            this.BtnBackupNow.TabIndex = 6;
+            this.BtnBackupNow.Text = "Backup Now";
+            this.BtnBackupNow.UseVisualStyleBackColor = true;
+            this.BtnBackupNow.Click += new System.EventHandler(this.Btn_Backup_Now_Click);
             // 
-            // btnOpenFolder
+            // BtnOpenFolder
             // 
-            this.btnOpenFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOpenFolder.Location = new System.Drawing.Point(370, 553);
-            this.btnOpenFolder.Name = "btnOpenFolder";
-            this.btnOpenFolder.Size = new System.Drawing.Size(110, 28);
-            this.btnOpenFolder.TabIndex = 7;
-            this.btnOpenFolder.Text = "Open Folder";
-            this.btnOpenFolder.UseVisualStyleBackColor = true;
-            this.btnOpenFolder.Click += new System.EventHandler(this.Btn_Open_Folder_Click);
+            this.BtnOpenFolder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnOpenFolder.Location = new System.Drawing.Point(370, 553);
+            this.BtnOpenFolder.Name = "BtnOpenFolder";
+            this.BtnOpenFolder.Size = new System.Drawing.Size(110, 28);
+            this.BtnOpenFolder.TabIndex = 7;
+            this.BtnOpenFolder.Text = "Open Folder";
+            this.BtnOpenFolder.UseVisualStyleBackColor = true;
+            this.BtnOpenFolder.Click += new System.EventHandler(this.Btn_Open_Folder_Click);
             // 
-            // btnClose
+            // BtnClose
             // 
-            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(782, 553);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(90, 28);
-            this.btnClose.TabIndex = 8;
-            this.btnClose.Text = "Close";
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.Btn_Close_Click);
+            this.BtnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BtnClose.Location = new System.Drawing.Point(782, 553);
+            this.BtnClose.Name = "BtnClose";
+            this.BtnClose.Size = new System.Drawing.Size(90, 28);
+            this.BtnClose.TabIndex = 8;
+            this.BtnClose.Text = "Close";
+            this.BtnClose.UseVisualStyleBackColor = true;
+            this.BtnClose.Click += new System.EventHandler(this.Btn_Close_Click);
             // 
             // Registry_Backup_Form
             // 
-            this.AcceptButton = this.btnClose;
+            this.AcceptButton = this.BtnClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 593);
@@ -420,11 +420,11 @@ namespace Admin_Tools
             this.Controls.Add(this.grpTask);
             this.Controls.Add(this.grpSnapshots);
             this.Controls.Add(this.grpVerdict);
-            this.Controls.Add(this.btnRefresh);
-            this.Controls.Add(this.btnEnableRegBack);
-            this.Controls.Add(this.btnBackupNow);
-            this.Controls.Add(this.btnOpenFolder);
-            this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.BtnRefresh);
+            this.Controls.Add(this.BtnEnableRegBack);
+            this.Controls.Add(this.BtnBackupNow);
+            this.Controls.Add(this.BtnOpenFolder);
+            this.Controls.Add(this.BtnClose);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -477,10 +477,10 @@ namespace Admin_Tools
         private System.Windows.Forms.TextBox txtScNewest;
         private System.Windows.Forms.GroupBox grpVerdict;
         private System.Windows.Forms.TextBox txtVerdict;
-        private System.Windows.Forms.Button btnRefresh;
-        private System.Windows.Forms.Button btnEnableRegBack;
-        private System.Windows.Forms.Button btnBackupNow;
-        private System.Windows.Forms.Button btnOpenFolder;
-        private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button BtnRefresh;
+        private System.Windows.Forms.Button BtnEnableRegBack;
+        private System.Windows.Forms.Button BtnBackupNow;
+        private System.Windows.Forms.Button BtnOpenFolder;
+        private System.Windows.Forms.Button BtnClose;
     }
 }

@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 //  Remote_Desktop_Dialog.cs
 //  Small picker for starting a Windows Remote Desktop (RDP)
 //  session. The target combo is editable, so the user can
@@ -98,7 +98,7 @@ namespace Admin_Tools
             return $"{count} host(s) remembered{when} — or type any hostname / IP.";
         }
 
-        private async void Scan_Button_Click(object sender, EventArgs e)
+        private async void Scan_Button_Click(object Sender, EventArgs e)
         {
             await Populate_Computers(forceRescan: true);
         }
@@ -107,7 +107,7 @@ namespace Admin_Tools
         //  Test — resolve the current target and check whether the
         //  RDP port is open, without launching a session.
         // --------------------------------------------------------
-        private async void Test_Button_Click(object sender, EventArgs e)
+        private async void Test_Button_Click(object Sender, EventArgs e)
         {
             string target = Current_Target();
             if (string.IsNullOrEmpty(target))
@@ -145,7 +145,7 @@ namespace Admin_Tools
         //  Connect — launch mstsc against the current target.
         //  mstsc /v: accepts a hostname or an IP address.
         // --------------------------------------------------------
-        private void Connect_Button_Click(object sender, EventArgs e)
+        private void Connect_Button_Click(object Sender, EventArgs e)
         {
             string target = Current_Target();
             if (string.IsNullOrEmpty(target))
@@ -167,16 +167,16 @@ namespace Admin_Tools
                 DialogResult = DialogResult.OK;
                 Close();
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
                 MessageBox.Show(this,
-                    "Could not launch Remote Desktop:\n" + ex.Message,
+                    "Could not launch Remote Desktop:\n" + Ex.Message,
                     "Remote Desktop", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         // Close without connecting.
-        private void Quit_Button_Click(object sender, EventArgs e)
+        private void Quit_Button_Click(object Sender, EventArgs e)
         {
             Close();
         }

@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 //  Restore_Point_Delete.cs   (C# 7.3 / .NET Framework)
 //  Deletes System Restore points by sequence number via the
 //  SRRemoveRestorePoint API (SrClient.dll).
@@ -44,9 +44,9 @@ namespace Admin_Tools
             {
                 return "SrClient.dll not available on this system.";
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                return "#" + sequenceNumber + ": " + ex.Message;
+                return "#" + sequenceNumber + ": " + Ex.Message;
             }
         }
 

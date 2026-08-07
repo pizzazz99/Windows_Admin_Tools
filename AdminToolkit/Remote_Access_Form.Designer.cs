@@ -1,4 +1,4 @@
-﻿namespace Admin_Tools
+namespace Admin_Tools
 {
     partial class Remote_Access_Form
     {
@@ -31,26 +31,26 @@
             lblApps = new Label();
             lblOutput = new Label();
             txtOutput = new RichTextBox();
-            btnClear = new Button();
-            btnCopyAll = new Button();
-            btnSave = new Button();
-            btnClose = new Button();
+            BtnClear = new Button();
+            BtnCopyAll = new Button();
+            BtnSave = new Button();
+            BtnClose = new Button();
             Apps_Panel = new Panel();
             grpTailscale = new GroupBox();
-            btnTsStatus = new Button();
-            btnTsStatusJson = new Button();
-            btnTsIp = new Button();
-            btnTsNetcheck = new Button();
-            btnTsDns = new Button();
-            btnTsPrefs = new Button();
-            btnTsVersion = new Button();
+            BtnTsStatus = new Button();
+            BtnTsStatusJson = new Button();
+            BtnTsIp = new Button();
+            BtnTsNetcheck = new Button();
+            BtnTsDns = new Button();
+            BtnTsPrefs = new Button();
+            BtnTsVersion = new Button();
             grpRustDesk = new GroupBox();
-            btnRdGetId = new Button();
-            btnRdVersion = new Button();
-            btnRdServiceStatus = new Button();
-            btnRdConfig = new Button();
+            BtnRdGetId = new Button();
+            BtnRdVersion = new Button();
+            BtnRdServiceStatus = new Button();
+            BtnRdConfig = new Button();
             grpRdp = new GroupBox();
-            btnRdpConnect = new Button();
+            BtnRdpConnect = new Button();
             Apps_Panel.SuspendLayout();
             grpTailscale.SuspendLayout();
             grpRustDesk.SuspendLayout();
@@ -93,49 +93,49 @@
             txtOutput.Text = "";
             txtOutput.WordWrap = false;
             // 
-            // btnClear
+            // BtnClear
             // 
-            btnClear.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnClear.Location = new Point(494, 545);
-            btnClear.Name = "btnClear";
-            btnClear.Size = new Size(90, 28);
-            btnClear.TabIndex = 3;
-            btnClear.Text = "Clear";
-            btnClear.UseVisualStyleBackColor = true;
-            btnClear.Click += Btn_Clear_Click;
+            BtnClear.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            BtnClear.Location = new Point(494, 545);
+            BtnClear.Name = "BtnClear";
+            BtnClear.Size = new Size(90, 28);
+            BtnClear.TabIndex = 3;
+            BtnClear.Text = "Clear";
+            BtnClear.UseVisualStyleBackColor = true;
+            BtnClear.Click += Btn_Clear_Click;
             // 
-            // btnCopyAll
+            // BtnCopyAll
             // 
-            btnCopyAll.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnCopyAll.Location = new Point(590, 545);
-            btnCopyAll.Name = "btnCopyAll";
-            btnCopyAll.Size = new Size(90, 28);
-            btnCopyAll.TabIndex = 4;
-            btnCopyAll.Text = "Copy All";
-            btnCopyAll.UseVisualStyleBackColor = true;
-            btnCopyAll.Click += Btn_Copy_All_Click;
+            BtnCopyAll.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            BtnCopyAll.Location = new Point(590, 545);
+            BtnCopyAll.Name = "BtnCopyAll";
+            BtnCopyAll.Size = new Size(90, 28);
+            BtnCopyAll.TabIndex = 4;
+            BtnCopyAll.Text = "Copy All";
+            BtnCopyAll.UseVisualStyleBackColor = true;
+            BtnCopyAll.Click += Btn_Copy_All_Click;
             // 
-            // btnSave
+            // BtnSave
             // 
-            btnSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnSave.Location = new Point(686, 545);
-            btnSave.Name = "btnSave";
-            btnSave.Size = new Size(90, 28);
-            btnSave.TabIndex = 5;
-            btnSave.Text = "Save...";
-            btnSave.UseVisualStyleBackColor = true;
-            btnSave.Click += Btn_Save_Click;
+            BtnSave.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            BtnSave.Location = new Point(686, 545);
+            BtnSave.Name = "BtnSave";
+            BtnSave.Size = new Size(90, 28);
+            BtnSave.TabIndex = 5;
+            BtnSave.Text = "Save...";
+            BtnSave.UseVisualStyleBackColor = true;
+            BtnSave.Click += Btn_Save_Click;
             // 
-            // btnClose
+            // BtnClose
             // 
-            btnClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnClose.Location = new Point(798, 545);
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(90, 28);
-            btnClose.TabIndex = 6;
-            btnClose.Text = "Close";
-            btnClose.UseVisualStyleBackColor = true;
-            btnClose.Click += Btn_Close_Click;
+            BtnClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            BtnClose.Location = new Point(798, 545);
+            BtnClose.Name = "BtnClose";
+            BtnClose.Size = new Size(90, 28);
+            BtnClose.TabIndex = 6;
+            BtnClose.Text = "Close";
+            BtnClose.UseVisualStyleBackColor = true;
+            BtnClose.Click += Btn_Close_Click;
             // 
             // Apps_Panel
             // 
@@ -149,13 +149,13 @@
             // 
             // grpTailscale
             // 
-            grpTailscale.Controls.Add(btnTsStatus);
-            grpTailscale.Controls.Add(btnTsStatusJson);
-            grpTailscale.Controls.Add(btnTsIp);
-            grpTailscale.Controls.Add(btnTsNetcheck);
-            grpTailscale.Controls.Add(btnTsDns);
-            grpTailscale.Controls.Add(btnTsPrefs);
-            grpTailscale.Controls.Add(btnTsVersion);
+            grpTailscale.Controls.Add(BtnTsStatus);
+            grpTailscale.Controls.Add(BtnTsStatusJson);
+            grpTailscale.Controls.Add(BtnTsIp);
+            grpTailscale.Controls.Add(BtnTsNetcheck);
+            grpTailscale.Controls.Add(BtnTsDns);
+            grpTailscale.Controls.Add(BtnTsPrefs);
+            grpTailscale.Controls.Add(BtnTsVersion);
             grpTailscale.Location = new Point(12, 7);
             grpTailscale.Name = "grpTailscale";
             grpTailscale.Size = new Size(174, 256);
@@ -163,82 +163,82 @@
             grpTailscale.TabStop = false;
             grpTailscale.Text = "Tailscale";
             // 
-            // btnTsStatus
+            // BtnTsStatus
             // 
-            btnTsStatus.Location = new Point(12, 22);
-            btnTsStatus.Name = "btnTsStatus";
-            btnTsStatus.Size = new Size(147, 28);
-            btnTsStatus.TabIndex = 0;
-            btnTsStatus.Text = "Status";
-            btnTsStatus.UseVisualStyleBackColor = true;
-            btnTsStatus.Click += btnTsStatus_Click;
+            BtnTsStatus.Location = new Point(12, 22);
+            BtnTsStatus.Name = "BtnTsStatus";
+            BtnTsStatus.Size = new Size(147, 28);
+            BtnTsStatus.TabIndex = 0;
+            BtnTsStatus.Text = "Status";
+            BtnTsStatus.UseVisualStyleBackColor = true;
+            BtnTsStatus.Click += BtnTsStatus_Click;
             // 
-            // btnTsStatusJson
+            // BtnTsStatusJson
             // 
-            btnTsStatusJson.Location = new Point(12, 54);
-            btnTsStatusJson.Name = "btnTsStatusJson";
-            btnTsStatusJson.Size = new Size(147, 28);
-            btnTsStatusJson.TabIndex = 1;
-            btnTsStatusJson.Text = "Status (JSON)";
-            btnTsStatusJson.UseVisualStyleBackColor = true;
-            btnTsStatusJson.Click += btnTsStatusJson_Click;
+            BtnTsStatusJson.Location = new Point(12, 54);
+            BtnTsStatusJson.Name = "BtnTsStatusJson";
+            BtnTsStatusJson.Size = new Size(147, 28);
+            BtnTsStatusJson.TabIndex = 1;
+            BtnTsStatusJson.Text = "Status (JSON)";
+            BtnTsStatusJson.UseVisualStyleBackColor = true;
+            BtnTsStatusJson.Click += BtnTsStatusJson_Click;
             // 
-            // btnTsIp
+            // BtnTsIp
             // 
-            btnTsIp.Location = new Point(12, 86);
-            btnTsIp.Name = "btnTsIp";
-            btnTsIp.Size = new Size(147, 28);
-            btnTsIp.TabIndex = 2;
-            btnTsIp.Text = "Tailnet IP";
-            btnTsIp.UseVisualStyleBackColor = true;
-            btnTsIp.Click += btnTsIp_Click;
+            BtnTsIp.Location = new Point(12, 86);
+            BtnTsIp.Name = "BtnTsIp";
+            BtnTsIp.Size = new Size(147, 28);
+            BtnTsIp.TabIndex = 2;
+            BtnTsIp.Text = "Tailnet IP";
+            BtnTsIp.UseVisualStyleBackColor = true;
+            BtnTsIp.Click += BtnTsIp_Click;
             // 
-            // btnTsNetcheck
+            // BtnTsNetcheck
             // 
-            btnTsNetcheck.Location = new Point(12, 118);
-            btnTsNetcheck.Name = "btnTsNetcheck";
-            btnTsNetcheck.Size = new Size(147, 28);
-            btnTsNetcheck.TabIndex = 3;
-            btnTsNetcheck.Text = "Net Check (slow)";
-            btnTsNetcheck.UseVisualStyleBackColor = true;
-            btnTsNetcheck.Click += btnTsNetcheck_Click;
+            BtnTsNetcheck.Location = new Point(12, 118);
+            BtnTsNetcheck.Name = "BtnTsNetcheck";
+            BtnTsNetcheck.Size = new Size(147, 28);
+            BtnTsNetcheck.TabIndex = 3;
+            BtnTsNetcheck.Text = "Net Check (slow)";
+            BtnTsNetcheck.UseVisualStyleBackColor = true;
+            BtnTsNetcheck.Click += BtnTsNetcheck_Click;
             // 
-            // btnTsDns
+            // BtnTsDns
             // 
-            btnTsDns.Location = new Point(12, 150);
-            btnTsDns.Name = "btnTsDns";
-            btnTsDns.Size = new Size(147, 28);
-            btnTsDns.TabIndex = 4;
-            btnTsDns.Text = "DNS Status";
-            btnTsDns.UseVisualStyleBackColor = true;
-            btnTsDns.Click += btnTsDns_Click;
+            BtnTsDns.Location = new Point(12, 150);
+            BtnTsDns.Name = "BtnTsDns";
+            BtnTsDns.Size = new Size(147, 28);
+            BtnTsDns.TabIndex = 4;
+            BtnTsDns.Text = "DNS Status";
+            BtnTsDns.UseVisualStyleBackColor = true;
+            BtnTsDns.Click += BtnTsDns_Click;
             // 
-            // btnTsPrefs
+            // BtnTsPrefs
             // 
-            btnTsPrefs.Location = new Point(12, 182);
-            btnTsPrefs.Name = "btnTsPrefs";
-            btnTsPrefs.Size = new Size(147, 28);
-            btnTsPrefs.TabIndex = 5;
-            btnTsPrefs.Text = "Preferences (config)";
-            btnTsPrefs.UseVisualStyleBackColor = true;
-            btnTsPrefs.Click += btnTsPrefs_Click;
+            BtnTsPrefs.Location = new Point(12, 182);
+            BtnTsPrefs.Name = "BtnTsPrefs";
+            BtnTsPrefs.Size = new Size(147, 28);
+            BtnTsPrefs.TabIndex = 5;
+            BtnTsPrefs.Text = "Preferences (config)";
+            BtnTsPrefs.UseVisualStyleBackColor = true;
+            BtnTsPrefs.Click += BtnTsPrefs_Click;
             // 
-            // btnTsVersion
+            // BtnTsVersion
             // 
-            btnTsVersion.Location = new Point(12, 214);
-            btnTsVersion.Name = "btnTsVersion";
-            btnTsVersion.Size = new Size(147, 28);
-            btnTsVersion.TabIndex = 6;
-            btnTsVersion.Text = "Version";
-            btnTsVersion.UseVisualStyleBackColor = true;
-            btnTsVersion.Click += btnTsVersion_Click;
+            BtnTsVersion.Location = new Point(12, 214);
+            BtnTsVersion.Name = "BtnTsVersion";
+            BtnTsVersion.Size = new Size(147, 28);
+            BtnTsVersion.TabIndex = 6;
+            BtnTsVersion.Text = "Version";
+            BtnTsVersion.UseVisualStyleBackColor = true;
+            BtnTsVersion.Click += BtnTsVersion_Click;
             // 
             // grpRustDesk
             // 
-            grpRustDesk.Controls.Add(btnRdGetId);
-            grpRustDesk.Controls.Add(btnRdVersion);
-            grpRustDesk.Controls.Add(btnRdServiceStatus);
-            grpRustDesk.Controls.Add(btnRdConfig);
+            grpRustDesk.Controls.Add(BtnRdGetId);
+            grpRustDesk.Controls.Add(BtnRdVersion);
+            grpRustDesk.Controls.Add(BtnRdServiceStatus);
+            grpRustDesk.Controls.Add(BtnRdConfig);
             grpRustDesk.Location = new Point(12, 275);
             grpRustDesk.Name = "grpRustDesk";
             grpRustDesk.Size = new Size(174, 156);
@@ -246,49 +246,49 @@
             grpRustDesk.TabStop = false;
             grpRustDesk.Text = "RustDesk";
             // 
-            // btnRdGetId
+            // BtnRdGetId
             // 
-            btnRdGetId.Location = new Point(12, 22);
-            btnRdGetId.Name = "btnRdGetId";
-            btnRdGetId.Size = new Size(147, 28);
-            btnRdGetId.TabIndex = 0;
-            btnRdGetId.Text = "Get ID";
-            btnRdGetId.UseVisualStyleBackColor = true;
-            btnRdGetId.Click += btnRdGetId_Click;
+            BtnRdGetId.Location = new Point(12, 22);
+            BtnRdGetId.Name = "BtnRdGetId";
+            BtnRdGetId.Size = new Size(147, 28);
+            BtnRdGetId.TabIndex = 0;
+            BtnRdGetId.Text = "Get ID";
+            BtnRdGetId.UseVisualStyleBackColor = true;
+            BtnRdGetId.Click += BtnRdGetId_Click;
             // 
-            // btnRdVersion
+            // BtnRdVersion
             // 
-            btnRdVersion.Location = new Point(12, 54);
-            btnRdVersion.Name = "btnRdVersion";
-            btnRdVersion.Size = new Size(147, 28);
-            btnRdVersion.TabIndex = 1;
-            btnRdVersion.Text = "Version";
-            btnRdVersion.UseVisualStyleBackColor = true;
-            btnRdVersion.Click += btnRdVersion_Click;
+            BtnRdVersion.Location = new Point(12, 54);
+            BtnRdVersion.Name = "BtnRdVersion";
+            BtnRdVersion.Size = new Size(147, 28);
+            BtnRdVersion.TabIndex = 1;
+            BtnRdVersion.Text = "Version";
+            BtnRdVersion.UseVisualStyleBackColor = true;
+            BtnRdVersion.Click += BtnRdVersion_Click;
             // 
-            // btnRdServiceStatus
+            // BtnRdServiceStatus
             // 
-            btnRdServiceStatus.Location = new Point(12, 86);
-            btnRdServiceStatus.Name = "btnRdServiceStatus";
-            btnRdServiceStatus.Size = new Size(147, 28);
-            btnRdServiceStatus.TabIndex = 2;
-            btnRdServiceStatus.Text = "Service Status";
-            btnRdServiceStatus.UseVisualStyleBackColor = true;
-            btnRdServiceStatus.Click += btnRdServiceStatus_Click;
+            BtnRdServiceStatus.Location = new Point(12, 86);
+            BtnRdServiceStatus.Name = "BtnRdServiceStatus";
+            BtnRdServiceStatus.Size = new Size(147, 28);
+            BtnRdServiceStatus.TabIndex = 2;
+            BtnRdServiceStatus.Text = "Service Status";
+            BtnRdServiceStatus.UseVisualStyleBackColor = true;
+            BtnRdServiceStatus.Click += BtnRdServiceStatus_Click;
             // 
-            // btnRdConfig
+            // BtnRdConfig
             // 
-            btnRdConfig.Location = new Point(12, 118);
-            btnRdConfig.Name = "btnRdConfig";
-            btnRdConfig.Size = new Size(147, 28);
-            btnRdConfig.TabIndex = 3;
-            btnRdConfig.Text = "View Config (redacted)";
-            btnRdConfig.UseVisualStyleBackColor = true;
-            btnRdConfig.Click += btnRdConfig_Click;
+            BtnRdConfig.Location = new Point(12, 118);
+            BtnRdConfig.Name = "BtnRdConfig";
+            BtnRdConfig.Size = new Size(147, 28);
+            BtnRdConfig.TabIndex = 3;
+            BtnRdConfig.Text = "View Config (redacted)";
+            BtnRdConfig.UseVisualStyleBackColor = true;
+            BtnRdConfig.Click += BtnRdConfig_Click;
             // 
             // grpRdp
             // 
-            grpRdp.Controls.Add(btnRdpConnect);
+            grpRdp.Controls.Add(BtnRdpConnect);
             grpRdp.Location = new Point(12, 443);
             grpRdp.Name = "grpRdp";
             grpRdp.Size = new Size(174, 64);
@@ -296,30 +296,30 @@
             grpRdp.TabStop = false;
             grpRdp.Text = "Remote Desktop";
             // 
-            // btnRdpConnect
+            // BtnRdpConnect
             // 
-            btnRdpConnect.Location = new Point(12, 22);
-            btnRdpConnect.Name = "btnRdpConnect";
-            btnRdpConnect.Size = new Size(147, 28);
-            btnRdpConnect.TabIndex = 0;
-            btnRdpConnect.Text = "New Session...";
-            btnRdpConnect.UseVisualStyleBackColor = true;
-            btnRdpConnect.Click += btnRdpConnect_Click;
+            BtnRdpConnect.Location = new Point(12, 22);
+            BtnRdpConnect.Name = "BtnRdpConnect";
+            BtnRdpConnect.Size = new Size(147, 28);
+            BtnRdpConnect.TabIndex = 0;
+            BtnRdpConnect.Text = "New Session...";
+            BtnRdpConnect.UseVisualStyleBackColor = true;
+            BtnRdpConnect.Click += BtnRdpConnect_Click;
             // 
             // Remote_Access_Form
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            CancelButton = btnClose;
+            CancelButton = BtnClose;
             ClientSize = new Size(900, 584);
             Controls.Add(lblApps);
             Controls.Add(Apps_Panel);
             Controls.Add(lblOutput);
             Controls.Add(txtOutput);
-            Controls.Add(btnClear);
-            Controls.Add(btnCopyAll);
-            Controls.Add(btnSave);
-            Controls.Add(btnClose);
+            Controls.Add(BtnClear);
+            Controls.Add(BtnCopyAll);
+            Controls.Add(BtnSave);
+            Controls.Add(BtnClose);
             Font = new Font("Segoe UI", 9F);
             MinimizeBox = false;
             MinimumSize = new Size(860, 594);
@@ -340,25 +340,25 @@
         private System.Windows.Forms.Label lblApps;
         private System.Windows.Forms.Label lblOutput;
         private System.Windows.Forms.RichTextBox txtOutput;
-        private System.Windows.Forms.Button btnClear;
-        private System.Windows.Forms.Button btnCopyAll;
-        private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button BtnClear;
+        private System.Windows.Forms.Button BtnCopyAll;
+        private System.Windows.Forms.Button BtnSave;
+        private System.Windows.Forms.Button BtnClose;
         private Panel Apps_Panel;
         private GroupBox grpTailscale;
-        private Button btnTsStatus;
-        private Button btnTsStatusJson;
-        private Button btnTsIp;
-        private Button btnTsNetcheck;
-        private Button btnTsDns;
-        private Button btnTsPrefs;
-        private Button btnTsVersion;
+        private Button BtnTsStatus;
+        private Button BtnTsStatusJson;
+        private Button BtnTsIp;
+        private Button BtnTsNetcheck;
+        private Button BtnTsDns;
+        private Button BtnTsPrefs;
+        private Button BtnTsVersion;
         private GroupBox grpRustDesk;
-        private Button btnRdGetId;
-        private Button btnRdVersion;
-        private Button btnRdServiceStatus;
-        private Button btnRdConfig;
+        private Button BtnRdGetId;
+        private Button BtnRdVersion;
+        private Button BtnRdServiceStatus;
+        private Button BtnRdConfig;
         private GroupBox grpRdp;
-        private Button btnRdpConnect;
+        private Button BtnRdpConnect;
     }
 }

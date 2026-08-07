@@ -18,8 +18,8 @@ namespace Admin_Tools
         private void InitializeComponent()
         {
             this.txtOutput = new System.Windows.Forms.TextBox();
-            this.btnPrint = new System.Windows.Forms.Button();
-            this.btnClose = new System.Windows.Forms.Button();
+            this.BtnPrint = new System.Windows.Forms.Button();
+            this.BtnClose = new System.Windows.Forms.Button();
             this.Purge_Button = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -38,28 +38,28 @@ namespace Admin_Tools
             this.txtOutput.TabIndex = 0;
             this.txtOutput.WordWrap = false;
             // 
-            // btnPrint
+            // BtnPrint
             // 
-            this.btnPrint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnPrint.Location = new System.Drawing.Point(476, 422);
-            this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(95, 30);
-            this.btnPrint.TabIndex = 1;
-            this.btnPrint.Text = "Print...";
-            this.btnPrint.UseVisualStyleBackColor = true;
-            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
+            this.BtnPrint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BtnPrint.Location = new System.Drawing.Point(476, 422);
+            this.BtnPrint.Name = "BtnPrint";
+            this.BtnPrint.Size = new System.Drawing.Size(95, 30);
+            this.BtnPrint.TabIndex = 1;
+            this.BtnPrint.Text = "Print...";
+            this.BtnPrint.UseVisualStyleBackColor = true;
+            this.BtnPrint.Click += new System.EventHandler(this.BtnPrint_Click);
             // 
-            // btnClose
+            // BtnClose
             // 
-            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnClose.Location = new System.Drawing.Point(577, 422);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(95, 30);
-            this.btnClose.TabIndex = 2;
-            this.btnClose.Text = "Close";
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            this.BtnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BtnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.BtnClose.Location = new System.Drawing.Point(577, 422);
+            this.BtnClose.Name = "BtnClose";
+            this.BtnClose.Size = new System.Drawing.Size(95, 30);
+            this.BtnClose.TabIndex = 2;
+            this.BtnClose.Text = "Close";
+            this.BtnClose.UseVisualStyleBackColor = true;
+            this.BtnClose.Click += new System.EventHandler(this.BtnClose_Click);
             // 
             // Purge_Button
             // 
@@ -76,11 +76,11 @@ namespace Admin_Tools
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnClose;
+            this.CancelButton = this.BtnClose;
             this.ClientSize = new System.Drawing.Size(684, 461);
             this.Controls.Add(this.Purge_Button);
-            this.Controls.Add(this.btnClose);
-            this.Controls.Add(this.btnPrint);
+            this.Controls.Add(this.BtnClose);
+            this.Controls.Add(this.BtnPrint);
             this.Controls.Add(this.txtOutput);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.MinimumSize = new System.Drawing.Size(420, 300);
@@ -96,8 +96,8 @@ namespace Admin_Tools
         #endregion
 
         private System.Windows.Forms.TextBox txtOutput;
-        private System.Windows.Forms.Button btnPrint;
-        private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button BtnPrint;
+        private System.Windows.Forms.Button BtnClose;
         private System.Windows.Forms.Button Purge_Button;
     }
 }

@@ -103,9 +103,9 @@ namespace Admin_Tools
                     Text = "Shadow Storage - no associations found "
                          + "(is System Protection on?)";
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show("Could not read shadow storage: " + ex.Message +
+                MessageBox.Show("Could not read shadow storage: " + Ex.Message +
                     "\n\nMake sure the app is running as Administrator.",
                     "Shadow Storage", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -163,7 +163,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Unit combo — Unbounded needs no number
         // --------------------------------------------------------
-        private void Cmb_Unit_Changed(object sender, EventArgs e)
+        private void Cmb_Unit_Changed(object Sender, EventArgs e)
         {
             numMax.Enabled = cmbUnit.SelectedItem == null
                 || cmbUnit.SelectedItem.ToString() != "Unbounded";
@@ -172,7 +172,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Apply resize via vssadmin
         // --------------------------------------------------------
-        private void Btn_Apply_Click(object sender, EventArgs e)
+        private void Btn_Apply_Click(object Sender, EventArgs e)
         {
             if (lvStorage.SelectedItems.Count == 0)
             {
@@ -280,9 +280,9 @@ namespace Admin_Tools
 
                 Load_Storage();
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show("Resize failed: " + ex.Message,
+                MessageBox.Show("Resize failed: " + Ex.Message,
                     "Apply Resize", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
@@ -291,12 +291,12 @@ namespace Admin_Tools
             }
         }
 
-        private void Btn_Refresh_Click(object sender, EventArgs e)
+        private void Btn_Refresh_Click(object Sender, EventArgs e)
         {
             Load_Storage();
         }
 
-        private void Btn_Close_Click(object sender, EventArgs e)
+        private void Btn_Close_Click(object Sender, EventArgs e)
         {
             Close();
         }

@@ -16,14 +16,9 @@
 //          f.ShowDialog(this);
 // ============================================================
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
 using System.Management;
 using System.Text;
-using System.Windows.Forms;
 using Microsoft.Win32;
 
 namespace Admin_Tools
@@ -39,10 +34,10 @@ namespace Admin_Tools
         private const string Task_Folder = @"\Microsoft\Windows\Registry";
         private const string Task_Name   = "RegIdleBackup";
 
-        private bool _regBackActive;
-        private bool _settingEnabled;
-        private int  _rpCount;
-        private int  _scCount;
+        private bool _RegBackActive;
+        private bool _SettingEnabled;
+        private int  _RpCount;
+        private int  _ScCount;
 
         public Registry_Backup_Form()
         {
@@ -77,7 +72,7 @@ namespace Admin_Tools
         {
             lvHives.BeginUpdate();
             lvHives.Items.Clear();
-            _regBackActive = false;
+            _RegBackActive = false;
 
             txtRegBackPath.Text = RegBack_Path;
 
@@ -90,47 +85,47 @@ namespace Admin_Tools
                     return;
                 }
 
-                long totalBytes = 0;
-                var files = Directory.GetFiles(RegBack_Path);
+                long TotalBytes = 0;
+                var Files = Directory.GetFiles(RegBack_Path);
 
-                foreach (var f in files)
+                foreach (var File in Files)
                 {
-                    var info = new FileInfo(f);
-                    totalBytes += info.Length;
+                    var Info = new FileInfo(File);
+                    TotalBytes += Info.Length;
 
-                    var item = new ListViewItem(info.Name);
-                    item.SubItems.Add(Format_Size(info.Length));
-                    item.SubItems.Add(info.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                    var Item = new ListViewItem(Info.Name);
+                    Item.SubItems.Add(Format_Size(Info.Length));
+                    Item.SubItems.Add(Info.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss"));
 
-                    if (info.Length == 0)
-                        item.ForeColor = Color.Gray;
+                    if (Info.Length == 0)
+                        Item.ForeColor = Color.Gray;
 
-                    lvHives.Items.Add(item);
+                    lvHives.Items.Add(Item);
                 }
 
-                _regBackActive = totalBytes > 0;
+                _RegBackActive = TotalBytes > 0;
 
-                if (files.Length == 0)
+                if (Files.Length == 0)
                     txtRegBackStatus.Text = "Folder is empty";
-                else if (_regBackActive)
+                else if (_RegBackActive)
                     txtRegBackStatus.Text = "ACTIVE - contains real backups ("
-                                            + Format_Size(totalBytes) + ")";
+                                            + Format_Size(TotalBytes) + ")";
                 else
                     txtRegBackStatus.Text = "INACTIVE - all files are 0 bytes";
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                txtRegBackStatus.Text = "Error: " + ex.Message;
+                txtRegBackStatus.Text = "Error: " + Ex.Message;
             }
 
             lvHives.EndUpdate();
         }
 
-        private static string Format_Size(long bytes)
+        private static string Format_Size(long Bytes)
         {
-            if (bytes == 0) return "0 bytes";
-            if (bytes < 1024 * 1024) return (bytes / 1024.0).ToString("0.0") + " KB";
-            return (bytes / (1024.0 * 1024.0)).ToString("0.0") + " MB";
+            if (Bytes == 0) return "0 bytes";
+            if (Bytes < 1024 * 1024) return (Bytes / 1024.0).ToString("0.0") + " KB";
+            return (Bytes / (1024.0 * 1024.0)).ToString("0.0") + " MB";
         }
 
         // --------------------------------------------------------
@@ -138,28 +133,28 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Check_Periodic_Setting()
         {
-            _settingEnabled = false;
+            _SettingEnabled = false;
             try
             {
-                object val = Registry.GetValue(Periodic_Key, "EnablePeriodicBackup", null);
+                object Val = Registry.GetValue(Periodic_Key, "EnablePeriodicBackup", null);
 
-                if (val == null)
+                if (Val == null)
                 {
                     txtPeriodic.Text = "Not set (Windows default = disabled)";
                 }
-                else if (Convert.ToInt32(val) == 1)
+                else if (Convert.ToInt32(Val) == 1)
                 {
-                    _settingEnabled = true;
+                    _SettingEnabled = true;
                     txtPeriodic.Text = "EnablePeriodicBackup = 1 (enabled)";
                 }
                 else
                 {
-                    txtPeriodic.Text = "EnablePeriodicBackup = " + val + " (disabled)";
+                    txtPeriodic.Text = "EnablePeriodicBackup = " + Val + " (disabled)";
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                txtPeriodic.Text = "Error: " + ex.Message;
+                txtPeriodic.Text = "Error: " + Ex.Message;
             }
         }
 
@@ -170,52 +165,52 @@ namespace Admin_Tools
         {
             try
             {
-                Type schedType = Type.GetTypeFromProgID("Schedule.Service");
-                dynamic service = Activator.CreateInstance(schedType);
-                service.Connect();
+                Type SchedType = Type.GetTypeFromProgID("Schedule.Service");
+                dynamic Service = Activator.CreateInstance(SchedType);
+                Service.Connect();
 
-                dynamic folder = service.GetFolder(Task_Folder);
-                dynamic task   = folder.GetTask(Task_Name);
+                dynamic Folder = Service.GetFolder(Task_Folder);
+                dynamic Task   = Folder.GetTask(Task_Name);
 
-                DateTime lastRun = task.LastRunTime;
-                DateTime nextRun = task.NextRunTime;
-                int      result  = task.LastTaskResult;
-                int      state   = task.State;
-                bool     enabled = task.Enabled;
+                DateTime LastRun = Task.LastRunTime;
+                DateTime NextRun = Task.NextRunTime;
+                int      Result  = Task.LastTaskResult;
+                int      State   = Task.State;
+                bool     Enabled = Task.Enabled;
 
-                txtTaskLastRun.Text = lastRun.Year < 2000
+                txtTaskLastRun.Text = LastRun.Year < 2000
                     ? "Never"
-                    : lastRun.ToString("yyyy-MM-dd HH:mm:ss");
+                    : LastRun.ToString("yyyy-MM-dd HH:mm:ss");
 
-                txtTaskNextRun.Text = nextRun.Year < 2000
+                txtTaskNextRun.Text = NextRun.Year < 2000
                     ? "Not scheduled (runs during automatic maintenance)"
-                    : nextRun.ToString("yyyy-MM-dd HH:mm:ss");
+                    : NextRun.ToString("yyyy-MM-dd HH:mm:ss");
 
-                txtTaskResult.Text = "0x" + result.ToString("X")
-                    + (result == 0 ? " (success)" : "");
+                txtTaskResult.Text = "0x" + Result.ToString("X")
+                    + (Result == 0 ? " (success)" : "");
 
-                txtTaskState.Text = Task_State_Name(state)
-                    + (enabled ? "" : "  [task disabled]");
+                txtTaskState.Text = Task_State_Name(State)
+                    + (Enabled ? "" : "  [task disabled]");
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
                 txtTaskLastRun.Text = "Task not found or inaccessible";
-                txtTaskResult.Text  = ex.Message;
+                txtTaskResult.Text  = Ex.Message;
                 txtTaskState.Text   = "";
                 txtTaskNextRun.Text = "";
             }
         }
 
-        private static string Task_State_Name(int state)
+        private static string Task_State_Name(int State)
         {
-            switch (state)
+            switch (State)
             {
                 case 0:  return "Unknown";
                 case 1:  return "Disabled";
                 case 2:  return "Queued";
                 case 3:  return "Ready";
                 case 4:  return "Running";
-                default: return "State " + state;
+                default: return "State " + State;
             }
         }
 
@@ -224,56 +219,56 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Check_Snapshots()
         {
-            _rpCount = 0;
-            _scCount = 0;
+            _RpCount = 0;
+            _ScCount = 0;
 
             // Restore points — reuse the manager
             try
             {
-                var points = Restore_Point_Manager.Get_Restore_Points();
-                _rpCount = points.Count;
+                var Restore_Points = Restore_Point_Manager.Get_Restore_Points();
+                _RpCount = Restore_Points.Count;
 
-                txtRpCount.Text = _rpCount.ToString();
-                txtRpNewest.Text = _rpCount == 0
+                txtRpCount.Text = _RpCount.ToString();
+                txtRpNewest.Text = _RpCount == 0
                     ? "—"
-                    : points[0].Creation_Time.ToString("yyyy-MM-dd HH:mm:ss")
-                      + "  (" + points[0].Description + ")";
+                    : Restore_Points[0].Creation_Time.ToString("yyyy-MM-dd HH:mm:ss")
+                      + "  (" + Restore_Points[0].Description + ")";
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
                 txtRpCount.Text  = "?";
-                txtRpNewest.Text = "Error: " + ex.Message;
+                txtRpNewest.Text = "Error: " + Ex.Message;
             }
 
             // Shadow copies
             try
             {
-                DateTime newest = DateTime.MinValue;
+                DateTime Newest = DateTime.MinValue;
 
-                using (var searcher = new ManagementObjectSearcher(
+                using (var Searcher = new ManagementObjectSearcher(
                     @"root\cimv2", "SELECT InstallDate FROM Win32_ShadowCopy"))
                 {
-                    foreach (ManagementObject mo in searcher.Get())
+                    foreach (ManagementObject Management_Object in Searcher.Get())
                     {
-                        _scCount++;
-                        object installDate = mo["InstallDate"];
-                        if (installDate == null) continue;
+                        _ScCount++;
+                        object InstallDate = Management_Object["InstallDate"];
+                        if (InstallDate == null) continue;
 
-                        DateTime created = ManagementDateTimeConverter
-                            .ToDateTime(installDate.ToString());
-                        if (created > newest) newest = created;
+                        DateTime Created = ManagementDateTimeConverter
+                            .ToDateTime(InstallDate.ToString());
+                        if (Created > Newest) Newest = Created;
                     }
                 }
 
-                txtScCount.Text = _scCount.ToString();
-                txtScNewest.Text = _scCount == 0
+                txtScCount.Text = _ScCount.ToString();
+                txtScNewest.Text = _ScCount == 0
                     ? "—"
-                    : newest.ToString("yyyy-MM-dd HH:mm:ss");
+                    : Newest.ToString("yyyy-MM-dd HH:mm:ss");
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
                 txtScCount.Text  = "?";
-                txtScNewest.Text = "Error: " + ex.Message;
+                txtScNewest.Text = "Error: " + Ex.Message;
             }
         }
 
@@ -282,50 +277,50 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Build_Verdict()
         {
-            var sb = new StringBuilder();
+            var String_Builder = new StringBuilder();
 
-            if (_regBackActive)
-                sb.Append("The built-in RegBack mechanism is working and holds real hive backups. ");
-            else if (_settingEnabled)
-                sb.Append("RegBack is enabled but the folder holds no data yet - it fills the next time " +
+            if (_RegBackActive)
+                String_Builder.Append("The built-in RegBack mechanism is working and holds real hive backups. ");
+            else if (_SettingEnabled)
+                String_Builder.Append("RegBack is enabled but the folder holds no data yet - it fills the next time " +
                           "RegIdleBackup runs (use Backup Now, then Refresh). ");
             else
-                sb.Append("The built-in RegBack mechanism is disabled (the Windows default since 10 v1803). ");
+                String_Builder.Append("The built-in RegBack mechanism is disabled (the Windows default since 10 v1803). ");
 
-            if (_rpCount > 0 || _scCount > 0)
+            if (_RpCount > 0 || _ScCount > 0)
             {
-                sb.Append("However, you have " + _rpCount + " restore point(s) and "
-                          + _scCount + " shadow cop" + (_scCount == 1 ? "y" : "ies")
+                String_Builder.Append("However, you have " + _RpCount + " restore point(s) and "
+                          + _ScCount + " shadow cop" + (_ScCount == 1 ? "y" : "ies")
                           + ", and every one of them contains a complete copy of the registry hives - "
                           + "so the registry IS backed up, as of each snapshot's timestamp.");
             }
             else
             {
-                sb.Append("No restore points or shadow copies exist either - the registry currently has "
+                String_Builder.Append("No restore points or shadow copies exist either - the registry currently has "
                           + "NO recoverable backups on this machine. Consider enabling RegBack and/or "
                           + "System Protection.");
             }
 
-            txtVerdict.Text = sb.ToString();
+            txtVerdict.Text = String_Builder.ToString();
         }
 
         // --------------------------------------------------------
         //  Buttons
         // --------------------------------------------------------
-        private void Btn_Refresh_Click(object sender, EventArgs e)
+        private void Btn_Refresh_Click(object Sender, EventArgs E)
         {
             Load_All();
         }
 
-        private void Btn_Enable_RegBack_Click(object sender, EventArgs e)
+        private void Btn_Enable_RegBack_Click(object Sender, EventArgs E)
         {
-            var answer = MessageBox.Show(
+            var Answer = MessageBox.Show(
                 "This sets EnablePeriodicBackup = 1 so Windows resumes copying the registry hives " +
                 "to the RegBack folder during automatic maintenance.\n\n" +
                 "The backups use roughly 100-300 MB. Proceed?",
                 "Enable RegBack", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-            if (answer != DialogResult.Yes) return;
+            if (Answer != DialogResult.Yes) return;
 
             try
             {
@@ -336,25 +331,25 @@ namespace Admin_Tools
                     "Enable RegBack", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 Load_All();
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show("Failed to write the registry value: " + ex.Message +
+                MessageBox.Show("Failed to write the registry value: " + Ex.Message +
                     "\n\nMake sure the app is running as Administrator.",
                     "Enable RegBack", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void Btn_Backup_Now_Click(object sender, EventArgs e)
+        private void Btn_Backup_Now_Click(object Sender, EventArgs E)
         {
             try
             {
-                Type schedType = Type.GetTypeFromProgID("Schedule.Service");
-                dynamic service = Activator.CreateInstance(schedType);
-                service.Connect();
+                Type SchedType = Type.GetTypeFromProgID("Schedule.Service");
+                dynamic Service = Activator.CreateInstance(SchedType);
+                Service.Connect();
 
-                dynamic folder = service.GetFolder(Task_Folder);
-                dynamic task   = folder.GetTask(Task_Name);
-                task.Run(null);
+                dynamic Folder = Service.GetFolder(Task_Folder);
+                dynamic Task   = Folder.GetTask(Task_Name);
+                Task.Run(null);
 
                 MessageBox.Show(
                     "RegIdleBackup started. It usually finishes within a few seconds - " +
@@ -363,27 +358,27 @@ namespace Admin_Tools
                     "runs but writes nothing.",
                     "Backup Now", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show("Could not run the task: " + ex.Message,
+                MessageBox.Show("Could not run the task: " + Ex.Message,
                     "Backup Now", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void Btn_Open_Folder_Click(object sender, EventArgs e)
+        private void Btn_Open_Folder_Click(object Sender, EventArgs E)
         {
             try
             {
                 Process.Start("explorer.exe", RegBack_Path);
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show("Could not open folder: " + ex.Message,
+                MessageBox.Show("Could not open folder: " + Ex.Message,
                     "Open Folder", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void Btn_Close_Click(object sender, EventArgs e)
+        private void Btn_Close_Click(object Sender, EventArgs E)
         {
             Close();
         }

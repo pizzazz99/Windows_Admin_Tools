@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 //  Remote_Access_Form.cs
 //  Diagnostics board for the remote-access stack (Tailscale +
 //  RustDesk). Mirrors Commands_Form: each app has its own
@@ -83,9 +83,9 @@ namespace Admin_Tools
                 Logger.Log("Command", commandLine);
                 await Command_Runner.Run_Command_Async(commandLine, txtOutput);
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                txtOutput.Text = ex.ToString();
+                txtOutput.Text = Ex.ToString();
             }
             finally
             {
@@ -111,47 +111,47 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Tailscale
         // --------------------------------------------------------
-        private async void btnTsStatus_Click(object sender, EventArgs e)
+        private async void BtnTsStatus_Click(object Sender, EventArgs e)
             => await Execute_App_Command_Async(External_App.Tailscale, "status");
 
-        private async void btnTsStatusJson_Click(object sender, EventArgs e)
+        private async void BtnTsStatusJson_Click(object Sender, EventArgs e)
             => await Execute_App_Command_Async(External_App.Tailscale, "status --json");
 
-        private async void btnTsIp_Click(object sender, EventArgs e)
+        private async void BtnTsIp_Click(object Sender, EventArgs e)
             => await Execute_App_Command_Async(External_App.Tailscale, "ip -4");
 
-        private async void btnTsNetcheck_Click(object sender, EventArgs e)
+        private async void BtnTsNetcheck_Click(object Sender, EventArgs e)
             => await Execute_App_Command_Async(External_App.Tailscale, "netcheck");
 
-        private async void btnTsDns_Click(object sender, EventArgs e)
+        private async void BtnTsDns_Click(object Sender, EventArgs e)
             => await Execute_App_Command_Async(External_App.Tailscale, "dns status");
 
         // "debug prefs" prints the current daemon preferences —
         // the closest thing to a Tailscale config dump that does
         // NOT expose the node's private key (that lives in the
         // protected tailscaled.state file, which we never read).
-        private async void btnTsPrefs_Click(object sender, EventArgs e)
+        private async void BtnTsPrefs_Click(object Sender, EventArgs e)
             => await Execute_App_Command_Async(External_App.Tailscale, "debug prefs");
 
-        private async void btnTsVersion_Click(object sender, EventArgs e)
+        private async void BtnTsVersion_Click(object Sender, EventArgs e)
             => await Execute_App_Command_Async(External_App.Tailscale, "version");
 
         // --------------------------------------------------------
         //  RustDesk
         // --------------------------------------------------------
-        private async void btnRdGetId_Click(object sender, EventArgs e)
+        private async void BtnRdGetId_Click(object Sender, EventArgs e)
             => await Execute_App_Command_Async(External_App.RustDesk, "--get-id");
 
-        private async void btnRdVersion_Click(object sender, EventArgs e)
+        private async void BtnRdVersion_Click(object Sender, EventArgs e)
             => await Execute_App_Command_Async(External_App.RustDesk, "--version");
 
         // Plain shell query — no exe path needed — but it lives in
         // the RustDesk group so it disables when RustDesk is absent.
-        private async void btnRdServiceStatus_Click(object sender, EventArgs e)
+        private async void BtnRdServiceStatus_Click(object Sender, EventArgs e)
             => await Run_Line_Async("sc query rustdesk");
 
         // Locally-read config (no shell); secrets are masked.
-        private void btnRdConfig_Click(object sender, EventArgs e)
+        private void BtnRdConfig_Click(object Sender, EventArgs e)
             => txtOutput.Text = Get_RustDesk_Config();
 
         // --------------------------------------------------------
@@ -159,7 +159,7 @@ namespace Admin_Tools
         //  with Windows). Opens a picker where the user can select
         //  a discovered PC or type any hostname / IP address.
         // --------------------------------------------------------
-        private void btnRdpConnect_Click(object sender, EventArgs e)
+        private void BtnRdpConnect_Click(object Sender, EventArgs e)
         {
             using (var dlg = new Remote_Desktop_Dialog())
             {
@@ -217,9 +217,9 @@ namespace Admin_Tools
                             sb.AppendLine(Mask_If_Sensitive(line));
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception Ex)
                     {
-                        sb.AppendLine("  (could not read: " + ex.Message + ")");
+                        sb.AppendLine("  (could not read: " + Ex.Message + ")");
                     }
                     sb.AppendLine();
                 }
@@ -257,18 +257,18 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Output pane buttons
         // --------------------------------------------------------
-        private void Btn_Clear_Click(object sender, EventArgs e)
+        private void Btn_Clear_Click(object Sender, EventArgs e)
         {
             txtOutput.Clear();
         }
 
-        private void Btn_Copy_All_Click(object sender, EventArgs e)
+        private void Btn_Copy_All_Click(object Sender, EventArgs e)
         {
             if (txtOutput.TextLength == 0) return;
             Clipboard.SetText(txtOutput.Text);
         }
 
-        private void Btn_Save_Click(object sender, EventArgs e)
+        private void Btn_Save_Click(object Sender, EventArgs e)
         {
             if (txtOutput.TextLength == 0) return;
 
@@ -284,15 +284,15 @@ namespace Admin_Tools
                 {
                     File.WriteAllText(dialog.FileName, txtOutput.Text);
                 }
-                catch (Exception ex)
+                catch (Exception Ex)
                 {
-                    MessageBox.Show(this, "Could not save the file:\n" + ex.Message,
+                    MessageBox.Show(this, "Could not save the file:\n" + Ex.Message,
                         "Remote Access Tools", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
 
-        private void Btn_Close_Click(object sender, EventArgs e)
+        private void Btn_Close_Click(object Sender, EventArgs e)
         {
             Close();
         }

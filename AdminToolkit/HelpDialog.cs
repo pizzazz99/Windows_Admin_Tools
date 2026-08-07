@@ -5,122 +5,107 @@ using System.Windows.Forms;
 
 namespace Admin_Tools
 {
-    /// <summary>
-    /// Read-only, styled help panel describing the app and when to use each
-    /// function. Section headers are detected by the dashed rule beneath them,
-    /// so if you edit HelpText keep the ---- underline under any new heading.
-    /// </summary>
-    public class HelpDialog : Form
+  /// <summary>
+  /// Read-only, styled help panel describing the app and when to use each
+  /// function. Section headers are detected by the dashed rule beneath them,
+  /// so if you edit HelpText keep the ---- underline under any new heading.
+  /// </summary>
+  public class HelpDialog : Form
+  {
+    public HelpDialog()
     {
-        public HelpDialog()
+      Text          = "Admin Toolkit — Help & Reference";
+      StartPosition = FormStartPosition.CenterParent;
+      ClientSize    = new Size( 700, 640 );
+      MinimumSize   = new Size( 520, 400 );
+
+      var box = new RichTextBox { Dock        = DockStyle.Fill,
+                                  ReadOnly    = true,
+                                  BorderStyle = BorderStyle.None,
+                                  Font        = new Font( "Consolas", 9.5f ),
+                                  WordWrap    = false, // text is pre-wrapped; keeps offsets stable
+                                  DetectUrls  = false,
+                                  Text        = HelpText };
+      ApplyStyles( box );
+      box.Select( 0, 0 );
+
+      var host = new Panel { Dock = DockStyle.Fill, Padding = new Padding( 30, 14, 8, 0 ) };
+      host.Controls.Add( box );
+
+      var close  = new Button { Text = "Close", DialogResult = DialogResult.OK, Width = 90, Height = 30 };
+      var bottom = new FlowLayoutPanel { Dock = DockStyle.Bottom, FlowDirection = FlowDirection.RightToLeft, Height = 48, Padding = new Padding( 10 ) };
+      bottom.Controls.Add( close );
+
+      Controls.Add( host );
+      Controls.Add( bottom );
+      AcceptButton = close;
+      CancelButton = close;
+    }
+
+    private static void ApplyStyles( RichTextBox box )
+    {
+      Color accent    = Color.FromArgb( 0, 90, 158 );    // section headers
+      Color separator = Color.FromArgb( 180, 180, 180 ); // ==== / ---- rules
+      Color warn      = Color.FromArgb( 176, 0, 32 );    // caveat block
+      Color subhead   = Color.FromArgb( 70, 70, 70 );    // inline sub-labels
+
+      Font  baseFont  = box.Font;
+      Font  boldFont  = new Font( baseFont, FontStyle.Bold );
+      Font  titleFont = new Font( baseFont.FontFamily, baseFont.Size + 4f, FontStyle.Bold );
+
+      string[ ] subheadLabels = { "WHEN TO USE", "MULTI-DRIVE NOTE", "SYSTEM-DRIVE RULE", "RECOVERY NOTE", "INSTALL WORKFLOW", "THE CATCH", "DETECTION NOTE", "SECURITY NOTE" };
+
+      string[ ] lines = box.Lines;
+      bool inCaveats  = false;
+
+      for ( int i = 0; i < lines.Length; i++ )
+      {
+        string line  = lines[ i ];
+        int    start = box.GetFirstCharIndexFromLine( i );
+        if ( start < 0 )
+          continue;
+
+        string trimmed    = line.Trim();
+        bool   isRule     = trimmed.Length > 0 && trimmed.All( c => c == '-' || c == '=' );
+        bool   nextIsRule = i + 1 < lines.Length && lines[ i + 1 ].Trim().Length > 0 && lines[ i + 1 ].Trim().All( c => c == '-' || c == '=' );
+
+        if ( trimmed.StartsWith( "IMPORTANT CAVEATS" ) )
+          inCaveats = true;
+        else if ( nextIsRule && i != 0 )
+          inCaveats = false;
+
+        box.Select( start, line.Length );
+
+        if ( i == 0 ) // main title
         {
-            Text = "Admin Toolkit — Help & Reference";
-            StartPosition = FormStartPosition.CenterParent;
-            ClientSize = new Size(700, 640);
-            MinimumSize = new Size(520, 400);
-
-            var box = new RichTextBox
-            {
-                Dock = DockStyle.Fill,
-                ReadOnly = true,
-                BorderStyle = BorderStyle.None,
-                Font = new Font("Consolas", 9.5f),
-                WordWrap = false,          // text is pre-wrapped; keeps offsets stable
-                DetectUrls = false,
-                Text = HelpText
-            };
-            ApplyStyles(box);
-            box.Select(0, 0);
-
-            var host = new Panel { Dock = DockStyle.Fill, Padding = new Padding(30, 14, 8, 0) };
-            host.Controls.Add(box);
-
-            var close = new Button { Text = "Close", DialogResult = DialogResult.OK, Width = 90, Height = 30 };
-            var bottom = new FlowLayoutPanel
-            {
-                Dock = DockStyle.Bottom,
-                FlowDirection = FlowDirection.RightToLeft,
-                Height = 48,
-                Padding = new Padding(10)
-            };
-            bottom.Controls.Add(close);
-
-            Controls.Add(host);
-            Controls.Add(bottom);
-            AcceptButton = close;
-            CancelButton = close;
+          box.SelectionFont  = titleFont;
+          box.SelectionColor = accent;
         }
-
-        private static void ApplyStyles(RichTextBox box)
+        else if ( isRule ) // separator lines
         {
-            Color accent = Color.FromArgb(0, 90, 158);     // section headers
-            Color separator = Color.FromArgb(180, 180, 180);  // ==== / ---- rules
-            Color warn = Color.FromArgb(176, 0, 32);      // caveat block
-            Color subhead = Color.FromArgb(70, 70, 70);      // inline sub-labels
-
-            Font baseFont = box.Font;
-            Font boldFont = new Font(baseFont, FontStyle.Bold);
-            Font titleFont = new Font(baseFont.FontFamily, baseFont.Size + 4f, FontStyle.Bold);
-
-            string[] subheadLabels =
-            {
-                "WHEN TO USE", "MULTI-DRIVE NOTE", "SYSTEM-DRIVE RULE",
-                "RECOVERY NOTE", "INSTALL WORKFLOW", "THE CATCH",
-                "DETECTION NOTE", "SECURITY NOTE"
-            };
-
-            string[] lines = box.Lines;
-            bool inCaveats = false;
-
-            for (int i = 0; i < lines.Length; i++)
-            {
-                string line = lines[i];
-                int start = box.GetFirstCharIndexFromLine(i);
-                if (start < 0) continue;
-
-                string trimmed = line.Trim();
-                bool isRule = trimmed.Length > 0 &&
-                              trimmed.All(c => c == '-' || c == '=');
-                bool nextIsRule = i + 1 < lines.Length &&
-                                  lines[i + 1].Trim().Length > 0 &&
-                                  lines[i + 1].Trim().All(c => c == '-' || c == '=');
-
-                if (trimmed.StartsWith("IMPORTANT CAVEATS")) inCaveats = true;
-                else if (nextIsRule && i != 0) inCaveats = false;
-
-                box.Select(start, line.Length);
-
-                if (i == 0)                                   // main title
-                {
-                    box.SelectionFont = titleFont;
-                    box.SelectionColor = accent;
-                }
-                else if (isRule)                              // separator lines
-                {
-                    box.SelectionColor = separator;
-                }
-                else if (nextIsRule)                          // section headers
-                {
-                    box.SelectionFont = boldFont;
-                    box.SelectionColor = accent;
-                }
-                else if (inCaveats && trimmed.Length > 0)     // whole caveat block
-                {
-                    box.SelectionColor = warn;
-                }
-                else if (subheadLabels.Any(s => trimmed.StartsWith(s)))
-                {
-                    box.SelectionFont = boldFont;
-                    box.SelectionColor = subhead;
-                }
-            }
-
-            box.Select(0, 0);
-            box.SelectionColor = box.ForeColor;   // reset caret color
+          box.SelectionColor = separator;
         }
+        else if ( nextIsRule ) // section headers
+        {
+          box.SelectionFont  = boldFont;
+          box.SelectionColor = accent;
+        }
+        else if ( inCaveats && trimmed.Length > 0 ) // whole caveat block
+        {
+          box.SelectionColor = warn;
+        }
+        else if ( subheadLabels.Any( s => trimmed.StartsWith( s ) ) )
+        {
+          box.SelectionFont  = boldFont;
+          box.SelectionColor = subhead;
+        }
+      }
 
-        private const string HelpText =
-@"ADMIN TOOLKIT — HELP & REFERENCE
+      box.Select( 0, 0 );
+      box.SelectionColor = box.ForeColor; // reset caret color
+    }
+
+    private const string HelpText = @"ADMIN TOOLKIT — HELP & REFERENCE
 ================================================================
 
 OVERVIEW
@@ -492,5 +477,5 @@ IMPORTANT CAVEATS
     Desktop picker works the same way whether the target is on
     your LAN or only reachable over the tailnet.
 ";
-    }
+  }
 }

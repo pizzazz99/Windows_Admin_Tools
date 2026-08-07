@@ -76,8 +76,23 @@ A full System Restore point manager built on the WMI `SystemRestore` class, goin
 - **Raw vssadmin view** — one click shows `vssadmin list shadows` output filtered to the selected snapshot (`/shadow={ID}`), or all snapshots when nothing is selected. Detail windows are modeless, so the WMI-based details and the vssadmin output for the same snapshot can be compared side by side
 - **Registry Backup** — dedicated registry backup window
 
+### Printer management
+A dedicated window (**Printers** on the main form) for auditing and troubleshooting every printer Windows knows about — not just what the standard "Printers & Scanners" settings page shows.
+
+- Full list of installed printers pulled from WMI `Win32_Printer`, including virtual/software printers (Print to PDF, XPS Document Writer, Fax, Send to OneNote, remote-session printers like RustDesk) — hideable with a checkbox since they're rarely what you're troubleshooting
+- **Printer Details** — a full per-printer dump (driver, port, server, WMI status/state, resolution, capabilities) plus its resolved network address, in one text window
+- **IP Address column**, resolved through a layered fallback chain — Windows caches printer addresses inconsistently depending on how each printer was installed:
+  1. `MSFT_PrinterPort` (the modern print-port WMI class; covers WSD ports)
+  2. Classic `Win32_TCPIPPrinterPort`
+  3. Address embedded in the port name itself (`IP_192.168.1.5`, `LAN_192.168.1.5`, etc.)
+  4. Address embedded in the printer's `Location` field, which Windows auto-populates for WSD-discovered printers — handles IPv4, IPv6 link-local addresses, and hostnames alike
+  5. Last resort for WSD printers Windows never cached an address for: the WSD port's registry-stored device UUID is used to look up the linked `SWD\IPP\<uuid>` PnP device node, whose cached IPP/AirPrint properties hold the live address
+- **Live column** — a real reachability check, not just WMI's last-known status. Probes the standard print ports (9100 RAW/JetDirect, 631 IPP, 515 LPR) before falling back to ICMP ping, since many printers and their firewalls block ping while still accepting print jobs. Shown in green (online) / red (offline); resolved in the background so the list appears instantly instead of blocking on network I/O
+- **Wake / Retry** — for a printer showing offline, retries the connectivity check with a longer timeout and repeated attempts. A plain connection attempt is often enough to nudge a sleeping printer's network stack awake; true Wake-on-LAN isn't implemented, since most printers' print engines don't actually listen for a magic packet even when their NIC supports it at the hardware level
+- **Check Ink / Toner Levels** — queries supply levels over SNMP (Printer-MIB / RFC 3805) for any printer with a resolved network address, using a minimal self-contained SNMPv1 client (no external library, no vendor tooling required). Local/USB printers have no OS-level supply API, so this only works for network-reachable devices that answer SNMP (community `public` by default)
+
 ### Multi-window workflow
-Tool windows (Restore Points, Snapshot Operations, Registry Backup) open modeless, so the main window and several tool windows can be used simultaneously. Each launcher button disables while its window is open — a built-in "already open" indicator — and re-enables when the window closes.
+Tool windows (Restore Points, Snapshot Operations, Registry Backup, Printers) open modeless, so the main window and several tool windows can be used simultaneously. Each launcher button disables while its window is open — a built-in "already open" indicator — and re-enables when the window closes.
 
 ### Activity log
 Everything the Toolkit does — launches, kills, snapshot operations, emails — is written to a per-machine activity log.
@@ -99,6 +114,7 @@ On startup the app checks whether it's running as Administrator. If not, a red b
 - **To build:** Visual Studio 2022 or 2026 with the .NET 10 SDK (the project uses the SDK-style format and targets `net10.0-windows`)
 - **Administrator rights** for snapshot, VSS, restore point, and scheduled-task features (the app runs without elevation, but those features will fail)
 - NTFS fixed drives for shadow-copy protection
+- Outbound UDP 161 (SNMP) reachable to a printer for the ink/toner supply-level check; outbound TCP 9100/631/515 (or ICMP) for the printer online/offline check
 
 ## Getting Started
 
@@ -127,6 +143,9 @@ Or in Visual Studio: right-click the project → **Publish** → Folder target, 
 - Restore point creation calls `SystemRestore.CreateRestorePoint` via WMI; deletion uses `SRRemoveRestorePoint` from `srclient.dll`. The creation throttle is read from and written to `HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\SystemRestore\SystemRestorePointCreationFrequency`.
 - Snapshot browsing creates a directory symlink (`Directory.CreateSymbolicLink`, .NET 6+) pointing at the shadow copy's `\\?\GLOBALROOT\Device\HarddiskVolumeShadowCopyNN` device object. Deleting the symlink removes only the link — the snapshot is untouched.
 - Shadow storage figures come from the `Win32_ShadowStorage` WMI class (equivalent to `vssadmin list shadowstorage`).
+- Printer supply levels are read with a hand-rolled SNMPv1 client (`Printer_Support`'s internal `Snmp` class) that does its own BER encode/decode of GET-NEXT requests over UDP — enough to walk the standard Printer-MIB supplies table without pulling in a third-party SNMP library.
+- Printer online/offline is a real network probe (`TcpClient.BeginConnect` against ports 9100/631/515, falling back to `Ping`), not a read of WMI's cached `PrinterStatus`/`WorkOffline`, which only reflects Windows' last-known state.
+- When no WMI or registry source has a printer's address, the WSD port's device UUID (`HKLM\SYSTEM\CurrentControlSet\Control\Print\Monitors\WSD Port\Ports\<PortName>`) is used to query the linked `SWD\IPP\<uuid>` PnP device node via `Get-PnpDeviceProperty`, since that property store has no WMI or plain-registry equivalent.
 
 ## A note on restore points as a safety net
 
@@ -280,4 +299,4 @@ point, and no click leaves any trace in the system configuration.**
 
 ## License
 
-TBD — add your preferred license (MIT is a common choice for utilities like this).
+Opensource

@@ -37,10 +37,10 @@ namespace Admin_Tools
             this.lblNewMax = new System.Windows.Forms.Label();
             this.numMax = new System.Windows.Forms.NumericUpDown();
             this.cmbUnit = new System.Windows.Forms.ComboBox();
-            this.btnApply = new System.Windows.Forms.Button();
+            this.BtnApply = new System.Windows.Forms.Button();
             this.lblHint = new System.Windows.Forms.Label();
-            this.btnRefresh = new System.Windows.Forms.Button();
-            this.btnClose = new System.Windows.Forms.Button();
+            this.BtnRefresh = new System.Windows.Forms.Button();
+            this.BtnClose = new System.Windows.Forms.Button();
             this.grpResize.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMax)).BeginInit();
             this.SuspendLayout();
@@ -90,7 +90,7 @@ namespace Admin_Tools
             this.grpResize.Controls.Add(this.lblNewMax);
             this.grpResize.Controls.Add(this.numMax);
             this.grpResize.Controls.Add(this.cmbUnit);
-            this.grpResize.Controls.Add(this.btnApply);
+            this.grpResize.Controls.Add(this.BtnApply);
             this.grpResize.Controls.Add(this.lblHint);
             this.grpResize.Location = new System.Drawing.Point(12, 222);
             this.grpResize.Name = "grpResize";
@@ -126,15 +126,15 @@ namespace Admin_Tools
             this.cmbUnit.TabIndex = 2;
             this.cmbUnit.SelectedIndexChanged += new System.EventHandler(this.Cmb_Unit_Changed);
             // 
-            // btnApply
+            // BtnApply
             // 
-            this.btnApply.Location = new System.Drawing.Point(312, 25);
-            this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(120, 28);
-            this.btnApply.TabIndex = 3;
-            this.btnApply.Text = "Apply Resize";
-            this.btnApply.UseVisualStyleBackColor = true;
-            this.btnApply.Click += new System.EventHandler(this.Btn_Apply_Click);
+            this.BtnApply.Location = new System.Drawing.Point(312, 25);
+            this.BtnApply.Name = "BtnApply";
+            this.BtnApply.Size = new System.Drawing.Size(120, 28);
+            this.BtnApply.TabIndex = 3;
+            this.BtnApply.Text = "Apply Resize";
+            this.BtnApply.UseVisualStyleBackColor = true;
+            this.BtnApply.Click += new System.EventHandler(this.Btn_Apply_Click);
             // 
             // lblHint
             // 
@@ -147,38 +147,38 @@ namespace Admin_Tools
                 "allocation back to the drive. This is the supported way to reclaim disk " +
                 "space from shadow storage. There is no undo for the deleted snapshots.";
             // 
-            // btnRefresh
+            // BtnRefresh
             // 
-            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRefresh.Location = new System.Drawing.Point(12, 360);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(100, 28);
-            this.btnRefresh.TabIndex = 2;
-            this.btnRefresh.Text = "Refresh";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.Btn_Refresh_Click);
+            this.BtnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnRefresh.Location = new System.Drawing.Point(12, 360);
+            this.BtnRefresh.Name = "BtnRefresh";
+            this.BtnRefresh.Size = new System.Drawing.Size(100, 28);
+            this.BtnRefresh.TabIndex = 2;
+            this.BtnRefresh.Text = "Refresh";
+            this.BtnRefresh.UseVisualStyleBackColor = true;
+            this.BtnRefresh.Click += new System.EventHandler(this.Btn_Refresh_Click);
             // 
-            // btnClose
+            // BtnClose
             // 
-            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(682, 360);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(90, 28);
-            this.btnClose.TabIndex = 3;
-            this.btnClose.Text = "Close";
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.Btn_Close_Click);
+            this.BtnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BtnClose.Location = new System.Drawing.Point(682, 360);
+            this.BtnClose.Name = "BtnClose";
+            this.BtnClose.Size = new System.Drawing.Size(90, 28);
+            this.BtnClose.TabIndex = 3;
+            this.BtnClose.Text = "Close";
+            this.BtnClose.UseVisualStyleBackColor = true;
+            this.BtnClose.Click += new System.EventHandler(this.Btn_Close_Click);
             // 
             // Storage_Reclaim_Form
             // 
-            this.AcceptButton = this.btnClose;
+            this.AcceptButton = this.BtnClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 400);
             this.Controls.Add(this.lvStorage);
             this.Controls.Add(this.grpResize);
-            this.Controls.Add(this.btnRefresh);
-            this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.BtnRefresh);
+            this.Controls.Add(this.BtnClose);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(800, 439);
@@ -204,9 +204,9 @@ namespace Admin_Tools
         private System.Windows.Forms.Label lblNewMax;
         private System.Windows.Forms.NumericUpDown numMax;
         private System.Windows.Forms.ComboBox cmbUnit;
-        private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.Button BtnApply;
         private System.Windows.Forms.Label lblHint;
-        private System.Windows.Forms.Button btnRefresh;
-        private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button BtnRefresh;
+        private System.Windows.Forms.Button BtnClose;
     }
 }

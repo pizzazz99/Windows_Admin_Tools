@@ -34,16 +34,16 @@ namespace Admin_Tools
             this.colType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colShadowId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lblSummary = new System.Windows.Forms.Label();
-            this.btnRefresh = new System.Windows.Forms.Button();
-            this.btnCreate = new System.Windows.Forms.Button();
+            this.BtnRefresh = new System.Windows.Forms.Button();
+            this.BtnCreate = new System.Windows.Forms.Button();
             this.lblDrive = new System.Windows.Forms.Label();
             this.cmbDrive = new System.Windows.Forms.ComboBox();
-            this.btnDetails = new System.Windows.Forms.Button();
-            this.btnVssAdmin = new System.Windows.Forms.Button();
-            this.btnDeleteSelected = new System.Windows.Forms.Button();
-            this.btnDeleteOlder = new System.Windows.Forms.Button();
-            this.btnKeepNewest = new System.Windows.Forms.Button();
-            this.btnClose = new System.Windows.Forms.Button();
+            this.BtnDetails = new System.Windows.Forms.Button();
+            this.BtnVssAdmin = new System.Windows.Forms.Button();
+            this.BtnDeleteSelected = new System.Windows.Forms.Button();
+            this.BtnDeleteOlder = new System.Windows.Forms.Button();
+            this.BtnKeepNewest = new System.Windows.Forms.Button();
+            this.BtnClose = new System.Windows.Forms.Button();
             this.Reclaim_Space_Button = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -105,27 +105,27 @@ namespace Admin_Tools
             this.lblSummary.TabIndex = 1;
             this.lblSummary.Text = "Loading...";
             // 
-            // btnRefresh
+            // BtnRefresh
             // 
-            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRefresh.Location = new System.Drawing.Point(12, 476);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(100, 28);
-            this.btnRefresh.TabIndex = 2;
-            this.btnRefresh.Text = "Refresh";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.Btn_Refresh_Click);
+            this.BtnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnRefresh.Location = new System.Drawing.Point(12, 476);
+            this.BtnRefresh.Name = "BtnRefresh";
+            this.BtnRefresh.Size = new System.Drawing.Size(100, 28);
+            this.BtnRefresh.TabIndex = 2;
+            this.BtnRefresh.Text = "Refresh";
+            this.BtnRefresh.UseVisualStyleBackColor = true;
+            this.BtnRefresh.Click += new System.EventHandler(this.Btn_Refresh_Click);
             // 
-            // btnCreate
+            // BtnCreate
             // 
-            this.btnCreate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCreate.Location = new System.Drawing.Point(118, 476);
-            this.btnCreate.Name = "btnCreate";
-            this.btnCreate.Size = new System.Drawing.Size(160, 28);
-            this.btnCreate.TabIndex = 3;
-            this.btnCreate.Text = "Create Snapshot Now";
-            this.btnCreate.UseVisualStyleBackColor = true;
-            this.btnCreate.Click += new System.EventHandler(this.Btn_Create_Click);
+            this.BtnCreate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnCreate.Location = new System.Drawing.Point(118, 476);
+            this.BtnCreate.Name = "BtnCreate";
+            this.BtnCreate.Size = new System.Drawing.Size(160, 28);
+            this.BtnCreate.TabIndex = 3;
+            this.BtnCreate.Text = "Create Snapshot Now";
+            this.BtnCreate.UseVisualStyleBackColor = true;
+            this.BtnCreate.Click += new System.EventHandler(this.Btn_Create_Click);
             // 
             // lblDrive
             // 
@@ -146,71 +146,71 @@ namespace Admin_Tools
             this.cmbDrive.Size = new System.Drawing.Size(60, 23);
             this.cmbDrive.TabIndex = 4;
             // 
-            // btnDetails
+            // BtnDetails
             // 
-            this.btnDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDetails.Location = new System.Drawing.Point(425, 476);
-            this.btnDetails.Name = "btnDetails";
-            this.btnDetails.Size = new System.Drawing.Size(130, 28);
-            this.btnDetails.TabIndex = 5;
-            this.btnDetails.Text = "Snapshot Details";
-            this.btnDetails.UseVisualStyleBackColor = true;
-            this.btnDetails.Click += new System.EventHandler(this.Btn_Details_Click);
+            this.BtnDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnDetails.Location = new System.Drawing.Point(425, 476);
+            this.BtnDetails.Name = "BtnDetails";
+            this.BtnDetails.Size = new System.Drawing.Size(130, 28);
+            this.BtnDetails.TabIndex = 5;
+            this.BtnDetails.Text = "Snapshot Details";
+            this.BtnDetails.UseVisualStyleBackColor = true;
+            this.BtnDetails.Click += new System.EventHandler(this.Btn_Details_Click);
             // 
-            // btnVssAdmin
+            // BtnVssAdmin
             // 
-            this.btnVssAdmin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnVssAdmin.Location = new System.Drawing.Point(561, 476);
-            this.btnVssAdmin.Name = "btnVssAdmin";
-            this.btnVssAdmin.Size = new System.Drawing.Size(160, 28);
-            this.btnVssAdmin.TabIndex = 6;
-            this.btnVssAdmin.Text = "VSS Details (vssadmin)";
-            this.btnVssAdmin.UseVisualStyleBackColor = true;
-            this.btnVssAdmin.Click += new System.EventHandler(this.Btn_VssAdmin_Click);
+            this.BtnVssAdmin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnVssAdmin.Location = new System.Drawing.Point(561, 476);
+            this.BtnVssAdmin.Name = "BtnVssAdmin";
+            this.BtnVssAdmin.Size = new System.Drawing.Size(160, 28);
+            this.BtnVssAdmin.TabIndex = 6;
+            this.BtnVssAdmin.Text = "VSS Details (vssadmin)";
+            this.BtnVssAdmin.UseVisualStyleBackColor = true;
+            this.BtnVssAdmin.Click += new System.EventHandler(this.Btn_VssAdmin_Click);
             // 
-            // btnDeleteSelected
+            // BtnDeleteSelected
             // 
-            this.btnDeleteSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDeleteSelected.Location = new System.Drawing.Point(12, 514);
-            this.btnDeleteSelected.Name = "btnDeleteSelected";
-            this.btnDeleteSelected.Size = new System.Drawing.Size(130, 28);
-            this.btnDeleteSelected.TabIndex = 7;
-            this.btnDeleteSelected.Text = "Delete Selected";
-            this.btnDeleteSelected.UseVisualStyleBackColor = true;
-            this.btnDeleteSelected.Click += new System.EventHandler(this.Btn_Delete_Selected_Click);
+            this.BtnDeleteSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnDeleteSelected.Location = new System.Drawing.Point(12, 514);
+            this.BtnDeleteSelected.Name = "BtnDeleteSelected";
+            this.BtnDeleteSelected.Size = new System.Drawing.Size(130, 28);
+            this.BtnDeleteSelected.TabIndex = 7;
+            this.BtnDeleteSelected.Text = "Delete Selected";
+            this.BtnDeleteSelected.UseVisualStyleBackColor = true;
+            this.BtnDeleteSelected.Click += new System.EventHandler(this.Btn_Delete_Selected_Click);
             // 
-            // btnDeleteOlder
+            // BtnDeleteOlder
             // 
-            this.btnDeleteOlder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDeleteOlder.Location = new System.Drawing.Point(148, 514);
-            this.btnDeleteOlder.Name = "btnDeleteOlder";
-            this.btnDeleteOlder.Size = new System.Drawing.Size(150, 28);
-            this.btnDeleteOlder.TabIndex = 8;
-            this.btnDeleteOlder.Text = "Delete Older Than...";
-            this.btnDeleteOlder.UseVisualStyleBackColor = true;
-            this.btnDeleteOlder.Click += new System.EventHandler(this.Btn_Delete_Older_Click);
+            this.BtnDeleteOlder.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnDeleteOlder.Location = new System.Drawing.Point(148, 514);
+            this.BtnDeleteOlder.Name = "BtnDeleteOlder";
+            this.BtnDeleteOlder.Size = new System.Drawing.Size(150, 28);
+            this.BtnDeleteOlder.TabIndex = 8;
+            this.BtnDeleteOlder.Text = "Delete Older Than...";
+            this.BtnDeleteOlder.UseVisualStyleBackColor = true;
+            this.BtnDeleteOlder.Click += new System.EventHandler(this.Btn_Delete_Older_Click);
             // 
-            // btnKeepNewest
+            // BtnKeepNewest
             // 
-            this.btnKeepNewest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnKeepNewest.Location = new System.Drawing.Point(304, 514);
-            this.btnKeepNewest.Name = "btnKeepNewest";
-            this.btnKeepNewest.Size = new System.Drawing.Size(130, 28);
-            this.btnKeepNewest.TabIndex = 9;
-            this.btnKeepNewest.Text = "Keep Newest...";
-            this.btnKeepNewest.UseVisualStyleBackColor = true;
-            this.btnKeepNewest.Click += new System.EventHandler(this.Btn_Keep_Newest_Click);
+            this.BtnKeepNewest.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.BtnKeepNewest.Location = new System.Drawing.Point(304, 514);
+            this.BtnKeepNewest.Name = "BtnKeepNewest";
+            this.BtnKeepNewest.Size = new System.Drawing.Size(130, 28);
+            this.BtnKeepNewest.TabIndex = 9;
+            this.BtnKeepNewest.Text = "Keep Newest...";
+            this.BtnKeepNewest.UseVisualStyleBackColor = true;
+            this.BtnKeepNewest.Click += new System.EventHandler(this.Btn_Keep_Newest_Click);
             // 
-            // btnClose
+            // BtnClose
             // 
-            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnClose.Location = new System.Drawing.Point(882, 514);
-            this.btnClose.Name = "btnClose";
-            this.btnClose.Size = new System.Drawing.Size(90, 28);
-            this.btnClose.TabIndex = 10;
-            this.btnClose.Text = "Close";
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.Btn_Close_Click);
+            this.BtnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.BtnClose.Location = new System.Drawing.Point(882, 514);
+            this.BtnClose.Name = "BtnClose";
+            this.BtnClose.Size = new System.Drawing.Size(90, 28);
+            this.BtnClose.TabIndex = 10;
+            this.BtnClose.Text = "Close";
+            this.BtnClose.UseVisualStyleBackColor = true;
+            this.BtnClose.Click += new System.EventHandler(this.Btn_Close_Click);
             // 
             // Reclaim_Space_Button
             // 
@@ -225,23 +225,23 @@ namespace Admin_Tools
             // 
             // Shadow_Copy_Form
             // 
-            this.AcceptButton = this.btnClose;
+            this.AcceptButton = this.BtnClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(984, 554);
             this.Controls.Add(this.Reclaim_Space_Button);
             this.Controls.Add(this.lvSnapshots);
             this.Controls.Add(this.lblSummary);
-            this.Controls.Add(this.btnRefresh);
-            this.Controls.Add(this.btnCreate);
+            this.Controls.Add(this.BtnRefresh);
+            this.Controls.Add(this.BtnCreate);
             this.Controls.Add(this.lblDrive);
             this.Controls.Add(this.cmbDrive);
-            this.Controls.Add(this.btnDetails);
-            this.Controls.Add(this.btnVssAdmin);
-            this.Controls.Add(this.btnDeleteSelected);
-            this.Controls.Add(this.btnDeleteOlder);
-            this.Controls.Add(this.btnKeepNewest);
-            this.Controls.Add(this.btnClose);
+            this.Controls.Add(this.BtnDetails);
+            this.Controls.Add(this.BtnVssAdmin);
+            this.Controls.Add(this.BtnDeleteSelected);
+            this.Controls.Add(this.BtnDeleteOlder);
+            this.Controls.Add(this.BtnKeepNewest);
+            this.Controls.Add(this.BtnClose);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(1000, 593);
@@ -263,16 +263,16 @@ namespace Admin_Tools
         private System.Windows.Forms.ColumnHeader colType;
         private System.Windows.Forms.ColumnHeader colShadowId;
         private System.Windows.Forms.Label lblSummary;
-        private System.Windows.Forms.Button btnRefresh;
-        private System.Windows.Forms.Button btnCreate;
+        private System.Windows.Forms.Button BtnRefresh;
+        private System.Windows.Forms.Button BtnCreate;
         private System.Windows.Forms.Label lblDrive;
         private System.Windows.Forms.ComboBox cmbDrive;
-        private System.Windows.Forms.Button btnDetails;
-        private System.Windows.Forms.Button btnVssAdmin;
-        private System.Windows.Forms.Button btnDeleteSelected;
-        private System.Windows.Forms.Button btnDeleteOlder;
-        private System.Windows.Forms.Button btnKeepNewest;
-        private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button BtnDetails;
+        private System.Windows.Forms.Button BtnVssAdmin;
+        private System.Windows.Forms.Button BtnDeleteSelected;
+        private System.Windows.Forms.Button BtnDeleteOlder;
+        private System.Windows.Forms.Button BtnKeepNewest;
+        private System.Windows.Forms.Button BtnClose;
         private System.Windows.Forms.Button Reclaim_Space_Button;
     }
 }

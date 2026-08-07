@@ -58,9 +58,9 @@ namespace Admin_Tools
             txtDevice = new TextBox();
             grpNotes = new GroupBox();
             txtNotes = new TextBox();
-            btnRefresh = new Button();
-            btnCopy = new Button();
-            btnClose = new Button();
+            BtnRefresh = new Button();
+            BtnCopy = new Button();
+            BtnClose = new Button();
             Create_Restore_Point_Button = new Button();
             Delete_Selected_Restore_Point_Button = new Button();
             Browse_Snapshot_Button = new Button();
@@ -367,38 +367,38 @@ namespace Admin_Tools
             txtNotes.TabIndex = 0;
             txtNotes.TabStop = false;
             // 
-            // btnRefresh
+            // BtnRefresh
             // 
-            btnRefresh.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnRefresh.Location = new Point(656, 658);
-            btnRefresh.Name = "btnRefresh";
-            btnRefresh.Size = new Size(100, 28);
-            btnRefresh.TabIndex = 6;
-            btnRefresh.Text = "Refresh";
-            btnRefresh.UseVisualStyleBackColor = true;
-            btnRefresh.Click += Btn_Refresh_Click;
+            BtnRefresh.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            BtnRefresh.Location = new Point(656, 658);
+            BtnRefresh.Name = "BtnRefresh";
+            BtnRefresh.Size = new Size(100, 28);
+            BtnRefresh.TabIndex = 6;
+            BtnRefresh.Text = "Refresh";
+            BtnRefresh.UseVisualStyleBackColor = true;
+            BtnRefresh.Click += Btn_Refresh_Click;
             // 
-            // btnCopy
+            // BtnCopy
             // 
-            btnCopy.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnCopy.Location = new Point(762, 658);
-            btnCopy.Name = "btnCopy";
-            btnCopy.Size = new Size(110, 28);
-            btnCopy.TabIndex = 7;
-            btnCopy.Text = "Copy Details";
-            btnCopy.UseVisualStyleBackColor = true;
-            btnCopy.Click += Btn_Copy_Click;
+            BtnCopy.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            BtnCopy.Location = new Point(762, 658);
+            BtnCopy.Name = "BtnCopy";
+            BtnCopy.Size = new Size(110, 28);
+            BtnCopy.TabIndex = 7;
+            BtnCopy.Text = "Copy Details";
+            BtnCopy.UseVisualStyleBackColor = true;
+            BtnCopy.Click += Btn_Copy_Click;
             // 
-            // btnClose
+            // BtnClose
             // 
-            btnClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            btnClose.Location = new Point(882, 658);
-            btnClose.Name = "btnClose";
-            btnClose.Size = new Size(90, 28);
-            btnClose.TabIndex = 8;
-            btnClose.Text = "Close";
-            btnClose.UseVisualStyleBackColor = true;
-            btnClose.Click += Btn_Close_Click;
+            BtnClose.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            BtnClose.Location = new Point(882, 658);
+            BtnClose.Name = "BtnClose";
+            BtnClose.Size = new Size(90, 28);
+            BtnClose.TabIndex = 8;
+            BtnClose.Text = "Close";
+            BtnClose.UseVisualStyleBackColor = true;
+            BtnClose.Click += Btn_Close_Click;
             // 
             // Create_Restore_Point_Button
             // 
@@ -436,7 +436,7 @@ namespace Admin_Tools
             // 
             // Restore_Point_List_Form
             // 
-            AcceptButton = btnClose;
+            AcceptButton = BtnClose;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(984, 698);
@@ -450,9 +450,9 @@ namespace Admin_Tools
             Controls.Add(grpAttribution);
             Controls.Add(grpShadow);
             Controls.Add(grpNotes);
-            Controls.Add(btnRefresh);
-            Controls.Add(btnCopy);
-            Controls.Add(btnClose);
+            Controls.Add(BtnRefresh);
+            Controls.Add(BtnCopy);
+            Controls.Add(BtnClose);
             Font = new Font("Segoe UI", 9F);
             MinimizeBox = false;
             MinimumSize = new Size(1000, 693);
@@ -505,9 +505,9 @@ namespace Admin_Tools
         private System.Windows.Forms.TextBox txtDevice;
         private System.Windows.Forms.GroupBox grpNotes;
         private System.Windows.Forms.TextBox txtNotes;
-        private System.Windows.Forms.Button btnRefresh;
-        private System.Windows.Forms.Button btnCopy;
-        private System.Windows.Forms.Button btnClose;
+        private System.Windows.Forms.Button BtnRefresh;
+        private System.Windows.Forms.Button BtnCopy;
+        private System.Windows.Forms.Button BtnClose;
         private Button Create_Restore_Point_Button;
         private Button Delete_Selected_Restore_Point_Button;
         private Button Browse_Snapshot_Button;

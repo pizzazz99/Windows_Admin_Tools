@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
 using System.Management;
 using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Microsoft.Win32;
-using System.Linq;
 
 namespace Admin_Tools
 {
@@ -25,80 +20,80 @@ namespace Admin_Tools
         /// throttle window is active, Windows reports success but skips creation.
         /// Check the throttle first and refresh the list afterward to confirm.
         /// </summary>
-        public static bool Create_Restore_Point(string description, out string error)
+        public static bool Create_Restore_Point(string Description, out string Error)
         {
-            error = null;
+            Error = null;
             try
             {
-                var scope = new ManagementScope(@"\\.\root\default");
-                scope.Connect();
+                var Scope = new ManagementScope(@"\\.\root\default");
+                Scope.Connect();
 
-                var path = new ManagementPath("SystemRestore");
-                using (var sysRestore = new ManagementClass(scope, path, new ObjectGetOptions()))
+                var Path = new ManagementPath("SystemRestore");
+                using (var SysRestore = new ManagementClass(Scope, Path, new ObjectGetOptions()))
                 {
-                    var inParams = sysRestore.GetMethodParameters("CreateRestorePoint");
-                    inParams["Description"] = description;
-                    inParams["RestorePointType"] = 12;   // MODIFY_SETTINGS (0 = APPLICATION_INSTALL)
-                    inParams["EventType"] = 100;         // BEGIN_SYSTEM_CHANGE
+                    var InParams = SysRestore.GetMethodParameters("CreateRestorePoint");
+                    InParams["Description"] = Description;
+                    InParams["RestorePointType"] = 12;   // MODIFY_SETTINGS (0 = APPLICATION_INSTALL)
+                    InParams["EventType"] = 100;         // BEGIN_SYSTEM_CHANGE
 
-                    var outParams = sysRestore.InvokeMethod("CreateRestorePoint", inParams, null);
-                    uint result = (uint)outParams["ReturnValue"];
-                    if (result != 0)
+                    var OutParams = SysRestore.InvokeMethod("CreateRestorePoint", InParams, null);
+                    uint Result = (uint)OutParams["ReturnValue"];
+                    if (Result != 0)
                     {
-                        error = "CreateRestorePoint returned " + result +
-                                (result == 1058 ? " (System Restore service is disabled)" : "");
+                        Error = "CreateRestorePoint returned " + Result +
+                                (Result == 1058 ? " (System Restore service is disabled)" : "");
                         return false;
                     }
 
                     // Close the change window (END_SYSTEM_CHANGE). Without this, Windows
                     // silently suppresses all further restore point creation from this
                     // process until it exits.
-                    var endParams = sysRestore.GetMethodParameters("CreateRestorePoint");
-                    endParams["Description"] = description;
-                    endParams["RestorePointType"] = 12;
-                    endParams["EventType"] = 101;   // END_SYSTEM_CHANGE
-                    sysRestore.InvokeMethod("CreateRestorePoint", endParams, null);
+                    var EndParams = SysRestore.GetMethodParameters("CreateRestorePoint");
+                    EndParams["Description"] = Description;
+                    EndParams["RestorePointType"] = 12;
+                    EndParams["EventType"] = 101;   // END_SYSTEM_CHANGE
+                    SysRestore.InvokeMethod("CreateRestorePoint", EndParams, null);
 
                     return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                error = ex.Message;
+                Error = Ex.Message;
                 return false;
             }
         }
 
         /// <summary>Enables or disables System Restore protection on a drive (e.g. @"C:\").
         /// WARNING: disabling deletes all existing restore points immediately.</summary>
-        public static bool Set_System_Restore(bool enable, string drive, out string error)
+        public static bool Set_System_Restore(bool Enable, string Drive, out string Error)
         {
-            error = null;
+            Error = null;
             try
             {
-                var scope = new ManagementScope(@"\\.\root\default");
-                scope.Connect();
+                var Scope = new ManagementScope(@"\\.\root\default");
+                Scope.Connect();
 
-                var path = new ManagementPath("SystemRestore");
-                using (var sysRestore = new ManagementClass(scope, path, new ObjectGetOptions()))
+                var Path = new ManagementPath("SystemRestore");
+                using (var SysRestore = new ManagementClass(Scope, Path, new ObjectGetOptions()))
                 {
-                    string method = enable ? "Enable" : "Disable";
-                    var inParams = sysRestore.GetMethodParameters(method);
-                    inParams["Drive"] = drive;
+                    string Method = Enable ? "Enable" : "Disable";
+                    var InParams = SysRestore.GetMethodParameters(Method);
+                    InParams["Drive"] = Drive;
 
-                    var outParams = sysRestore.InvokeMethod(method, inParams, null);
-                    uint result = (uint)outParams["ReturnValue"];
-                    if (result != 0)
+                    var OutParams = SysRestore.InvokeMethod(Method, InParams, null);
+                    uint Result = (uint)OutParams["ReturnValue"];
+                    if (Result != 0)
                     {
-                        error = method + " returned " + result;
+                        Error = Method + " returned " + Result;
                         return false;
                     }
                     return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                error = ex.Message;
+                Error = Ex.Message;
                 return false;
             }
         }
@@ -110,10 +105,10 @@ namespace Admin_Tools
         /// </summary>
         public static int Get_Creation_Frequency_Minutes()
         {
-            using (var key = Registry.LocalMachine.OpenSubKey(Sr_Registry_Key))
+            using (var Key = Registry.LocalMachine.OpenSubKey(Sr_Registry_Key))
             {
-                return key?.GetValue("SystemRestorePointCreationFrequency") is int minutes
-                    ? minutes
+                return Key?.GetValue("SystemRestorePointCreationFrequency") is int Minutes
+                    ? Minutes
                     : 1440;
             }
         }
@@ -122,20 +117,20 @@ namespace Admin_Tools
         /// Sets SystemRestorePointCreationFrequency = 0 so every creation
         /// request is honored. Requires elevation (which this app has).
         /// </summary>
-        public static bool Disable_Throttle(out string error)
+        public static bool Disable_Throttle(out string Error)
         {
-            error = null;
+            Error = null;
             try
             {
-                using (var key = Registry.LocalMachine.CreateSubKey(Sr_Registry_Key, writable: true))
+                using (var Key = Registry.LocalMachine.CreateSubKey(Sr_Registry_Key, writable: true))
                 {
-                    key.SetValue("SystemRestorePointCreationFrequency", 0, RegistryValueKind.DWord);
+                    Key.SetValue("SystemRestorePointCreationFrequency", 0, RegistryValueKind.DWord);
                     return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                error = ex.Message;
+                Error = Ex.Message;
                 return false;
             }
         }
@@ -148,20 +143,20 @@ namespace Admin_Tools
         {
             try
             {
-                var scope = new ManagementScope(@"\\.\root\default");
-                scope.Connect();
+                var Scope = new ManagementScope(@"\\.\root\default");
+                Scope.Connect();
 
-                using (var searcher = new ManagementObjectSearcher(
-                    scope, new ObjectQuery("SELECT CreationTime FROM SystemRestore")))
+                using (var Searcher = new ManagementObjectSearcher(
+                    Scope, new ObjectQuery("SELECT CreationTime FROM SystemRestore")))
                 {
-                    DateTime? newest = null;
-                    foreach (ManagementObject mo in searcher.Get())
+                    DateTime? Newest = null;
+                    foreach (ManagementObject Management_Object in Searcher.Get())
                     {
-                        var created = ManagementDateTimeConverter.ToDateTime((string)mo["CreationTime"]);
-                        if (!newest.HasValue || created > newest.Value)
-                            newest = created;
+                        var Created = ManagementDateTimeConverter.ToDateTime((string)Management_Object["CreationTime"]);
+                        if (!Newest.HasValue || Created > Newest.Value)
+                            Newest = Created;
                     }
-                    return newest;
+                    return Newest;
                 }
             }
             catch
@@ -176,9 +171,9 @@ namespace Admin_Tools
         /// </summary>
         public static bool Is_System_Restore_Enabled()
         {
-            using (var key = Registry.LocalMachine.OpenSubKey(Sr_Registry_Key))
+            using (var Key = Registry.LocalMachine.OpenSubKey(Sr_Registry_Key))
             {
-                return key?.GetValue("RPSessionInterval") is int interval && interval > 0;
+                return Key?.GetValue("RPSessionInterval") is int Interval && Interval > 0;
             }
         }
 
@@ -187,33 +182,33 @@ namespace Admin_Tools
         /// (meaning Windows' 24-hour default applies).</summary>
         public static int? Get_Creation_Frequency_Raw()
         {
-            using (var key = Registry.LocalMachine.OpenSubKey(Sr_Registry_Key))
+            using (var Key = Registry.LocalMachine.OpenSubKey(Sr_Registry_Key))
             {
-                return key?.GetValue("SystemRestorePointCreationFrequency") as int?;
+                return Key?.GetValue("SystemRestorePointCreationFrequency") as int?;
             }
         }
 
         /// <summary>Sets the throttle value. Pass null to delete the value,
         /// restoring Windows' 24-hour default.</summary>
-        public static bool Set_Creation_Frequency(int? minutes, out string error)
+        public static bool Set_Creation_Frequency(int? Minutes, out string Error)
         {
-            error = null;
+            Error = null;
             try
             {
-                using (var key = Registry.LocalMachine.CreateSubKey(Sr_Registry_Key, writable: true))
+                using (var Key = Registry.LocalMachine.CreateSubKey(Sr_Registry_Key, writable: true))
                 {
-                    if (minutes.HasValue)
-                        key.SetValue("SystemRestorePointCreationFrequency",
-                            minutes.Value, RegistryValueKind.DWord);
+                    if (Minutes.HasValue)
+                        Key.SetValue("SystemRestorePointCreationFrequency",
+                            Minutes.Value, RegistryValueKind.DWord);
                     else
-                        key.DeleteValue("SystemRestorePointCreationFrequency",
+                        Key.DeleteValue("SystemRestorePointCreationFrequency",
                             throwOnMissingValue: false);
                     return true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                error = ex.Message;
+                Error = Ex.Message;
                 return false;
             }
         }
@@ -227,97 +222,97 @@ namespace Admin_Tools
     /// </summary>
     public partial class Restore_Point_List_Form
     {
-        private async void Create_Button_Click(object sender, EventArgs e)
+        private async void Create_Button_Click(object Sender, EventArgs E)
         {
-            var createButton = (Button)sender;
+            var CreateButton = (Button)Sender;
 
             // 1. Make sure System Restore is on — offer to enable it if not.
             if (!Restore_Point_Creator.Is_System_Restore_Enabled())
             {
-                var enableAnswer = MessageBox.Show(this,
+                var EnableAnswer = MessageBox.Show(this,
                     "System Restore is not enabled on the system drive.\n\n" +
                     "Enable it now?",
                     "Restore Points", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
-                if (enableAnswer != DialogResult.Yes)
+                if (EnableAnswer != DialogResult.Yes)
                     return;
 
-                if (!Restore_Point_Creator.Set_System_Restore(true, @"C:\", out string srError))
+                if (!Restore_Point_Creator.Set_System_Restore(true, @"C:\", out string SrError))
                 {
-                    MessageBox.Show(this, "Could not enable System Restore:\n" + srError,
+                    MessageBox.Show(this, "Could not enable System Restore:\n" + SrError,
                         "Restore Points", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
 
             // 2. Ask for a description.
-            string description = Prompt_For_Description("AdminToolkit manual restore point");
-            if (description == null)
+            string Description = Prompt_For_Description("AdminToolkit manual restore point");
+            if (Description == null)
                 return; // cancelled
 
             // 3. Temporarily lift the 24-hour throttle if it's active, so the
             //    point is guaranteed to be created (Windows otherwise silently
             //    skips creation and still reports success).
-            int? originalThrottle = null;
-            bool overridden = false;
+            int? OriginalThrottle = null;
+            bool Overridden = false;
 
             if (Restore_Point_Creator.Get_Creation_Frequency_Minutes() != 0)
             {
-                originalThrottle = Restore_Point_Creator.Get_Creation_Frequency_Raw();
+                OriginalThrottle = Restore_Point_Creator.Get_Creation_Frequency_Raw();
 
-                if (!Restore_Point_Creator.Set_Creation_Frequency(0, out string regError))
+                if (!Restore_Point_Creator.Set_Creation_Frequency(0, out string RegError))
                 {
                     MessageBox.Show(this,
-                        "Could not temporarily lift the creation throttle:\n" + regError +
+                        "Could not temporarily lift the creation throttle:\n" + RegError +
                         "\n\nWindows may silently skip this restore point.",
                         "Restore Points", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
-                    overridden = true;
+                    Overridden = true;
                 }
             }
 
             // Remember the highest sequence number BEFORE creating, so we can
             // detect when the new point becomes visible to WMI.
-            uint maxSeqBefore = _points.Count > 0
-                ? _points.Max(p => p.Sequence_Number)
+            uint MaxSeqBefore = _Points.Count > 0
+                ? _Points.Max(P => P.Sequence_Number)
                 : 0;
 
             // 4. Create off the UI thread, always restoring the throttle after.
-            createButton.Enabled = false;
+            CreateButton.Enabled = false;
             Cursor = Cursors.WaitCursor;
 
-            string error = null;
-            bool ok;
+            string Error = null;
+            bool Ok;
             try
             {
-                ok = await Task.Run(() =>
-                    Restore_Point_Creator.Create_Restore_Point(description, out error));
+                Ok = await Task.Run(() =>
+                    Restore_Point_Creator.Create_Restore_Point(Description, out Error));
             }
             finally
             {
-                if (overridden)
-                    Restore_Point_Creator.Set_Creation_Frequency(originalThrottle, out _);
+                if (Overridden)
+                    Restore_Point_Creator.Set_Creation_Frequency(OriginalThrottle, out _);
 
                 Cursor = Cursors.Default;
-                createButton.Enabled = true;
+                CreateButton.Enabled = true;
             }
 
-            if (ok)
+            if (Ok)
             {
                 // The new point can take a few seconds to become visible to the
                 // WMI enumeration. Poll until it shows (max ~15 s), then refresh.
                 Cursor = Cursors.WaitCursor;
                 try
                 {
-                    for (int i = 0; i < 15; i++)
+                    for (int I = 0; I < 15; I++)
                     {
-                        var check = await Task.Run(() =>
+                        var Check = await Task.Run(() =>
                             Restore_Point_Manager.Get_Restore_Points());
 
-                        if (check.Count > 0 &&
-                            check.Max(p => p.Sequence_Number) > maxSeqBefore)
+                        if (Check.Count > 0 &&
+                            Check.Max(P => P.Sequence_Number) > MaxSeqBefore)
                             break;
 
                         await Task.Delay(1000);
@@ -332,11 +327,11 @@ namespace Admin_Tools
             }
             else
             {
-                MessageBox.Show(this, "Failed to create restore point:\n" + error,
+                MessageBox.Show(this, "Failed to create restore point:\n" + Error,
                     "Restore Points", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void Delete_Selected_Button_Click(object sender, EventArgs e)
+        private void Delete_Selected_Button_Click(object Sender, EventArgs E )
         {
             if (lvPoints.SelectedItems.Count == 0)
             {
@@ -346,58 +341,58 @@ namespace Admin_Tools
                 return;
             }
 
-            var seqs = new List<uint>();
-            var names = new StringBuilder();
+            var Seqs = new List<uint>();
+            var Names = new StringBuilder();
 
-            foreach (ListViewItem item in lvPoints.SelectedItems)
+            foreach (ListViewItem Item in lvPoints.SelectedItems)
             {
-                var rp = item.Tag as Restore_Point_Info;
-                if (rp == null) continue;
-                seqs.Add(rp.Sequence_Number);
-                names.AppendLine("  #" + rp.Sequence_Number + "  " + rp.Description);
+                var Restore_Point = Item.Tag as Restore_Point_Info;
+                if (Restore_Point == null) continue;
+                Seqs.Add(Restore_Point.Sequence_Number);
+                Names.AppendLine("  #" + Restore_Point.Sequence_Number + "  " + Restore_Point.Description);
             }
 
-            var answer = MessageBox.Show(
-                "Permanently delete " + seqs.Count + " restore point(s)?\n\n" + names +
+            var Answer = MessageBox.Show(
+                "Permanently delete " + Seqs.Count + " restore point(s)?\n\n" + Names +
                 "\nThis also deletes each point's underlying shadow copy.\n" +
                 "There is NO undo — you cannot restore the system to these\n" +
                 "points afterward.",
                 "Delete Restore Points", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
 
-            if (answer != DialogResult.Yes) return;
+            if (Answer != DialogResult.Yes) return;
 
             Cursor = Cursors.WaitCursor;
-            int deleted, failed;
-            List<string> errors;
-            Restore_Point_Delete.Delete_Many(seqs, out deleted, out failed, out errors);
+            int Deleted, Failed;
+            List<string> Errors;
+            Restore_Point_Delete.Delete_Many(Seqs, out Deleted, out Failed, out Errors);
             Cursor = Cursors.Default;
 
-            string msg = deleted + " deleted, " + failed + " failed.";
-            if (errors.Count > 0) msg += "\n\n" + string.Join("\n", errors.ToArray());
+            string Msg = Deleted + " deleted, " + Failed + " failed.";
+            if (Errors.Count > 0) Msg += "\n\n" + string.Join("\n", Errors.ToArray());
 
-            MessageBox.Show(msg, "Delete Restore Points", MessageBoxButtons.OK,
-                failed == 0 ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
+            MessageBox.Show(Msg, "Delete Restore Points", MessageBoxButtons.OK,
+                Failed == 0 ? MessageBoxIcon.Information : MessageBoxIcon.Warning);
 
             Load_Points();
         }
 
         /// <summary>Small modal prompt for the restore point description.</summary>
-        private static string Prompt_For_Description(string defaultText)
+        private static string Prompt_For_Description(string DefaultText)
         {
-            using (var dialog = new Form())
-            using (var textBox = new TextBox())
-            using (var okButton = new Button())
-            using (var cancelButton = new Button())
+            using (var Dialog = new Form())
+            using (var TextBox = new TextBox())
+            using (var OkButton = new Button())
+            using (var CancelButton = new Button())
             {
-                dialog.Text = "Create Restore Point";
-                dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
-                dialog.StartPosition = FormStartPosition.CenterParent;
-                dialog.MinimizeBox = false;
-                dialog.MaximizeBox = false;
-                dialog.ClientSize = new System.Drawing.Size(420, 110);
+                Dialog.Text = "Create Restore Point";
+                Dialog.FormBorderStyle = FormBorderStyle.FixedDialog;
+                Dialog.StartPosition = FormStartPosition.CenterParent;
+                Dialog.MinimizeBox = false;
+                Dialog.MaximizeBox = false;
+                Dialog.ClientSize = new System.Drawing.Size(420, 110);
 
-                var label = new Label
+                var Label = new Label
                 {
                     Text = "Description:",
                     AutoSize = true,
@@ -405,34 +400,34 @@ namespace Admin_Tools
                     Top = 15
                 };
 
-                textBox.Text = defaultText;
-                textBox.Left = 12;
-                textBox.Top = 38;
-                textBox.Width = 396;
-                textBox.SelectAll();
+                TextBox.Text = DefaultText;
+                TextBox.Left = 12;
+                TextBox.Top = 38;
+                TextBox.Width = 396;
+                TextBox.SelectAll();
 
-                okButton.Text = "Create";
-                okButton.DialogResult = DialogResult.OK;
-                okButton.Left = 252;
-                okButton.Top = 72;
+                OkButton.Text = "Create";
+                OkButton.DialogResult = DialogResult.OK;
+                OkButton.Left = 252;
+                OkButton.Top = 72;
 
-                cancelButton.Text = "Cancel";
-                cancelButton.DialogResult = DialogResult.Cancel;
-                cancelButton.Left = 333;
-                cancelButton.Top = 72;
+                CancelButton.Text = "Cancel";
+                CancelButton.DialogResult = DialogResult.Cancel;
+                CancelButton.Left = 333;
+                CancelButton.Top = 72;
 
-                dialog.Controls.Add(label);
-                dialog.Controls.Add(textBox);
-                dialog.Controls.Add(okButton);
-                dialog.Controls.Add(cancelButton);
-                dialog.AcceptButton = okButton;
-                dialog.CancelButton = cancelButton;
+                Dialog.Controls.Add(Label);
+                Dialog.Controls.Add(TextBox);
+                Dialog.Controls.Add(OkButton);
+                Dialog.Controls.Add(CancelButton);
+                Dialog.AcceptButton = OkButton;
+                Dialog.CancelButton = CancelButton;
 
-                if (dialog.ShowDialog() != DialogResult.OK)
+                if (Dialog.ShowDialog() != DialogResult.OK)
                     return null;
 
-                string text = textBox.Text.Trim();
-                return text.Length == 0 ? null : text;
+                string Text = TextBox.Text.Trim();
+                return Text.Length == 0 ? null : Text;
             }
         }
     }
