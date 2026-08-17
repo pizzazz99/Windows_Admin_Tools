@@ -33,6 +33,43 @@ namespace Admin_Tools
       InitializeComponent ();
       lvPoints.MultiSelect = true;
       Load_Points ();
+
+      // Prompt once the window is actually visible (not from the
+      // constructor) so the dialog doesn't flash up before the form
+      // itself has finished rendering.
+      Shown += ( S, E ) => Ensure_System_Restore_Enabled ();
+    }
+
+    /// <summary>
+    /// Ensures System Restore protection is on for the system drive,
+    /// prompting to enable it if it's off. Returns true if protection
+    /// is confirmed on by the end of the call (either it already was,
+    /// or the user just turned it on).
+    /// </summary>
+    private bool Ensure_System_Restore_Enabled ()
+    {
+      if ( Restore_Point_Creator.Is_System_Restore_Enabled () )
+        return true;
+
+      var Answer = MessageBox.Show ( this,
+        "System Restore is not set up on the system drive (C:\\).\n\n" +
+        "No new restore points can be created, and any listed here may just " +
+        "be leftovers from before it was turned off.\n\n" +
+        "Enable System Protection now?",
+        "Restore Points", MessageBoxButtons.YesNo, MessageBoxIcon.Warning );
+
+      if ( Answer != DialogResult.Yes )
+        return false;
+
+      if ( ! Restore_Point_Creator.Set_System_Restore ( true, @"C:\", out string SrError ) )
+      {
+        MessageBox.Show ( this, "Could not enable System Restore:\n" + SrError,
+          "Restore Points", MessageBoxButtons.OK, MessageBoxIcon.Error );
+        return false;
+      }
+
+      Update_Status_Line ();
+      return true;
     }
 
     // --------------------------------------------------------

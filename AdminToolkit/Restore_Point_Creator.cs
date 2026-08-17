@@ -227,23 +227,8 @@ namespace Admin_Tools
             var CreateButton = (Button)Sender;
 
             // 1. Make sure System Restore is on — offer to enable it if not.
-            if (!Restore_Point_Creator.Is_System_Restore_Enabled())
-            {
-                var EnableAnswer = MessageBox.Show(this,
-                    "System Restore is not enabled on the system drive.\n\n" +
-                    "Enable it now?",
-                    "Restore Points", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-
-                if (EnableAnswer != DialogResult.Yes)
-                    return;
-
-                if (!Restore_Point_Creator.Set_System_Restore(true, @"C:\", out string SrError))
-                {
-                    MessageBox.Show(this, "Could not enable System Restore:\n" + SrError,
-                        "Restore Points", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-            }
+            if (!Ensure_System_Restore_Enabled())
+                return;
 
             // 2. Ask for a description.
             string Description = Prompt_For_Description("AdminToolkit manual restore point");

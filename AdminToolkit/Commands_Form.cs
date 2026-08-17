@@ -16,6 +16,8 @@
 using System.Management;
 using System.Text;
 using System.Text.RegularExpressions;
+using Trace_Execution_Namespace;
+using static Trace_Execution_Namespace.Trace_Execution;
 
 namespace Admin_Tools
 {
@@ -71,6 +73,7 @@ namespace Admin_Tools
 
     protected override void OnFormClosing ( FormClosingEventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       if ( ! Commands_Panel.Enabled ) // a command is running
       {
         E.Cancel = true;
@@ -84,6 +87,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private static string Get_Command_Line ( Triage_Command Command )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       switch ( Command )
       {
         // Identity & Sessions
@@ -153,6 +157,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private async Task Execute_Command_Async ( Triage_Command Command )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       string Command_Line = Get_Command_Line ( Command );
 
       try
@@ -177,29 +182,34 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private async void BtnWhoami_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Whoami );
     }
     private async void BtnNetUser_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Net_User );
     }
 
     private async void BtnLocalAdmins_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Local_Admins );
     }
 
     private async void BtnQueryUser_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Query_User );
     }
 
     private async void BtnNetSession_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Net_Session );
     }
@@ -209,35 +219,41 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private async void BtnIpconfig_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Ipconfig );
     }
     private async void BtnArp_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Arp );
     }
 
     private async void BtnRoute_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Route );
     }
 
     private async void BtnNetstat_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Netstat );
     }
 
     private async void BtnNslookup_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Nslookup );
     }
 
     private async void BtnFlushDns_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Flush_Dns );
     }
@@ -247,36 +263,42 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private async void BtnSystemInfo_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.System_Info );
     }
 
     private async void BtnHostname_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Hostname );
     }
 
     private async void BtnTasklist_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Tasklist );
     }
 
     private async void BtnTasklistSvc_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Tasklist_Svc );
     }
 
     private async void BtnScQuery_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Sc_Query );
     }
 
     private async void BtnDriverQuery_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Driver_Query );
     }
@@ -286,6 +308,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private async void BtnChkdsk_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Chkdsk );
     }
@@ -298,24 +321,28 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private async void BtnSfcVerify_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Sfc_Verify );
     }
 
     private async void BtnBatteryReport_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Battery_Report );
     }
 
     private async void BtnSystemEvents_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.System_Events );
     }
 
     private async void BtnUptime_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Uptime );
     }
@@ -325,12 +352,14 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private void Btn_Clear_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       txtOutput.Clear ();
     }
 
     private void Btn_Copy_All_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       if ( txtOutput.TextLength == 0 )
         return;
@@ -339,6 +368,7 @@ namespace Admin_Tools
 
     private void Btn_Save_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       if ( txtOutput.TextLength == 0 )
         return;
@@ -366,6 +396,7 @@ namespace Admin_Tools
 
     private void Btn_Close_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Close ();
     }
 
@@ -374,6 +405,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private static string Get_Drives ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       var String_Builder = new StringBuilder ();
       String_Builder.AppendLine ( "Drive  Label                 Total (GB)   Free (GB)   Used %" );
       String_Builder.AppendLine ( "-----  --------------------  ----------  ----------  ------" );
@@ -399,6 +431,7 @@ namespace Admin_Tools
 
     private void BtnFreeSpacebyDrive_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       Show_Text_Output ();
 
@@ -407,7 +440,7 @@ namespace Admin_Tools
 
     private static string Get_Volumes ()
     {
-
+      using var Block = Trace_Block.Start_If_Enabled();
       var String_Builder = new StringBuilder ();
       String_Builder.AppendLine ( "Drive  Label                 Serial Number   File System" );
       String_Builder.AppendLine ( "-----  --------------------  --------------  -----------" );
@@ -434,6 +467,7 @@ namespace Admin_Tools
     // "vol" shows it as XXXX-XXXX, so match that formatting.
     private static string Format_Serial ( string Raw )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       if ( string.IsNullOrEmpty ( Raw ) )
         return "(none)";
       if ( Raw.Length == 8 )
@@ -443,6 +477,7 @@ namespace Admin_Tools
 
     private void BtnVol_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       Show_Text_Output ();
 
@@ -454,6 +489,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private void Show_Text_Output ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       lvUpdates.Visible  = false;
       lvHotfixes.Visible = false;
       txtOutput.Visible  = true;
@@ -461,6 +497,7 @@ namespace Admin_Tools
 
     private void Show_Updates_Output ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       txtOutput.Visible  = false;
       lvHotfixes.Visible = false;
       lvUpdates.Visible  = true;
@@ -468,6 +505,7 @@ namespace Admin_Tools
 
     private void Show_Hotfixes_Output ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       txtOutput.Visible  = false;
       lvUpdates.Visible  = false;
       lvHotfixes.Visible = true;
@@ -475,6 +513,7 @@ namespace Admin_Tools
 
     private void Show_List_Output ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       txtOutput.Visible = false;
       lvUpdates.Visible = true;
     }
@@ -492,6 +531,7 @@ namespace Admin_Tools
 
     private static List<Hotfix_Record> Get_Hotfixes ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       var List  = new List<Hotfix_Record> ();
 
       var Scope = new ManagementObjectSearcher ( "SELECT HotFixID, Description, InstalledOn, " +
@@ -516,6 +556,7 @@ namespace Admin_Tools
 
     private void BtnHotfixes_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Set_Message ( "Double-click an entry for details" );
       Show_Hotfixes_Output ();
 
@@ -551,6 +592,7 @@ namespace Admin_Tools
 
     private static string         Extract_KB ( string Title, string Description )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       var Match = _Kb_Pattern.Match ( Title ?? "" );
       if ( ! Match.Success )
         Match = _Kb_Pattern.Match ( Description ?? "" );
@@ -559,6 +601,7 @@ namespace Admin_Tools
 
     private static string Get_Operation_Text ( int Operation )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       switch ( Operation )
       {
         case 1 :
@@ -572,6 +615,7 @@ namespace Admin_Tools
 
     private static string Get_Result_Text ( int Code )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       switch ( Code )
       {
         case 2 :
@@ -593,6 +637,7 @@ namespace Admin_Tools
     // (Microsoft.Update.Session) — Windows built-in, no project reference needed.
     private static List<Update_Record> Get_Update_History ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       var     List        = new List<Update_Record> ();
 
       Type    Session_Type   = Type.GetTypeFromProgID ( "Microsoft.Update.Session" );
@@ -624,7 +669,7 @@ namespace Admin_Tools
 
     private async void BtnUpdates_Click ( object Sender, EventArgs E )
     {
-
+      using var Block = Trace_Block.Start_If_Enabled();
       Show_List_Output ();
       Commands_Panel.Enabled = false;
       Cursor                 = Cursors.WaitCursor;
@@ -660,6 +705,7 @@ namespace Admin_Tools
 
     private void LvUpdates_DoubleClick ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       if ( lvUpdates.SelectedItems.Count == 0 )
         return;
       if ( ! ( lvUpdates.SelectedItems[ 0 ].Tag is Update_Record Rec ) )
@@ -677,6 +723,7 @@ namespace Admin_Tools
 
     private void LvHotfixes_DoubleClick ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       if ( lvHotfixes.SelectedItems.Count == 0 )
         return;
       if ( ! ( lvHotfixes.SelectedItems[ 0 ].Tag is Hotfix_Record Rec ) )
@@ -695,10 +742,12 @@ namespace Admin_Tools
     }
     private void Set_Message ( string Text )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Message_Textbox.Text = Text;
     }
     private void Clear_Message ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Message_Textbox.Text = "";
     }
   }

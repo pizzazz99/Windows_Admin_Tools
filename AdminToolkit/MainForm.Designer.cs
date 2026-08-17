@@ -69,6 +69,7 @@ namespace Admin_Tools
       Powershell_Button = new Button();
       CMD_Button = new Button();
       Printer_Button = new Button();
+      Trace_Button = new Button();
       grpTools.SuspendLayout();
       grpProcesses.SuspendLayout();
       statusStrip.SuspendLayout();
@@ -432,7 +433,7 @@ namespace Admin_Tools
       // 
       // Remote_Tools_Button
       // 
-      Remote_Tools_Button.Location = new Point( 549, 243 );
+      Remote_Tools_Button.Location = new Point( 532, 243 );
       Remote_Tools_Button.Name = "Remote_Tools_Button";
       Remote_Tools_Button.Size = new Size( 78, 59 );
       Remote_Tools_Button.TabIndex = 18;
@@ -470,11 +471,22 @@ namespace Admin_Tools
       Printer_Button.UseVisualStyleBackColor = true;
       Printer_Button.Click += Printer_Button_Click;
       // 
+      // Trace_Button
+      // 
+      Trace_Button.Location = new Point( 643, 351 );
+      Trace_Button.Name = "Trace_Button";
+      Trace_Button.Size = new Size( 77, 30 );
+      Trace_Button.TabIndex = 22;
+      Trace_Button.Text = "Trace";
+      Trace_Button.UseVisualStyleBackColor = true;
+      Trace_Button.Click += Trace_Button_Click;
+      // 
       // MainForm
       // 
       AutoScaleDimensions = new SizeF( 7F, 15F );
       AutoScaleMode = AutoScaleMode.Font;
       ClientSize = new Size( 732, 529 );
+      Controls.Add( Trace_Button );
       Controls.Add( Printer_Button );
       Controls.Add( CMD_Button );
       Controls.Add( Powershell_Button );
@@ -547,5 +559,6 @@ namespace Admin_Tools
     private Button Powershell_Button;
     private Button CMD_Button;
     private Button Printer_Button;
+    private Button Trace_Button;
   }
 }
