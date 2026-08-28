@@ -29,21 +29,7 @@ namespace Admin_Tools
     {
       components = new System.ComponentModel.Container();
       BtnViewLog = new Button();
-      grpTools = new GroupBox();
-      BtnFirewall = new Button();
-      BtnLocalUsers = new Button();
-      BtnDeviceManager = new Button();
-      BtnResourceMonitor = new Button();
-      BtnPerfMonitor = new Button();
-      BtnSystemInfo = new Button();
-      BtnComputerMgmt = new Button();
-      BtnDiskManagement = new Button();
-      BtnServices = new Button();
-      BtnEventViewer = new Button();
-      BtnRegistryEditor = new Button();
-      BtnRestoreWizard = new Button();
-      BtnSystemProtection = new Button();
-      BtnTaskScheduler = new Button();
+      Admin_Tools_Button = new Button();
       grpProcesses = new GroupBox();
       BtnRemoveClosed = new Button();
       BtnKillTool = new Button();
@@ -70,7 +56,6 @@ namespace Admin_Tools
       CMD_Button = new Button();
       Printer_Button = new Button();
       Trace_Button = new Button();
-      grpTools.SuspendLayout();
       grpProcesses.SuspendLayout();
       statusStrip.SuspendLayout();
       SuspendLayout();
@@ -82,168 +67,15 @@ namespace Admin_Tools
       BtnViewLog.Size = new Size( 75, 23 );
       BtnViewLog.TabIndex = 0;
       // 
-      // grpTools
+      // Admin_Tools_Button
       // 
-      grpTools.Controls.Add( BtnFirewall );
-      grpTools.Controls.Add( BtnLocalUsers );
-      grpTools.Controls.Add( BtnDeviceManager );
-      grpTools.Controls.Add( BtnResourceMonitor );
-      grpTools.Controls.Add( BtnPerfMonitor );
-      grpTools.Controls.Add( BtnSystemInfo );
-      grpTools.Controls.Add( BtnComputerMgmt );
-      grpTools.Controls.Add( BtnDiskManagement );
-      grpTools.Controls.Add( BtnServices );
-      grpTools.Controls.Add( BtnEventViewer );
-      grpTools.Controls.Add( BtnRegistryEditor );
-      grpTools.Controls.Add( BtnRestoreWizard );
-      grpTools.Controls.Add( BtnSystemProtection );
-      grpTools.Controls.Add( BtnTaskScheduler );
-      grpTools.Location = new Point( 12, 12 );
-      grpTools.Name = "grpTools";
-      grpTools.Size = new Size( 325, 290 );
-      grpTools.TabIndex = 1;
-      grpTools.TabStop = false;
-      grpTools.Text = "Admin Tools";
-      // 
-      // BtnFirewall
-      // 
-      BtnFirewall.Location = new Point( 166, 242 );
-      BtnFirewall.Name = "BtnFirewall";
-      BtnFirewall.Size = new Size( 140, 30 );
-      BtnFirewall.TabIndex = 13;
-      BtnFirewall.Text = "Windows Firewall";
-      BtnFirewall.UseVisualStyleBackColor = true;
-      BtnFirewall.Click += BtnFirewall_Click;
-      // 
-      // BtnLocalUsers
-      // 
-      BtnLocalUsers.Location = new Point( 14, 242 );
-      BtnLocalUsers.Name = "BtnLocalUsers";
-      BtnLocalUsers.Size = new Size( 140, 30 );
-      BtnLocalUsers.TabIndex = 12;
-      BtnLocalUsers.Text = "Local Users && Groups";
-      BtnLocalUsers.UseVisualStyleBackColor = true;
-      BtnLocalUsers.Click += BtnLocalUsers_Click;
-      // 
-      // BtnDeviceManager
-      // 
-      BtnDeviceManager.Location = new Point( 166, 206 );
-      BtnDeviceManager.Name = "BtnDeviceManager";
-      BtnDeviceManager.Size = new Size( 140, 30 );
-      BtnDeviceManager.TabIndex = 11;
-      BtnDeviceManager.Text = "Device Manager";
-      BtnDeviceManager.UseVisualStyleBackColor = true;
-      BtnDeviceManager.Click += BtnDeviceManager_Click;
-      // 
-      // BtnResourceMonitor
-      // 
-      BtnResourceMonitor.Location = new Point( 14, 206 );
-      BtnResourceMonitor.Name = "BtnResourceMonitor";
-      BtnResourceMonitor.Size = new Size( 140, 30 );
-      BtnResourceMonitor.TabIndex = 10;
-      BtnResourceMonitor.Text = "Resource Monitor";
-      BtnResourceMonitor.UseVisualStyleBackColor = true;
-      BtnResourceMonitor.Click += BtnResourceMonitor_Click;
-      // 
-      // BtnPerfMonitor
-      // 
-      BtnPerfMonitor.Location = new Point( 166, 170 );
-      BtnPerfMonitor.Name = "BtnPerfMonitor";
-      BtnPerfMonitor.Size = new Size( 140, 30 );
-      BtnPerfMonitor.TabIndex = 9;
-      BtnPerfMonitor.Text = "Performance Monitor";
-      BtnPerfMonitor.UseVisualStyleBackColor = true;
-      BtnPerfMonitor.Click += BtnPerfMonitor_Click;
-      // 
-      // BtnSystemInfo
-      // 
-      BtnSystemInfo.Location = new Point( 14, 170 );
-      BtnSystemInfo.Name = "BtnSystemInfo";
-      BtnSystemInfo.Size = new Size( 140, 30 );
-      BtnSystemInfo.TabIndex = 8;
-      BtnSystemInfo.Text = "System Info";
-      BtnSystemInfo.UseVisualStyleBackColor = true;
-      BtnSystemInfo.Click += BtnSystemInfo_Click;
-      // 
-      // BtnComputerMgmt
-      // 
-      BtnComputerMgmt.Location = new Point( 166, 134 );
-      BtnComputerMgmt.Name = "BtnComputerMgmt";
-      BtnComputerMgmt.Size = new Size( 140, 30 );
-      BtnComputerMgmt.TabIndex = 7;
-      BtnComputerMgmt.Text = "Computer Mgmt";
-      BtnComputerMgmt.UseVisualStyleBackColor = true;
-      BtnComputerMgmt.Click += BtnComputerMgmt_Click;
-      // 
-      // BtnDiskManagement
-      // 
-      BtnDiskManagement.Location = new Point( 14, 134 );
-      BtnDiskManagement.Name = "BtnDiskManagement";
-      BtnDiskManagement.Size = new Size( 140, 30 );
-      BtnDiskManagement.TabIndex = 6;
-      BtnDiskManagement.Text = "Disk Management";
-      BtnDiskManagement.UseVisualStyleBackColor = true;
-      BtnDiskManagement.Click += BtnDiskManagement_Click;
-      // 
-      // BtnServices
-      // 
-      BtnServices.Location = new Point( 166, 98 );
-      BtnServices.Name = "BtnServices";
-      BtnServices.Size = new Size( 140, 30 );
-      BtnServices.TabIndex = 5;
-      BtnServices.Text = "Services";
-      BtnServices.UseVisualStyleBackColor = true;
-      BtnServices.Click += BtnServices_Click;
-      // 
-      // BtnEventViewer
-      // 
-      BtnEventViewer.Location = new Point( 14, 98 );
-      BtnEventViewer.Name = "BtnEventViewer";
-      BtnEventViewer.Size = new Size( 140, 30 );
-      BtnEventViewer.TabIndex = 4;
-      BtnEventViewer.Text = "Event Viewer";
-      BtnEventViewer.UseVisualStyleBackColor = true;
-      BtnEventViewer.Click += BtnEventViewer_Click;
-      // 
-      // BtnRegistryEditor
-      // 
-      BtnRegistryEditor.Location = new Point( 168, 62 );
-      BtnRegistryEditor.Name = "BtnRegistryEditor";
-      BtnRegistryEditor.Size = new Size( 140, 30 );
-      BtnRegistryEditor.TabIndex = 3;
-      BtnRegistryEditor.Text = "Registry Editor";
-      BtnRegistryEditor.UseVisualStyleBackColor = true;
-      BtnRegistryEditor.Click += BtnRegistryEditor_Click;
-      // 
-      // BtnRestoreWizard
-      // 
-      BtnRestoreWizard.Location = new Point( 16, 62 );
-      BtnRestoreWizard.Name = "BtnRestoreWizard";
-      BtnRestoreWizard.Size = new Size( 140, 30 );
-      BtnRestoreWizard.TabIndex = 2;
-      BtnRestoreWizard.Text = "System Restore";
-      BtnRestoreWizard.UseVisualStyleBackColor = true;
-      BtnRestoreWizard.Click += BtnRestoreWizard_Click;
-      // 
-      // BtnSystemProtection
-      // 
-      BtnSystemProtection.Location = new Point( 166, 26 );
-      BtnSystemProtection.Name = "BtnSystemProtection";
-      BtnSystemProtection.Size = new Size( 140, 30 );
-      BtnSystemProtection.TabIndex = 1;
-      BtnSystemProtection.Text = "System Protection";
-      BtnSystemProtection.UseVisualStyleBackColor = true;
-      BtnSystemProtection.Click += BtnSystemProtection_Click;
-      // 
-      // BtnTaskScheduler
-      // 
-      BtnTaskScheduler.Location = new Point( 14, 26 );
-      BtnTaskScheduler.Name = "BtnTaskScheduler";
-      BtnTaskScheduler.Size = new Size( 140, 30 );
-      BtnTaskScheduler.TabIndex = 0;
-      BtnTaskScheduler.Text = "Task Scheduler";
-      BtnTaskScheduler.UseVisualStyleBackColor = true;
-      BtnTaskScheduler.Click += BtnTaskScheduler_Click;
+      Admin_Tools_Button.Location = new Point( 12, 5 );
+      Admin_Tools_Button.Name = "Admin_Tools_Button";
+      Admin_Tools_Button.Size = new Size( 124, 42 );
+      Admin_Tools_Button.TabIndex = 1;
+      Admin_Tools_Button.Text = "Admin Tools";
+      Admin_Tools_Button.UseVisualStyleBackColor = true;
+      Admin_Tools_Button.Click += Admin_Tools_Button_Click;
       // 
       // grpProcesses
       // 
@@ -251,16 +83,16 @@ namespace Admin_Tools
       grpProcesses.Controls.Add( BtnKillTool );
       grpProcesses.Controls.Add( BtnCloseTool );
       grpProcesses.Controls.Add( listViewProcesses );
-      grpProcesses.Location = new Point( 12, 308 );
+      grpProcesses.Location = new Point( 12, 303 );
       grpProcesses.Name = "grpProcesses";
-      grpProcesses.Size = new Size( 615, 179 );
+      grpProcesses.Size = new Size( 615, 218 );
       grpProcesses.TabIndex = 2;
       grpProcesses.TabStop = false;
       grpProcesses.Text = "Launched Tools";
       // 
       // BtnRemoveClosed
       // 
-      BtnRemoveClosed.Location = new Point( 241, 142 );
+      BtnRemoveClosed.Location = new Point( 241, 170 );
       BtnRemoveClosed.Name = "BtnRemoveClosed";
       BtnRemoveClosed.Size = new Size( 84, 30 );
       BtnRemoveClosed.TabIndex = 3;
@@ -270,7 +102,7 @@ namespace Admin_Tools
       // 
       // BtnKillTool
       // 
-      BtnKillTool.Location = new Point( 130, 142 );
+      BtnKillTool.Location = new Point( 130, 170 );
       BtnKillTool.Name = "BtnKillTool";
       BtnKillTool.Size = new Size( 105, 30 );
       BtnKillTool.TabIndex = 2;
@@ -280,7 +112,7 @@ namespace Admin_Tools
       // 
       // BtnCloseTool
       // 
-      BtnCloseTool.Location = new Point( 14, 142 );
+      BtnCloseTool.Location = new Point( 14, 170 );
       BtnCloseTool.Name = "BtnCloseTool";
       BtnCloseTool.Size = new Size( 110, 30 );
       BtnCloseTool.TabIndex = 1;
@@ -293,10 +125,10 @@ namespace Admin_Tools
       listViewProcesses.Columns.AddRange( new ColumnHeader[] { colTool, colPid, colStarted, colStatus } );
       listViewProcesses.FullRowSelect = true;
       listViewProcesses.GridLines = true;
-      listViewProcesses.Location = new Point( 14, 26 );
+      listViewProcesses.Location = new Point( 14, 22 );
       listViewProcesses.MultiSelect = false;
       listViewProcesses.Name = "listViewProcesses";
-      listViewProcesses.Size = new Size( 584, 110 );
+      listViewProcesses.Size = new Size( 584, 142 );
       listViewProcesses.TabIndex = 0;
       listViewProcesses.UseCompatibleStateImageBehavior = false;
       listViewProcesses.View = View.Details;
@@ -343,9 +175,9 @@ namespace Admin_Tools
       // 
       // Enable_Registry_Backup_Button
       // 
-      Enable_Registry_Backup_Button.Location = new Point( 446, 23 );
+      Enable_Registry_Backup_Button.Location = new Point( 12, 163 );
       Enable_Registry_Backup_Button.Name = "Enable_Registry_Backup_Button";
-      Enable_Registry_Backup_Button.Size = new Size( 76, 59 );
+      Enable_Registry_Backup_Button.Size = new Size( 124, 59 );
       Enable_Registry_Backup_Button.TabIndex = 12;
       Enable_Registry_Backup_Button.Text = "Registery Operations";
       Enable_Registry_Backup_Button.UseVisualStyleBackColor = true;
@@ -353,9 +185,9 @@ namespace Admin_Tools
       // 
       // Restore_Points_Button
       // 
-      Restore_Points_Button.Location = new Point( 363, 23 );
+      Restore_Points_Button.Location = new Point( 12, 98 );
       Restore_Points_Button.Name = "Restore_Points_Button";
-      Restore_Points_Button.Size = new Size( 77, 59 );
+      Restore_Points_Button.Size = new Size( 124, 59 );
       Restore_Points_Button.TabIndex = 11;
       Restore_Points_Button.Text = "Restore Point Operations";
       Restore_Points_Button.UseVisualStyleBackColor = true;
@@ -364,7 +196,7 @@ namespace Admin_Tools
       // statusStrip
       // 
       statusStrip.Items.AddRange( new ToolStripItem[] { statusLabel } );
-      statusStrip.Location = new Point( 0, 507 );
+      statusStrip.Location = new Point( 0, 548 );
       statusStrip.Name = "statusStrip";
       statusStrip.Size = new Size( 732, 22 );
       statusStrip.TabIndex = 4;
@@ -383,9 +215,9 @@ namespace Admin_Tools
       // 
       // Snapshot_Operations_Button
       // 
-      Snapshot_Operations_Button.Location = new Point( 532, 23 );
+      Snapshot_Operations_Button.Location = new Point( 12, 228 );
       Snapshot_Operations_Button.Name = "Snapshot_Operations_Button";
-      Snapshot_Operations_Button.Size = new Size( 76, 59 );
+      Snapshot_Operations_Button.Size = new Size( 124, 59 );
       Snapshot_Operations_Button.TabIndex = 13;
       Snapshot_Operations_Button.Text = "Snapshot Operations";
       Snapshot_Operations_Button.UseVisualStyleBackColor = true;
@@ -393,9 +225,9 @@ namespace Admin_Tools
       // 
       // Help_Button
       // 
-      Help_Button.Location = new Point( 642, 423 );
+      Help_Button.Location = new Point( 642, 5 );
       Help_Button.Name = "Help_Button";
-      Help_Button.Size = new Size( 77, 30 );
+      Help_Button.Size = new Size( 77, 42 );
       Help_Button.TabIndex = 16;
       Help_Button.Text = "Help";
       Help_Button.UseVisualStyleBackColor = true;
@@ -413,7 +245,7 @@ namespace Admin_Tools
       // 
       // Quit_Button
       // 
-      Quit_Button.Location = new Point( 642, 459 );
+      Quit_Button.Location = new Point( 642, 491 );
       Quit_Button.Name = "Quit_Button";
       Quit_Button.Size = new Size( 77, 30 );
       Quit_Button.TabIndex = 14;
@@ -423,9 +255,9 @@ namespace Admin_Tools
       // 
       // Admin_Commands_Button
       // 
-      Admin_Commands_Button.Location = new Point( 363, 117 );
+      Admin_Commands_Button.Location = new Point( 12, 53 );
       Admin_Commands_Button.Name = "Admin_Commands_Button";
-      Admin_Commands_Button.Size = new Size( 77, 59 );
+      Admin_Commands_Button.Size = new Size( 124, 39 );
       Admin_Commands_Button.TabIndex = 17;
       Admin_Commands_Button.Text = "Admin Commands";
       Admin_Commands_Button.UseVisualStyleBackColor = true;
@@ -433,9 +265,9 @@ namespace Admin_Tools
       // 
       // Remote_Tools_Button
       // 
-      Remote_Tools_Button.Location = new Point( 532, 243 );
+      Remote_Tools_Button.Location = new Point( 404, 5 );
       Remote_Tools_Button.Name = "Remote_Tools_Button";
-      Remote_Tools_Button.Size = new Size( 78, 59 );
+      Remote_Tools_Button.Size = new Size( 89, 42 );
       Remote_Tools_Button.TabIndex = 18;
       Remote_Tools_Button.Text = "Remote Tools";
       Remote_Tools_Button.UseVisualStyleBackColor = true;
@@ -443,9 +275,9 @@ namespace Admin_Tools
       // 
       // Powershell_Button
       // 
-      Powershell_Button.Location = new Point( 446, 117 );
+      Powershell_Button.Location = new Point( 220, 5 );
       Powershell_Button.Name = "Powershell_Button";
-      Powershell_Button.Size = new Size( 77, 59 );
+      Powershell_Button.Size = new Size( 77, 42 );
       Powershell_Button.TabIndex = 19;
       Powershell_Button.Text = "Powershell";
       Powershell_Button.UseVisualStyleBackColor = true;
@@ -453,9 +285,9 @@ namespace Admin_Tools
       // 
       // CMD_Button
       // 
-      CMD_Button.Location = new Point( 532, 117 );
+      CMD_Button.Location = new Point( 220, 53 );
       CMD_Button.Name = "CMD_Button";
-      CMD_Button.Size = new Size( 73, 59 );
+      CMD_Button.Size = new Size( 73, 39 );
       CMD_Button.TabIndex = 20;
       CMD_Button.Text = "Cmd";
       CMD_Button.UseVisualStyleBackColor = true;
@@ -463,9 +295,9 @@ namespace Admin_Tools
       // 
       // Printer_Button
       // 
-      Printer_Button.Location = new Point( 642, 23 );
+      Printer_Button.Location = new Point( 499, 5 );
       Printer_Button.Name = "Printer_Button";
-      Printer_Button.Size = new Size( 78, 59 );
+      Printer_Button.Size = new Size( 78, 42 );
       Printer_Button.TabIndex = 21;
       Printer_Button.Text = "Printers";
       Printer_Button.UseVisualStyleBackColor = true;
@@ -485,7 +317,7 @@ namespace Admin_Tools
       // 
       AutoScaleDimensions = new SizeF( 7F, 15F );
       AutoScaleMode = AutoScaleMode.Font;
-      ClientSize = new Size( 732, 529 );
+      ClientSize = new Size( 732, 570 );
       Controls.Add( Trace_Button );
       Controls.Add( Printer_Button );
       Controls.Add( CMD_Button );
@@ -502,13 +334,12 @@ namespace Admin_Tools
       Controls.Add( Restore_Points_Button );
       Controls.Add( statusStrip );
       Controls.Add( grpProcesses );
-      Controls.Add( grpTools );
+      Controls.Add( Admin_Tools_Button );
       Font = new Font( "Segoe UI", 9F );
       Name = "MainForm";
       StartPosition = FormStartPosition.CenterScreen;
       Text = "Admin Toolkit";
       Load += MainForm_Load;
-      grpTools.ResumeLayout( false );
       grpProcesses.ResumeLayout( false );
       statusStrip.ResumeLayout( false );
       statusStrip.PerformLayout();
@@ -518,22 +349,8 @@ namespace Admin_Tools
     }
 
     #endregion
-    private System.Windows.Forms.GroupBox grpTools;
-        private System.Windows.Forms.Button BtnViewLog;
-        private System.Windows.Forms.Button BtnTaskScheduler;
-        private System.Windows.Forms.Button BtnSystemProtection;
-        private System.Windows.Forms.Button BtnRestoreWizard;
-        private System.Windows.Forms.Button BtnRegistryEditor;
-        private System.Windows.Forms.Button BtnEventViewer;
-        private System.Windows.Forms.Button BtnServices;
-        private System.Windows.Forms.Button BtnDiskManagement;
-        private System.Windows.Forms.Button BtnComputerMgmt;
-        private System.Windows.Forms.Button BtnSystemInfo;
-        private System.Windows.Forms.Button BtnPerfMonitor;
-        private System.Windows.Forms.Button BtnResourceMonitor;
-        private System.Windows.Forms.Button BtnDeviceManager;
-        private System.Windows.Forms.Button BtnLocalUsers;
-        private System.Windows.Forms.Button BtnFirewall;
+    private System.Windows.Forms.Button BtnViewLog;
+        private System.Windows.Forms.Button Admin_Tools_Button;
         private System.Windows.Forms.GroupBox grpProcesses;
         private System.Windows.Forms.ListView listViewProcesses;
         private System.Windows.Forms.ColumnHeader colTool;

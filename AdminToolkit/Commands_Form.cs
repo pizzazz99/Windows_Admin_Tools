@@ -29,6 +29,7 @@ namespace Admin_Tools
     Local_Admins,
     Query_User,
     Net_Session,
+    Whoami_Priv,
 
     // Network
     Ipconfig,
@@ -37,6 +38,8 @@ namespace Admin_Tools
     Netstat,
     Nslookup,
     Flush_Dns,
+    Netstat_Owner,
+    Displaydns,
 
     // System State
     System_Info,
@@ -47,15 +50,26 @@ namespace Admin_Tools
 
     // Disk & Storage
     Chkdsk,
+    Fsutil_Dirty,
 
     // Health & Logs
     Sfc_Verify,
     Battery_Report,
     System_Events,
     Uptime,
+    Security_Events,
+    Dism_Check_Health,
 
     // System Config
-    Driver_Query
+    Driver_Query,
+    Bcdedit_Enum,
+    Startup_Entries,
+
+    // Security & Policy
+    Net_Localgroup,
+    Gp_Result,
+    Firewall_Profiles,
+    Audit_Policy
 
   }
 
@@ -101,6 +115,8 @@ namespace Admin_Tools
           return "query user";
         case Triage_Command.Net_Session :
           return "net session";
+        case Triage_Command.Whoami_Priv :
+          return "whoami /priv";
 
         // Network
         case Triage_Command.Ipconfig :
@@ -115,6 +131,10 @@ namespace Admin_Tools
           return "nslookup google.com";
         case Triage_Command.Flush_Dns :
           return "ipconfig /flushdns";
+        case Triage_Command.Netstat_Owner :
+          return "netstat -anob";
+        case Triage_Command.Displaydns :
+          return "ipconfig /displaydns";
 
         // System State
         case Triage_Command.System_Info :
@@ -129,10 +149,17 @@ namespace Admin_Tools
           return "sc query";
         case Triage_Command.Driver_Query :
           return "driverquery";
+        case Triage_Command.Bcdedit_Enum :
+          return "bcdedit /enum";
+        case Triage_Command.Startup_Entries :
+          return "reg query \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run\" & " +
+                 "reg query \"HKLM\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run\"";
 
         // Disk & Storage
         case Triage_Command.Chkdsk :
           return "chkdsk";
+        case Triage_Command.Fsutil_Dirty :
+          return "fsutil dirty query C:";
 
         // Health & Logs
         case Triage_Command.Sfc_Verify :
@@ -143,6 +170,20 @@ namespace Admin_Tools
           return "wevtutil qe System /c:20 /rd:true /f:text";
         case Triage_Command.Uptime :
           return "net statistics workstation";
+        case Triage_Command.Security_Events :
+          return "wevtutil qe Security /c:20 /rd:true /f:text";
+        case Triage_Command.Dism_Check_Health :
+          return "dism /online /cleanup-image /checkhealth";
+
+        // Security & Policy
+        case Triage_Command.Net_Localgroup :
+          return "net localgroup";
+        case Triage_Command.Gp_Result :
+          return "gpresult /r";
+        case Triage_Command.Firewall_Profiles :
+          return "netsh advfirewall show allprofiles";
+        case Triage_Command.Audit_Policy :
+          return "auditpol /get /category:*";
 
         default :
           throw new ArgumentOutOfRangeException ( nameof ( Command ), Command,
@@ -214,6 +255,13 @@ namespace Admin_Tools
       await Execute_Command_Async ( Triage_Command.Net_Session );
     }
 
+    private async void BtnWhoamiPriv_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Whoami_Priv );
+    }
+
     // --------------------------------------------------------
     //  Network
     // --------------------------------------------------------
@@ -256,6 +304,20 @@ namespace Admin_Tools
       using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Flush_Dns );
+    }
+
+    private async void BtnNetstatOwner_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Netstat_Owner );
+    }
+
+    private async void BtnDisplayDns_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Displaydns );
     }
 
     // --------------------------------------------------------
@@ -303,6 +365,20 @@ namespace Admin_Tools
       await Execute_Command_Async ( Triage_Command.Driver_Query );
     }
 
+    private async void BtnBcdeditEnum_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Bcdedit_Enum );
+    }
+
+    private async void BtnStartupEntries_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Startup_Entries );
+    }
+
     // --------------------------------------------------------
     //  Disk & Storage
     // --------------------------------------------------------
@@ -311,6 +387,13 @@ namespace Admin_Tools
       using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Chkdsk );
+    }
+
+    private async void BtnFsutilDirty_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Fsutil_Dirty );
     }
 
     // BtnVol_Click is a locally-computed command — see the
@@ -345,6 +428,51 @@ namespace Admin_Tools
       using var Block = Trace_Block.Start_If_Enabled();
       Clear_Message ();
       await Execute_Command_Async ( Triage_Command.Uptime );
+    }
+
+    private async void BtnSecurityEvents_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Security_Events );
+    }
+
+    private async void BtnDismCheckHealth_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Dism_Check_Health );
+    }
+
+    // --------------------------------------------------------
+    //  Security & Policy
+    // --------------------------------------------------------
+    private async void BtnNetLocalgroup_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Net_Localgroup );
+    }
+
+    private async void BtnGpResult_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Gp_Result );
+    }
+
+    private async void BtnFirewallProfiles_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Firewall_Profiles );
+    }
+
+    private async void BtnAuditPolicy_Click ( object Sender, EventArgs E )
+    {
+      using var Block = Trace_Block.Start_If_Enabled();
+      Clear_Message ();
+      await Execute_Command_Async ( Triage_Command.Audit_Policy );
     }
 
     // --------------------------------------------------------
