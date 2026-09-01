@@ -14,6 +14,8 @@
 
 using System.Management;
 using System.Text;
+using Trace_Execution_Namespace;
+using static Trace_Execution_Namespace.Trace_Execution;
 
 namespace Admin_Tools
 {
@@ -75,6 +77,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     public static List<Restore_Point_Info> Get_Restore_Points()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       var Points = new List<Restore_Point_Info>();
 
       var Scope = new ManagementScope( @"\\.\root\default" );
@@ -112,6 +115,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private static void Correlate_With_Shadow_Copies( List<Restore_Point_Info> Points )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       try
       {
         var Shadows = new List<Shadow_Entry>();

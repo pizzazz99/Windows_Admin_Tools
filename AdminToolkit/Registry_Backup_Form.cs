@@ -19,7 +19,10 @@
 using System.Diagnostics;
 using System.Management;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.Win32;
+using Trace_Execution_Namespace;
+using static Trace_Execution_Namespace.Trace_Execution;
 
 namespace Admin_Tools
 {
@@ -48,15 +51,26 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Master refresh
         // --------------------------------------------------------
-        private void Load_All()
+        private async void Load_All()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Cursor = Cursors.WaitCursor;
             try
             {
+                // File listing + one registry read — near-instant, stays on
+                // the UI thread.
                 Check_RegBack_Folder();
                 Check_Periodic_Setting();
-                Check_Scheduled_Task();
-                Check_Snapshots();
+
+                // COM Task Scheduler activation and two WMI queries — off
+                // the UI thread so the window (and the trace window) stay
+                // responsive, since COM activation in particular can be slow.
+                var TaskInfo = await Task.Run(() => Fetch_Scheduled_Task_Info());
+                Apply_Scheduled_Task_Info(TaskInfo);
+
+                var SnapshotInfo = await Task.Run(() => Fetch_Snapshot_Info());
+                Apply_Snapshot_Info(SnapshotInfo);
+
                 Build_Verdict();
             }
             finally
@@ -70,6 +84,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Check_RegBack_Folder()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             lvHives.BeginUpdate();
             lvHives.Items.Clear();
             _RegBackActive = false;
@@ -133,6 +148,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Check_Periodic_Setting()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             _SettingEnabled = false;
             try
             {
@@ -161,8 +177,22 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  3. RegIdleBackup scheduled task (Task Scheduler COM)
         // --------------------------------------------------------
-        private void Check_Scheduled_Task()
+        private sealed class Scheduled_Task_Info
         {
+            public bool Found;
+            public DateTime LastRun;
+            public DateTime NextRun;
+            public int Result;
+            public int State;
+            public bool Enabled;
+            public string Error;
+        }
+
+        // No UI access — safe to run via Task.Run. COM activation/Connect()
+        // is the slow part here.
+        private static Scheduled_Task_Info Fetch_Scheduled_Task_Info()
+        {
+            using var Block = Trace_Block.Start_If_Enabled();
             try
             {
                 Type SchedType = Type.GetTypeFromProgID("Schedule.Service");
@@ -172,33 +202,47 @@ namespace Admin_Tools
                 dynamic Folder = Service.GetFolder(Task_Folder);
                 dynamic Task   = Folder.GetTask(Task_Name);
 
-                DateTime LastRun = Task.LastRunTime;
-                DateTime NextRun = Task.NextRunTime;
-                int      Result  = Task.LastTaskResult;
-                int      State   = Task.State;
-                bool     Enabled = Task.Enabled;
-
-                txtTaskLastRun.Text = LastRun.Year < 2000
-                    ? "Never"
-                    : LastRun.ToString("yyyy-MM-dd HH:mm:ss");
-
-                txtTaskNextRun.Text = NextRun.Year < 2000
-                    ? "Not scheduled (runs during automatic maintenance)"
-                    : NextRun.ToString("yyyy-MM-dd HH:mm:ss");
-
-                txtTaskResult.Text = "0x" + Result.ToString("X")
-                    + (Result == 0 ? " (success)" : "");
-
-                txtTaskState.Text = Task_State_Name(State)
-                    + (Enabled ? "" : "  [task disabled]");
+                return new Scheduled_Task_Info
+                {
+                    Found = true,
+                    LastRun = Task.LastRunTime,
+                    NextRun = Task.NextRunTime,
+                    Result = Task.LastTaskResult,
+                    State = Task.State,
+                    Enabled = Task.Enabled
+                };
             }
             catch (Exception Ex)
             {
+                return new Scheduled_Task_Info { Found = false, Error = Ex.Message };
+            }
+        }
+
+        private void Apply_Scheduled_Task_Info(Scheduled_Task_Info Info)
+        {
+            using var Block = Trace_Block.Start_If_Enabled();
+            if (!Info.Found)
+            {
                 txtTaskLastRun.Text = "Task not found or inaccessible";
-                txtTaskResult.Text  = Ex.Message;
+                txtTaskResult.Text  = Info.Error;
                 txtTaskState.Text   = "";
                 txtTaskNextRun.Text = "";
+                return;
             }
+
+            txtTaskLastRun.Text = Info.LastRun.Year < 2000
+                ? "Never"
+                : Info.LastRun.ToString("yyyy-MM-dd HH:mm:ss");
+
+            txtTaskNextRun.Text = Info.NextRun.Year < 2000
+                ? "Not scheduled (runs during automatic maintenance)"
+                : Info.NextRun.ToString("yyyy-MM-dd HH:mm:ss");
+
+            txtTaskResult.Text = "0x" + Info.Result.ToString("X")
+                + (Info.Result == 0 ? " (success)" : "");
+
+            txtTaskState.Text = Task_State_Name(Info.State)
+                + (Info.Enabled ? "" : "  [task disabled]");
         }
 
         private static string Task_State_Name(int State)
@@ -217,27 +261,35 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  4. Restore points + shadow copies
         // --------------------------------------------------------
-        private void Check_Snapshots()
+        private sealed class Snapshot_Info
         {
-            _RpCount = 0;
-            _ScCount = 0;
+            public int RpCount;
+            public string RpNewestText;
+            public string RpError;
+            public int ScCount;
+            public string ScNewestText;
+            public string ScError;
+        }
+
+        // No UI access — safe to run via Task.Run.
+        private static Snapshot_Info Fetch_Snapshot_Info()
+        {
+            using var Block = Trace_Block.Start_If_Enabled();
+            var Info = new Snapshot_Info();
 
             // Restore points — reuse the manager
             try
             {
                 var Restore_Points = Restore_Point_Manager.Get_Restore_Points();
-                _RpCount = Restore_Points.Count;
-
-                txtRpCount.Text = _RpCount.ToString();
-                txtRpNewest.Text = _RpCount == 0
+                Info.RpCount = Restore_Points.Count;
+                Info.RpNewestText = Info.RpCount == 0
                     ? "—"
                     : Restore_Points[0].Creation_Time.ToString("yyyy-MM-dd HH:mm:ss")
                       + "  (" + Restore_Points[0].Description + ")";
             }
             catch (Exception Ex)
             {
-                txtRpCount.Text  = "?";
-                txtRpNewest.Text = "Error: " + Ex.Message;
+                Info.RpError = Ex.Message;
             }
 
             // Shadow copies
@@ -250,7 +302,7 @@ namespace Admin_Tools
                 {
                     foreach (ManagementObject Management_Object in Searcher.Get())
                     {
-                        _ScCount++;
+                        Info.ScCount++;
                         object InstallDate = Management_Object["InstallDate"];
                         if (InstallDate == null) continue;
 
@@ -260,16 +312,29 @@ namespace Admin_Tools
                     }
                 }
 
-                txtScCount.Text = _ScCount.ToString();
-                txtScNewest.Text = _ScCount == 0
+                Info.ScNewestText = Info.ScCount == 0
                     ? "—"
                     : Newest.ToString("yyyy-MM-dd HH:mm:ss");
             }
             catch (Exception Ex)
             {
-                txtScCount.Text  = "?";
-                txtScNewest.Text = "Error: " + Ex.Message;
+                Info.ScError = Ex.Message;
             }
+
+            return Info;
+        }
+
+        private void Apply_Snapshot_Info(Snapshot_Info Info)
+        {
+            using var Block = Trace_Block.Start_If_Enabled();
+            _RpCount = Info.RpCount;
+            _ScCount = Info.ScCount;
+
+            txtRpCount.Text = Info.RpError != null ? "?" : Info.RpCount.ToString();
+            txtRpNewest.Text = Info.RpError != null ? "Error: " + Info.RpError : Info.RpNewestText;
+
+            txtScCount.Text = Info.ScError != null ? "?" : Info.ScCount.ToString();
+            txtScNewest.Text = Info.ScError != null ? "Error: " + Info.ScError : Info.ScNewestText;
         }
 
         // --------------------------------------------------------
@@ -277,6 +342,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Build_Verdict()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             var String_Builder = new StringBuilder();
 
             if (_RegBackActive)
@@ -309,11 +375,13 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Btn_Refresh_Click(object Sender, EventArgs E)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Load_All();
         }
 
         private void Btn_Enable_RegBack_Click(object Sender, EventArgs E)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             var Answer = MessageBox.Show(
                 "This sets EnablePeriodicBackup = 1 so Windows resumes copying the registry hives " +
                 "to the RegBack folder during automatic maintenance.\n\n" +
@@ -341,6 +409,7 @@ namespace Admin_Tools
 
         private void Btn_Backup_Now_Click(object Sender, EventArgs E)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             try
             {
                 Type SchedType = Type.GetTypeFromProgID("Schedule.Service");
@@ -367,6 +436,7 @@ namespace Admin_Tools
 
         private void Btn_Open_Folder_Click(object Sender, EventArgs E)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             try
             {
                 Process.Start("explorer.exe", RegBack_Path);
@@ -380,6 +450,7 @@ namespace Admin_Tools
 
         private void Btn_Close_Click(object Sender, EventArgs E)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Close();
         }
     }

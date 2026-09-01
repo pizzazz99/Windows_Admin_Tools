@@ -1,6 +1,8 @@
 using System.Management;
 using System.Text;
 using Microsoft.Win32;
+using Trace_Execution_Namespace;
+using static Trace_Execution_Namespace.Trace_Execution;
 
 namespace Admin_Tools
 {
@@ -22,6 +24,7 @@ namespace Admin_Tools
         /// </summary>
         public static bool Create_Restore_Point(string Description, out string Error)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Error = null;
             try
             {
@@ -68,6 +71,7 @@ namespace Admin_Tools
         /// WARNING: disabling deletes all existing restore points immediately.</summary>
         public static bool Set_System_Restore(bool Enable, string Drive, out string Error)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Error = null;
             try
             {
@@ -105,6 +109,7 @@ namespace Admin_Tools
         /// </summary>
         public static int Get_Creation_Frequency_Minutes()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             using (var Key = Registry.LocalMachine.OpenSubKey(Sr_Registry_Key))
             {
                 return Key?.GetValue("SystemRestorePointCreationFrequency") is int Minutes
@@ -119,6 +124,7 @@ namespace Admin_Tools
         /// </summary>
         public static bool Disable_Throttle(out string Error)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Error = null;
             try
             {
@@ -141,6 +147,7 @@ namespace Admin_Tools
         /// </summary>
         public static DateTime? Get_Newest_Creation_Time()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             try
             {
                 var Scope = new ManagementScope(@"\\.\root\default");
@@ -171,6 +178,7 @@ namespace Admin_Tools
         /// </summary>
         public static bool Is_System_Restore_Enabled()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             using (var Key = Registry.LocalMachine.OpenSubKey(Sr_Registry_Key))
             {
                 return Key?.GetValue("RPSessionInterval") is int Interval && Interval > 0;
@@ -182,6 +190,7 @@ namespace Admin_Tools
         /// (meaning Windows' 24-hour default applies).</summary>
         public static int? Get_Creation_Frequency_Raw()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             using (var Key = Registry.LocalMachine.OpenSubKey(Sr_Registry_Key))
             {
                 return Key?.GetValue("SystemRestorePointCreationFrequency") as int?;
@@ -192,6 +201,7 @@ namespace Admin_Tools
         /// restoring Windows' 24-hour default.</summary>
         public static bool Set_Creation_Frequency(int? Minutes, out string Error)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Error = null;
             try
             {
@@ -224,6 +234,7 @@ namespace Admin_Tools
     {
         private async void Create_Button_Click(object Sender, EventArgs E)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             var CreateButton = (Button)Sender;
 
             // 1. Make sure System Restore is on — offer to enable it if not.
@@ -316,8 +327,9 @@ namespace Admin_Tools
                     "Restore Points", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void Delete_Selected_Button_Click(object Sender, EventArgs E )
+        private async void Delete_Selected_Button_Click(object Sender, EventArgs E )
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if (lvPoints.SelectedItems.Count == 0)
             {
                 MessageBox.Show("Select one or more restore points first "
@@ -350,8 +362,21 @@ namespace Admin_Tools
             Cursor = Cursors.WaitCursor;
             int Deleted, Failed;
             List<string> Errors;
-            Restore_Point_Delete.Delete_Many(Seqs, out Deleted, out Failed, out Errors);
-            Cursor = Cursors.Default;
+            try
+            {
+                var DeleteResult = await Task.Run(() =>
+                {
+                    Restore_Point_Delete.Delete_Many(Seqs, out int D, out int F, out List<string> Errs);
+                    return (Deleted: D, Failed: F, Errors: Errs);
+                });
+                Deleted = DeleteResult.Deleted;
+                Failed = DeleteResult.Failed;
+                Errors = DeleteResult.Errors;
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
 
             string Msg = Deleted + " deleted, " + Failed + " failed.";
             if (Errors.Count > 0) Msg += "\n\n" + string.Join("\n", Errors.ToArray());
@@ -365,6 +390,7 @@ namespace Admin_Tools
         /// <summary>Small modal prompt for the restore point description.</summary>
         private static string Prompt_For_Description(string DefaultText)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             using (var Dialog = new Form())
             using (var TextBox = new TextBox())
             using (var OkButton = new Button())

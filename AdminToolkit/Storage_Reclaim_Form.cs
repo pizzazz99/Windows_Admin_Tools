@@ -22,7 +22,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Management;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trace_Execution_Namespace;
+using static Trace_Execution_Namespace.Trace_Execution;
 
 namespace Admin_Tools
 {
@@ -53,46 +56,60 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Load associations from Win32_ShadowStorage
         // --------------------------------------------------------
-        private void Load_Storage()
+        private async void Load_Storage()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Cursor = Cursors.WaitCursor;
             try
             {
-                var volumeToDrive = Get_Volume_To_Drive_Map();
+                // Two WMI enumerations — off the UI thread so the window (and
+                // the trace window) stay responsive.
+                var rows = await Task.Run(() =>
+                {
+                    var volumeToDrive = Get_Volume_To_Drive_Map();
+                    var result = new List<Storage_Row>();
+
+                    using (var searcher = new ManagementObjectSearcher(
+                        @"root\cimv2", "SELECT * FROM Win32_ShadowStorage"))
+                    {
+                        foreach (ManagementObject mo in searcher.Get())
+                        {
+                            var row = new Storage_Row();
+
+                            row.For_Volume = Extract_DeviceId(Convert.ToString(mo["Volume"]));
+                            row.On_Volume  = Extract_DeviceId(Convert.ToString(mo["DiffVolume"]));
+
+                            string letter;
+                            row.For_Display = volumeToDrive.TryGetValue(row.For_Volume, out letter)
+                                ? letter : row.For_Volume;
+                            row.On_Display = volumeToDrive.TryGetValue(row.On_Volume, out letter)
+                                ? letter : row.On_Volume;
+
+                            row.Used      = (ulong)mo["UsedSpace"];
+                            row.Allocated = (ulong)mo["AllocatedSpace"];
+                            row.Max       = (ulong)mo["MaxSpace"];
+                            row.Unbounded = row.Max > Unbounded_Threshold;
+
+                            result.Add(row);
+                        }
+                    }
+
+                    return result;
+                });
 
                 lvStorage.BeginUpdate();
                 lvStorage.Items.Clear();
 
-                using (var searcher = new ManagementObjectSearcher(
-                    @"root\cimv2", "SELECT * FROM Win32_ShadowStorage"))
+                foreach (var row in rows)
                 {
-                    foreach (ManagementObject mo in searcher.Get())
-                    {
-                        var row = new Storage_Row();
+                    var item = new ListViewItem(row.For_Display);
+                    item.SubItems.Add(row.On_Display);
+                    item.SubItems.Add(Format_Gb(row.Used));
+                    item.SubItems.Add(Format_Gb(row.Allocated));
+                    item.SubItems.Add(row.Unbounded ? "Unlimited" : Format_Gb(row.Max));
+                    item.Tag = row;
 
-                        row.For_Volume = Extract_DeviceId(Convert.ToString(mo["Volume"]));
-                        row.On_Volume  = Extract_DeviceId(Convert.ToString(mo["DiffVolume"]));
-
-                        string letter;
-                        row.For_Display = volumeToDrive.TryGetValue(row.For_Volume, out letter)
-                            ? letter : row.For_Volume;
-                        row.On_Display = volumeToDrive.TryGetValue(row.On_Volume, out letter)
-                            ? letter : row.On_Volume;
-
-                        row.Used      = (ulong)mo["UsedSpace"];
-                        row.Allocated = (ulong)mo["AllocatedSpace"];
-                        row.Max       = (ulong)mo["MaxSpace"];
-                        row.Unbounded = row.Max > Unbounded_Threshold;
-
-                        var item = new ListViewItem(row.For_Display);
-                        item.SubItems.Add(row.On_Display);
-                        item.SubItems.Add(Format_Gb(row.Used));
-                        item.SubItems.Add(Format_Gb(row.Allocated));
-                        item.SubItems.Add(row.Unbounded ? "Unlimited" : Format_Gb(row.Max));
-                        item.Tag = row;
-
-                        lvStorage.Items.Add(item);
-                    }
+                    lvStorage.Items.Add(item);
                 }
 
                 lvStorage.EndUpdate();
@@ -142,6 +159,7 @@ namespace Admin_Tools
 
         private static Dictionary<string, string> Get_Volume_To_Drive_Map()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             using (var searcher = new ManagementObjectSearcher(
@@ -165,6 +183,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Cmb_Unit_Changed(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             numMax.Enabled = cmbUnit.SelectedItem == null
                 || cmbUnit.SelectedItem.ToString() != "Unbounded";
         }
@@ -172,8 +191,9 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Apply resize via vssadmin
         // --------------------------------------------------------
-        private void Btn_Apply_Click(object Sender, EventArgs e)
+        private async void Btn_Apply_Click(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if (lvStorage.SelectedItems.Count == 0)
             {
                 MessageBox.Show("Select a storage row first.",
@@ -244,26 +264,30 @@ namespace Admin_Tools
             Cursor = Cursors.WaitCursor;
             try
             {
-                var psi = new ProcessStartInfo
+                // vssadmin resize can take a while (it deletes snapshots to
+                // fit when shrinking) and this waited up to 60s synchronously
+                // on the UI thread — moved off it so the window (and the
+                // trace window) stay responsive for the whole operation.
+                var (output, exitCode) = await Task.Run(() =>
                 {
-                    FileName               = "vssadmin.exe",
-                    Arguments              = args,
-                    UseShellExecute        = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError  = true,
-                    CreateNoWindow         = true
-                };
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName               = "vssadmin.exe",
+                        Arguments              = args,
+                        UseShellExecute        = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError  = true,
+                        CreateNoWindow         = true
+                    };
 
-                string output;
-                int exitCode;
-
-                using (var p = Process.Start(psi))
-                {
-                    output   = p.StandardOutput.ReadToEnd()
-                             + p.StandardError.ReadToEnd();
-                    p.WaitForExit(60000);
-                    exitCode = p.ExitCode;
-                }
+                    using (var p = Process.Start(psi))
+                    {
+                        string outText = p.StandardOutput.ReadToEnd()
+                                       + p.StandardError.ReadToEnd();
+                        p.WaitForExit(60000);
+                        return (outText, p.ExitCode);
+                    }
+                });
 
                 if (exitCode == 0)
                 {
@@ -293,11 +317,13 @@ namespace Admin_Tools
 
         private void Btn_Refresh_Click(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Load_Storage();
         }
 
         private void Btn_Close_Click(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Close();
         }
     }

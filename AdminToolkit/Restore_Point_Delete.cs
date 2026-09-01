@@ -13,6 +13,8 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Trace_Execution_Namespace;
+using static Trace_Execution_Namespace.Trace_Execution;
 
 namespace Admin_Tools
 {
@@ -30,6 +32,7 @@ namespace Admin_Tools
         /// </summary>
         public static string Delete(uint sequenceNumber)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             try
             {
                 uint rc = SRRemoveRestorePoint(sequenceNumber);
@@ -56,6 +59,7 @@ namespace Admin_Tools
         public static void Delete_Many(IEnumerable<uint> sequenceNumbers,
             out int deleted, out int failed, out List<string> errors)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             deleted = 0;
             failed = 0;
             errors = new List<string>();

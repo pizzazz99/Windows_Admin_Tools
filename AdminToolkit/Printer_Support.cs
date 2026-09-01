@@ -22,6 +22,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Win32;
+using Trace_Execution_Namespace;
+using static Trace_Execution_Namespace.Trace_Execution;
 
 namespace Admin_Tools
 {
@@ -65,6 +67,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         public static List<Printer_Info> Get_Installed_Printers()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             var list = new List<Printer_Info>();
 
             using (var searcher = new ManagementObjectSearcher(
@@ -136,6 +139,7 @@ namespace Admin_Tools
         private static bool Detect_Virtual(string name, string driverName, string portName,
             int attributes)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if ((attributes & PRINTER_ATTRIBUTE_FAX) != 0) return true;
 
             foreach (var hint in _VirtualNameHints)
@@ -168,6 +172,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         public static bool? Is_Online(string ipAddress, int timeoutMs = 800)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if (string.IsNullOrEmpty(ipAddress)) return null;
 
             int[] ports = { 9100, 631, 515 };
@@ -191,6 +196,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         public static bool? Wake_And_Check(string ipAddress, int attempts = 3, int timeoutMs = 3000)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if (string.IsNullOrEmpty(ipAddress)) return null;
 
             bool? result = null;
@@ -205,6 +211,7 @@ namespace Admin_Tools
 
         private static bool Try_Tcp_Connect(string host, int port, int timeoutMs)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             try
             {
                 using (var client = new TcpClient())
@@ -225,6 +232,7 @@ namespace Admin_Tools
 
         private static bool Try_Ping(string host, int timeoutMs)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             try
             {
                 using (var ping = new Ping())
@@ -241,6 +249,7 @@ namespace Admin_Tools
 
         private static string Describe_Status(int printerStatus, bool workOffline)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if (workOffline) return "Offline";
 
             switch (printerStatus)
@@ -260,6 +269,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         public static string Get_Printer_Details_Text(string printerName)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             var sb = new StringBuilder();
             sb.AppendLine("PRINTER DETAILS");
             sb.AppendLine(new string('=', 60));
@@ -340,6 +350,7 @@ namespace Admin_Tools
         private static void Get_Port_And_Location(
             string printerName, out string portName, out string location)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             portName = null;
             location = null;
 
@@ -358,6 +369,7 @@ namespace Admin_Tools
 
         private static string Resolve_Ip(string portName, string location)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if (string.IsNullOrEmpty(portName)) return null;
 
             // Modern print-port WMI class (backs PowerShell's Get-PrinterPort).
@@ -442,6 +454,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private static string Resolve_Wsd_Device_Address(string portName)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if (string.IsNullOrEmpty(portName) ||
                 !portName.StartsWith("WSD-", StringComparison.OrdinalIgnoreCase))
                 return null;
@@ -454,6 +467,7 @@ namespace Admin_Tools
 
         private static string Read_Wsd_Printer_Uuid(string portName)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             try
             {
                 using (var key = Registry.LocalMachine.OpenSubKey(
@@ -470,6 +484,7 @@ namespace Admin_Tools
 
         private static string Query_Ipp_Device_Address(string uuid)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             string instanceId = ("SWD\\IPP\\" + uuid).Replace("'", "''");
 
             // Join each property's Data (scalar or array) into one string per
@@ -523,6 +538,7 @@ namespace Admin_Tools
         // which covers port names like "IP_192.168.254.49".
         private static string Extract_Address(string text)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if (string.IsNullOrEmpty(text)) return null;
 
             Uri uri;
@@ -579,6 +595,7 @@ namespace Admin_Tools
         public static Supply_Query_Result Get_Supply_Levels(
             string ipAddress, string community = "public", int timeoutMs = 2000)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             var result = new Supply_Query_Result();
 
             if (string.IsNullOrWhiteSpace(ipAddress))
@@ -662,6 +679,7 @@ namespace Admin_Tools
             public static List<Varbind> Walk(
                 string ip, string community, string baseOid, int timeoutMs)
             {
+                using var Block = Trace_Block.Start_If_Enabled();
                 var results = new List<Varbind>();
                 string current = baseOid;
 
@@ -713,6 +731,7 @@ namespace Admin_Tools
 
             private static Varbind Get_Next(string ip, string community, string oid, int timeoutMs)
             {
+                using var Block = Trace_Block.Start_If_Enabled();
                 try
                 {
                     byte[] request = Build_Get_Next(community, oid, _Rand.Next(1, int.MaxValue));

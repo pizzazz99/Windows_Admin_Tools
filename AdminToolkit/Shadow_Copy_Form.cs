@@ -24,7 +24,10 @@ using System.Drawing;
 using System.IO;
 using System.Management;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using Trace_Execution_Namespace;
+using static Trace_Execution_Namespace.Trace_Execution;
 
 namespace Admin_Tools
 {
@@ -79,39 +82,47 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Snapshot list
         // --------------------------------------------------------
-        private void Load_Snapshots()
+        private async void Load_Snapshots()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Cursor = Cursors.WaitCursor;
             try
             {
-                var volumeToDrive = Get_Volume_To_Drive_Map();
-                var rows = new List<Snapshot_Row>();
-
-                using (var searcher = new ManagementObjectSearcher(
-                    @"root\cimv2", "SELECT * FROM Win32_ShadowCopy"))
+                // Off the UI thread: two WMI enumerations plus the per-row
+                // property reads. Keeps the window responsive and lets the
+                // trace window paint entries as they happen.
+                var rows = await Task.Run(() =>
                 {
-                    foreach (ManagementObject mo in searcher.Get())
+                    var volumeToDrive = Get_Volume_To_Drive_Map();
+                    var result = new List<Snapshot_Row>();
+
+                    using (var searcher = new ManagementObjectSearcher(
+                        @"root\cimv2", "SELECT * FROM Win32_ShadowCopy"))
                     {
-                        var row = new Snapshot_Row();
-                        row.Id = Prop(mo, "ID");
-                        row.Device = Prop(mo, "DeviceObject");
-                        row.VolumeName = Prop(mo, "VolumeName");
-                        row.Raw = mo;
+                        foreach (ManagementObject mo in searcher.Get())
+                        {
+                            var row = new Snapshot_Row();
+                            row.Id = Prop(mo, "ID");
+                            row.Device = Prop(mo, "DeviceObject");
+                            row.VolumeName = Prop(mo, "VolumeName");
+                            row.Raw = mo;
 
-                        string drive;
-                        row.Drive = volumeToDrive.TryGetValue(row.VolumeName, out drive)
-                            ? drive : "?";
+                            string drive;
+                            row.Drive = volumeToDrive.TryGetValue(row.VolumeName, out drive)
+                                ? drive : "?";
 
-                        string installDate = Prop(mo, "InstallDate");
-                        row.Created = installDate.Length == 0
-                            ? DateTime.MinValue
-                            : ManagementDateTimeConverter.ToDateTime(installDate);
+                            string installDate = Prop(mo, "InstallDate");
+                            row.Created = installDate.Length == 0
+                                ? DateTime.MinValue
+                                : ManagementDateTimeConverter.ToDateTime(installDate);
 
-                        rows.Add(row);
+                            result.Add(row);
+                        }
                     }
-                }
 
-                rows.Sort((a, b) => b.Created.CompareTo(a.Created));   // newest first
+                    result.Sort((a, b) => b.Created.CompareTo(a.Created));   // newest first
+                    return result;
+                });
 
                 lvSnapshots.BeginUpdate();
                 lvSnapshots.Items.Clear();
@@ -151,6 +162,7 @@ namespace Admin_Tools
 
         private void Update_Summary(int count)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             string storage = Get_Storage_Summary();
             lblSummary.Text = count + " snapshot(s)"
                 + (storage.Length > 0 ? "   |   " + storage : "");
@@ -159,6 +171,7 @@ namespace Admin_Tools
         // Maps \\?\Volume{guid}\ -> drive letter
         private static Dictionary<string, string> Get_Volume_To_Drive_Map()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             var map = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
             using (var searcher = new ManagementObjectSearcher(
@@ -182,6 +195,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private static string Get_Storage_Summary()
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             try
             {
                 ulong used = 0, allocated = 0, max = 0;
@@ -229,6 +243,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Btn_Create_Click(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if (cmbDrive.SelectedItem == null) return;
             string drive = cmbDrive.SelectedItem.ToString();   // "C:"
 
@@ -297,6 +312,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Btn_Details_Click(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if (lvSnapshots.SelectedItems.Count == 0) return;
 
             var row = lvSnapshots.SelectedItems[0].Tag as Snapshot_Row;
@@ -339,8 +355,9 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Raw vssadmin output (selected snapshot, or all if none selected)
         // --------------------------------------------------------
-        private void Btn_VssAdmin_Click(object Sender, EventArgs e)
+        private async void Btn_VssAdmin_Click(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             // Get the selected snapshot's Shadow ID, if any.
             // *** Adjust these two lines to this form's ListView name and Tag type ***
             string shadowId = null;
@@ -357,29 +374,34 @@ namespace Admin_Tools
             Cursor = Cursors.WaitCursor;
             try
             {
-                var psi = new ProcessStartInfo
+                // vssadmin's read can take a while with many snapshots — off
+                // the UI thread so the window (and the trace window) stay live.
+                string output = await Task.Run(() =>
                 {
-                    FileName = "vssadmin.exe",
-                    Arguments = arguments,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    CreateNoWindow = true
-                };
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = "vssadmin.exe",
+                        Arguments = arguments,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true
+                    };
 
-                using (var p = Process.Start(psi))
-                {
-                    string output = p.StandardOutput.ReadToEnd();
-                    string err = p.StandardError.ReadToEnd();
-                    p.WaitForExit();
+                    using (var p = Process.Start(psi))
+                    {
+                        string stdOut = p.StandardOutput.ReadToEnd();
+                        string stdErr = p.StandardError.ReadToEnd();
+                        p.WaitForExit();
+                        return stdOut + (stdErr.Length > 0 ? "\r\n" + stdErr : "");
+                    }
+                });
 
-                    string title = shadowId == null
-                        ? "vssadmin list shadows (all)"
-                        : "vssadmin - " + shadowId;
+                string title = shadowId == null
+                    ? "vssadmin list shadows (all)"
+                    : "vssadmin - " + shadowId;
 
-                    Show_Text_Window(title,
-                        output + (err.Length > 0 ? "\r\n" + err : ""));
-                }
+                Show_Text_Window(title, output);
             }
             catch (Exception Ex)
             {
@@ -397,6 +419,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Btn_Delete_Selected_Click(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             if (lvSnapshots.SelectedItems.Count == 0)
             {
                 MessageBox.Show("Select one or more snapshots first "
@@ -439,6 +462,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Btn_Delete_Older_Click(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             int days;
             if (!Prompt_Number("Delete Older Than",
                     "Delete all snapshots older than (days):", 30, 1, 3650, out days))
@@ -466,6 +490,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Btn_Keep_Newest_Click(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             int keep;
             if (!Prompt_Number("Keep Newest",
                     "Keep only the newest N snapshots (all drives combined per drive), " +
@@ -490,13 +515,16 @@ namespace Admin_Tools
         // --------------------------------------------------------
         //  Shared delete runner
         // --------------------------------------------------------
-        private void Run_Delete(Func<Snapshot_Delete_Result> operation)
+        private async void Run_Delete(Func<Snapshot_Delete_Result> operation)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Cursor = Cursors.WaitCursor;
             Snapshot_Delete_Result result;
             try
             {
-                result = operation();
+                // Deleting many snapshots is a WMI call per snapshot — off the
+                // UI thread so the window stays responsive for a large batch.
+                result = await Task.Run(operation);
             }
             finally
             {
@@ -521,6 +549,7 @@ namespace Admin_Tools
         private bool Prompt_Number(string title, string label,
             int defaultValue, int min, int max, out int value)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             value = defaultValue;
 
             using (var form = new Form())
@@ -584,6 +613,7 @@ namespace Admin_Tools
         // --------------------------------------------------------
         private void Show_Text_Window(string title, string text)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             var form = new Form
             {
                 Text = title,
@@ -628,17 +658,19 @@ namespace Admin_Tools
 
         private void Btn_Refresh_Click(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Load_Snapshots();
         }
 
         private void Btn_Close_Click(object Sender, EventArgs e)
         {
+            using var Block = Trace_Block.Start_If_Enabled();
             Close();
         }
 
         private void Reclaim_Space_Button_Click(object Sender, EventArgs e)
         {
-           
+            using var Block = Trace_Block.Start_If_Enabled();
             using (var f = new Storage_Reclaim_Form())
                 f.ShowDialog(this);
 

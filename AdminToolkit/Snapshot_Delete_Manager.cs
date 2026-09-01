@@ -11,6 +11,8 @@
 // ============================================================
 
 using System.Management;
+using Trace_Execution_Namespace;
+using static Trace_Execution_Namespace.Trace_Execution;
 
 namespace Admin_Tools
 {
@@ -34,6 +36,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     public static Snapshot_Delete_Result Delete_By_Id ( string Shadow_Id )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       var    Result     = new Snapshot_Delete_Result ();
 
       string Normalized = Normalize_Id ( Shadow_Id );
@@ -83,6 +86,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     public static Snapshot_Delete_Result Delete_By_Ids ( IEnumerable<string> Shadow_Ids )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       var Total = new Snapshot_Delete_Result ();
 
       foreach ( var Id in Shadow_Ids )
@@ -103,6 +107,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     public static Snapshot_Delete_Result Delete_Older_Than ( DateTime Cutoff, string Drive_Letter )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       var Result = new Snapshot_Delete_Result ();
 
       try
@@ -167,6 +172,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     public static Snapshot_Delete_Result Keep_Newest ( int Keep_Count, string Drive_Letter )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       var Result = new Snapshot_Delete_Result ();
 
       try
@@ -241,6 +247,7 @@ namespace Admin_Tools
     // Win32_ShadowCopy.VolumeName contains.
     private static string Get_Volume_Id ( string Drive_Letter )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       string Letter = Drive_Letter.TrimEnd ( '\\' );
       if ( ! Letter.EndsWith ( ":" ) )
         Letter += ":";

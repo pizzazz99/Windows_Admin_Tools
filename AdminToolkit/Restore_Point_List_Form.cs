@@ -14,6 +14,8 @@ using System.Globalization;
 using System.Management;
 using System.Text;
 using Microsoft.Win32;
+using Trace_Execution_Namespace;
+using static Trace_Execution_Namespace.Trace_Execution;
 
 namespace Admin_Tools
 {
@@ -48,6 +50,7 @@ namespace Admin_Tools
     /// </summary>
     private bool Ensure_System_Restore_Enabled ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       if ( Restore_Point_Creator.Is_System_Restore_Enabled () )
         return true;
 
@@ -75,17 +78,26 @@ namespace Admin_Tools
     // --------------------------------------------------------
     //  Data load — sorted OLDEST first
     // --------------------------------------------------------
-    private void Load_Points ()
+    private async void Load_Points ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Cursor = Cursors.WaitCursor;
       try
       {
-        _Points = Restore_Point_Manager.Get_Restore_Points ();
+        // Off the UI thread: WMI enumeration (restore points + the shadow-copy
+        // correlation pass) plus a registry walk across three Uninstall hives.
+        // Keeping this off the UI thread stops the window from freezing on
+        // open/refresh and lets the trace window paint entries as they happen.
+        var Loaded = await Task.Run ( () =>
+        {
+          var Points = Restore_Point_Manager.Get_Restore_Points ();
+          Points.Reverse ();   // Manager returns newest-first; flip to oldest-first
+          var Programs = Load_Installed_Programs ();
+          return (Points, Programs);
+        } );
 
-        // Manager returns newest-first; flip to oldest-first
-        _Points.Reverse ();
-
-        _Installed_Programs = Load_Installed_Programs ();
+        _Points = Loaded.Points;
+        _Installed_Programs = Loaded.Programs;
 
         lvPoints.BeginUpdate ();
         lvPoints.Items.Clear ();
@@ -169,6 +181,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private void Lv_Selection_Changed ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       if ( lvPoints.SelectedItems.Count == 0 )
         return;
 
@@ -315,6 +328,7 @@ namespace Admin_Tools
 
     private static List<KeyValuePair<string, DateTime>> Load_Installed_Programs ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       var Result = new List<KeyValuePair<string, DateTime>> ();
       try
       {
@@ -336,6 +350,7 @@ namespace Admin_Tools
     private static void Read_Uninstall_Key ( RegistryKey Root, string Path,
                                              List<KeyValuePair<string, DateTime>> Result )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       using ( var Key = Root.OpenSubKey ( Path ) )
       {
         if ( Key == null )
@@ -363,6 +378,7 @@ namespace Admin_Tools
     /// <summary>Second header line: protection / throttle / shadow storage.</summary>
     private void Update_Status_Line ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       string Protection = Restore_Point_Creator.Is_System_Restore_Enabled () ? "On" : "OFF";
 
       int    Freq       = Restore_Point_Creator.Get_Creation_Frequency_Minutes ();
@@ -375,6 +391,7 @@ namespace Admin_Tools
 
     private static string Get_Shadow_Storage_Summary ()
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       try
       {
         var Scope = new ManagementScope ( @"\\.\root\cimv2" );
@@ -427,6 +444,7 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private void Btn_Browse_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       if ( lvPoints.SelectedItems.Count == 0 )
       {
         MessageBox.Show ( this, "Select a restore point first.", "Browse Snapshot",
@@ -475,6 +493,7 @@ namespace Admin_Tools
 
     protected override void OnFormClosed ( FormClosedEventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       // Remove any snapshot symlinks we created. Deleting a directory
       // symlink removes only the link, never the snapshot behind it.
       foreach ( var Link in _Snapshot_Links )
@@ -497,11 +516,13 @@ namespace Admin_Tools
     // --------------------------------------------------------
     private void Btn_Refresh_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       Load_Points ();
     }
 
     private void Btn_Copy_Click ( object Sender, EventArgs E )
     {
+      using var Block = Trace_Block.Start_If_Enabled();
       if ( txtSeq.Text.Length == 0 )
         return;
 
